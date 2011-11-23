@@ -1,7 +1,5 @@
 package com.frienemy;
 
-import android.app.Application;
-
-public class FrienemyApplication extends Application {
+public class FrienemyApplication extends com.activeandroid.Application  {
 
 }
