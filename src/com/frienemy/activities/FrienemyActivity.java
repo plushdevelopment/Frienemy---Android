@@ -10,7 +10,9 @@ import com.facebook.android.Facebook.*;
 
 public class FrienemyActivity extends ListActivity {
     
+	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
 	Facebook facebook = new Facebook("124132700987915");
+	private AsyncFacebookRunner asyncRunner;
 	String FILENAME = "AndroidSSO_data";
     private SharedPreferences mPrefs;
 	
@@ -35,7 +37,7 @@ public class FrienemyActivity extends ListActivity {
          * Only call authorize if the access_token has expired.
          */
         if(!facebook.isSessionValid()) {
-        	facebook.authorize(this, new String[] {"read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream"}, new DialogListener() {
+        	facebook.authorize(this, PERMS, new DialogListener() {
         		public void onComplete(Bundle values) {
         			SharedPreferences.Editor editor = mPrefs.edit();
                     editor.putString("access_token", facebook.getAccessToken());
@@ -51,6 +53,7 @@ public class FrienemyActivity extends ListActivity {
         	});
         }
         
+        //asyncRunner = new AsyncFacebookRunner(facebook);
     }
     
     @Override
