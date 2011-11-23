@@ -1,14 +1,14 @@
 package com.frienemy.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.facebook.android.*;
 import com.facebook.android.Facebook.*;
 
-public class FrienemyActivity extends Activity {
+public class FrienemyActivity extends ListActivity {
     
 	Facebook facebook = new Facebook("124132700987915");
 	String FILENAME = "AndroidSSO_data";
