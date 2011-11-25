@@ -16,10 +16,26 @@
             android:name="com.frienemy.activities.FrienemyActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+      		android:name="com.frienemy.services.FrienemyService"
+      		android:process=":remote">
+      		<intent-filter>
+        		<action
+          			android:name="com.frienemy.services.FrienemyService" />
+      		</intent-filter>
+    	</service>
+    	<receiver
+  			android:name="com.frienemy.services.BootReceiver">
+  			<intent-filter>
+    			<action
+      				android:name="android.intent.action.BOOT_COMPLETED">
+    			</action>
+  			</intent-filter>
+		</receiver>
     </application>
 	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 </manifest>

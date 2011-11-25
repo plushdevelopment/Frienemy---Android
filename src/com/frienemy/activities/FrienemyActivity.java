@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 
 import com.facebook.android.*;
 import com.facebook.android.Facebook.*;
+import com.frienemy.services.FrienemyService;
 
 public class FrienemyActivity extends ListActivity {
     
@@ -53,7 +54,7 @@ public class FrienemyActivity extends ListActivity {
         	});
         }
         
-        //asyncRunner = new AsyncFacebookRunner(facebook);
+        startService(new Intent(FrienemyService.class.getName()));
     }
     
     @Override
