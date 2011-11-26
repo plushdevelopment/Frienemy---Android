@@ -42,6 +42,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 				friend = new Friend(context);
 				friend.uid = uid;
 				friend.name = n;
+				friend.save();
 			}
 		} catch (JSONException e) {
 			Log.w(TAG, e);

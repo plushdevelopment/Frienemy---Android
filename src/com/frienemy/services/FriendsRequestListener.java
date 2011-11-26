@@ -19,18 +19,9 @@ public class FriendsRequestListener implements RequestListener {
 
 	private static final String TAG = FriendsRequestListener.class.getSimpleName();
 	private Context context;
-	private static ArrayList<Friend> friends;
 
 	public FriendsRequestListener(Context context) {
 		this.context = context;
-	}
-	
-	public static synchronized ArrayList<Friend> getFriends() {
-		return friends;
-	}
-
-	public static synchronized void setFriends(ArrayList<Friend> friends) {
-		FriendsRequestListener.friends = friends;
 	}
 
 	public void onComplete(String response, Object state) {
@@ -39,13 +30,29 @@ public class FriendsRequestListener implements RequestListener {
 			JSONArray d = json.getJSONArray("data");
 			int l = (d != null ? d.length() : 0);
 			Log.d(TAG, "Friend Array length(): " + l);
-			ArrayList<Friend> array = new ArrayList<Friend>();
+			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null);
+			for (int f=0; f<fetchedFriends.size(); f++) {
+				boolean exists = false;
+				Friend friend = fetchedFriends.get(f);
+				for (int i=0; i<l; i++) {
+					JSONObject o = d.getJSONObject(i);
+					if (friend.uid.matches(o.getString("id"))) {
+						exists = true;
+						friend.frienemyStatus = 0;
+						break;
+					}
+				}
+				if (!exists) {
+					friend.frienemyStatus = 1;
+					friend.save();
+				}
+			}
+			
 			for (int i=0; i<l; i++) {
 				JSONObject o = d.getJSONObject(i);
 				Friend friend = Friend.friendInContextForJSONObject(context, o);
-				array.add(friend);
+				friend.save();
 			}
-			setFriends(array);
 		} catch (JSONException e) {
 			Log.w(TAG, "JSON Error in response");
 		}
