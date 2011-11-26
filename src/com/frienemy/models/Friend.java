@@ -20,6 +20,9 @@ public class Friend extends ActiveRecordBase<Friend> {
 	
 	@Column(name = "name")
 	public String name;
+	
+	@Column(name = "frienemyStatus")
+	public int frienemyStatus;
 
 	public Friend(Context context) {
 		super(context);
@@ -39,7 +42,6 @@ public class Friend extends ActiveRecordBase<Friend> {
 				friend = new Friend(context);
 				friend.uid = uid;
 				friend.name = n;
-				friend.save();
 			}
 		} catch (JSONException e) {
 			Log.w(TAG, e);

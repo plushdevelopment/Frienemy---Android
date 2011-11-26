@@ -37,7 +37,6 @@ public class FrienemyActivity extends ListActivity {
     private ServiceConnection serviceConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.i(TAG, "Service connection established");
-	
 			// that's how we get the client side of the IPC connection
 			api = FrienemyServiceAPI.Stub.asInterface(service);
 			try {
@@ -45,7 +44,6 @@ public class FrienemyActivity extends ListActivity {
 			} catch (RemoteException e) {
 				Log.e(TAG, "Failed to add listener", e);
 			}
-			
 			updateView();
 		}
 
