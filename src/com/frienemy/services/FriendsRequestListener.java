@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,9 +21,18 @@ public class FriendsRequestListener implements RequestListener {
 
 	private static final String TAG = FriendsRequestListener.class.getSimpleName();
 	private Context context;
+	private List<Friend> friends;
 
 	public FriendsRequestListener(Context context) {
 		this.context = context;
+	}
+
+	public void setFriends(List<Friend> friends) {
+		this.friends = friends;
+	}
+
+	public List<Friend> getFriends() {
+		return friends;
 	}
 
 	public void onComplete(String response, Object state) {
@@ -47,12 +58,16 @@ public class FriendsRequestListener implements RequestListener {
 					friend.save();
 				}
 			}
-			
 			for (int i=0; i<l; i++) {
 				JSONObject o = d.getJSONObject(i);
 				Friend friend = Friend.friendInContextForJSONObject(context, o);
-				friend.save();
+				if (friend.frienemyStatus == 2) {
+					friend.frienemyStatus = 0;
+					friend.save();
+					fetchedFriends.add(friend);
+				}
 			}
+			setFriends(fetchedFriends);
 		} catch (JSONException e) {
 			Log.w(TAG, "JSON Error in response");
 		}
