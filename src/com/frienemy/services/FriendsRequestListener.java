@@ -55,6 +55,7 @@ public class FriendsRequestListener implements RequestListener {
 				}
 				if (!exists) {
 					friend.frienemyStatus = 1;
+					friend.frienemyStatusChanged = true;
 					friend.save();
 				}
 			}

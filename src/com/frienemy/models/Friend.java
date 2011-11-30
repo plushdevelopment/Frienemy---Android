@@ -26,6 +26,12 @@ public class Friend extends ActiveRecordBase<Friend> {
 	
 	@Column(name = "relationshipStatus")
 	public String relationshipStatus;
+	
+	@Column(name = "relationshipChanged")
+	public Boolean relationshipStatusChanged;
+	
+	@Column(name = "frienemyStatusChanged")
+	public Boolean frienemyStatusChanged;
 
 	public Friend(Context context) {
 		super(context);
