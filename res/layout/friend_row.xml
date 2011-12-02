@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="85dp"
+    android:background="@drawable/gray_gradient" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/icon" />
+
+    <TextView
+        android:id="@+id/fullname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/imageView1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="Jane Doe"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+<TextView
+        android:id="@+id/relationshipStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="Single"
+        android:textColor="#515151"
+        android:textSize="12dp" android:layout_below="@id/fullname" android:layout_alignLeft="@id/fullname"/>
+    <TextView
+        android:id="@+id/frienemyStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Frienemy"
+        android:textColor="#515151"
+        android:textSize="12dp" android:layout_below="@id/relationshipStatus" android:layout_alignLeft="@id/fullname"/>
+
+    
+
+</RelativeLayout>
