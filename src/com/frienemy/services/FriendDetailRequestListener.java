@@ -31,7 +31,7 @@ public class FriendDetailRequestListener implements RequestListener {
 			final JSONObject o = new JSONObject(response);
 			Friend friend = Friend.friendInContextForJSONObject(context, o);
 			String relationshipStatus = o.getString("relationship_status");
-			if (relationshipStatus.equals(friend.relationshipStatus)) {
+			if (relationshipStatus.equals(friend.relationshipStatus) == false) {
 				friend.relationshipStatusChanged = true;
 			}
 			friend.relationshipStatus = relationshipStatus;
