@@ -9,11 +9,13 @@ import android.util.Log;
 import com.activeandroid.ActiveRecordBase;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.frienemy.encryption.SimpleCrypto;
 
 @Table(name = "Friend")
 public class Friend extends ActiveRecordBase<Friend> {
 	
 	private static final String TAG = Friend.class.getSimpleName();
+	private static final String KEY = "MAHMOUD";
 	
 	@Column(name = "uid")
 	public String uid;
@@ -37,6 +39,10 @@ public class Friend extends ActiveRecordBase<Friend> {
 		super(context);
 	}
 	
+	@Override
+	public void save() {
+		
+	}
 	public static Friend friendInContextForKeyWithStringValue(Context context, String key, String value) {
 		return querySingle(context, Friend.class, null, String.format("%s = %s", key, value));
 	}
