@@ -19,30 +19,51 @@ public class Friend extends ActiveRecordBase<Friend> {
 	
 	@Column(name = "uid")
 	public String uid;
+	public String encryptedUid;
 	
 	@Column(name = "name")
 	public String name;
-	
-	@Column(name = "frienemyStatus")
-	public int frienemyStatus;
+	public String encryptedName;
 	
 	@Column(name = "relationshipStatus")
 	public String relationshipStatus;
+	public String encryptedRelationshipStatus;
+	
+	@Column(name = "frienemyStatus")
+	public int frienemyStatus;
 	
 	@Column(name = "relationshipChanged")
 	public Boolean relationshipStatusChanged;
 	
 	@Column(name = "frienemyStatusChanged")
 	public Boolean frienemyStatusChanged;
+	
+	public void encrypt() {
+			try {
+				encryptedUid = SimpleCrypto.encrypt(KEY, uid);
+				encryptedName = SimpleCrypto.encrypt(KEY, name);
+				encryptedRelationshipStatus = SimpleCrypto.encrypt(KEY, relationshipStatus);
+			} catch (Exception e) {
+				Log.e(TAG, "Failed to encrypt friend");
+				e.printStackTrace();
+			}
+	}
+	
+	public void decrypt() {
+			try {
+				uid = SimpleCrypto.decrypt(KEY, encryptedUid);
+				name = SimpleCrypto.decrypt(KEY, encryptedName);
+				relationshipStatus = SimpleCrypto.decrypt(KEY, encryptedRelationshipStatus);
+			} catch (Exception e) {
+				Log.e(TAG, "Failed to decrypt friend");
+				e.printStackTrace();
+			}
+	}
 
 	public Friend(Context context) {
 		super(context);
 	}
 	
-	@Override
-	public void save() {
-		
-	}
 	public static Friend friendInContextForKeyWithStringValue(Context context, String key, String value) {
 		return querySingle(context, Friend.class, null, String.format("%s = %s", key, value));
 	}
