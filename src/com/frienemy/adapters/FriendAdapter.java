@@ -49,8 +49,7 @@ public class FriendAdapter extends BaseAdapter {
          
         	TextView name=(TextView)vi.findViewById(R.id.fullname);;
        // ImageView image=(ImageView)vi.findViewById(R.id.imageView1);
-        name.setText("Mike Smith");
-        
+        name.setText(data.get(position).name);
         return vi;
     }
 }
