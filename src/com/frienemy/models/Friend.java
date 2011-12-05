@@ -1,5 +1,7 @@
 package com.frienemy.models;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +39,21 @@ public class Friend extends ActiveRecordBase<Friend> {
 	
 	@Column(name = "frienemyStatusChanged")
 	public Boolean frienemyStatusChanged;
+	
+	public ArrayList<Comment> comments() {
+		ArrayList<Comment> comments = Comment.query(getContext(), Comment.class, null, String.format("friend = %i", getId()), "createdTime ASC");
+		return comments;
+	}
+	
+	public ArrayList<Post> posts() {
+		ArrayList<Post> posts = Post.query(getContext(), Post.class, null, String.format("friend = %i", getId()), "updatedTime ASC");
+		return posts;
+	}
+	
+	public ArrayList<Status> statuses() {
+		ArrayList<Status> statuses = Status.query(getContext(), Status.class, null, String.format("friend = %i", getId()), "updatedTime ASC");
+		return statuses;
+	}
 	
 	public void encrypt() {
 			try {
