@@ -1,32 +1,44 @@
 package com.frienemy.activities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ListView;
+import android.app.ActivityManager;
 import android.app.ListActivity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 
 import com.facebook.android.*;
 import com.facebook.android.Facebook.*;
+import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
 import com.frienemy.services.FrienemyService;
 import com.frienemy.services.FrienemyServiceAPI;
 import com.frienemy.services.FrienemyServiceListener;
 
+
 public class FrienemyActivity extends ListActivity {
     
 	private static final String TAG = FrienemyActivity.class.getSimpleName();
 	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
+	private static final int EXIT = 0;
 	Facebook facebook = new Facebook("124132700987915");
 	String FILENAME = "AndroidSSO_data";
     private SharedPreferences mPrefs;
 	private FrienemyServiceAPI api;
+	
+	FriendAdapter adapter;
+	ListView list;
 	
 	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
 		public void handleFriendsUpdated() throws RemoteException {
@@ -83,6 +95,10 @@ public class FrienemyActivity extends ListActivity {
     
     protected void updateView() {
 		ArrayList<Friend> friends = Friend.query(this, Friend.class);
+		
+		list=(ListView)findViewById(android.R.id.list);
+		adapter=new FriendAdapter(this, friends);
+        list.setAdapter(adapter);
 		Log.i(TAG, "Friends count: " + friends.size());
 	}
 
@@ -92,9 +108,27 @@ public class FrienemyActivity extends ListActivity {
         facebook.authorizeCallback(requestCode, resultCode, data);
     }
     
+	 public boolean onCreateOptionsMenu(Menu menu) {
+         menu.add(0, EXIT, 0, "Log Off");
+         return true;
+     }
+  
+     /* Handles item selections */
+     public boolean onOptionsItemSelected(MenuItem item) {
+         switch (item.getItemId()) {
+     	case EXIT:
+     		 Intent intent = new Intent(Intent.ACTION_MAIN);
+     		    intent.addCategory(Intent.CATEGORY_HOME);
+     		    startActivity(intent);
+
+             return true;
+         }
+         return false;
+     }
     private class LoginDialogListener implements DialogListener {
     	
-        public void onComplete(Bundle values) {
+
+		public void onComplete(Bundle values) {
     			SharedPreferences.Editor editor = mPrefs.edit();
                 editor.putString("access_token", facebook.getAccessToken());
                 editor.putLong("access_expires", facebook.getAccessExpires());
@@ -115,5 +149,6 @@ public class FrienemyActivity extends ListActivity {
         public void onCancel() {
                 Log.d(TAG, "OnCancel");
         }
+       
 }
 }
