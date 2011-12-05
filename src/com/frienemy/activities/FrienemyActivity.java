@@ -9,6 +9,8 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.app.ActivityManager;
 import android.app.ListActivity;
@@ -27,7 +29,7 @@ import com.frienemy.services.FrienemyServiceAPI;
 import com.frienemy.services.FrienemyServiceListener;
 
 
-public class FrienemyActivity extends ListActivity {
+public class FrienemyActivity extends ListActivity implements OnClickListener {
     
 	private static final String TAG = FrienemyActivity.class.getSimpleName();
 	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
@@ -68,6 +70,8 @@ public class FrienemyActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+		setUpListeners();
         /*
          * Get existing access_token if any
          */
@@ -92,7 +96,21 @@ public class FrienemyActivity extends ListActivity {
         startService(intent);
         bindService(intent, serviceConnection, 0);
     }
-    
+    private void setUpListeners()
+	{
+    	 View v;
+ 		v = findViewById( R.id.btnFriends );
+ 		v.setBackgroundResource( R.drawable.button_selector );
+ 		v.setOnClickListener( this );
+
+ 		v = findViewById( R.id.btnFrienemies );
+ 		v.setBackgroundResource( R.drawable.button_selector );
+ 		v.setOnClickListener( this );
+
+ 		v = findViewById( R.id.stalkers );
+ 		v.setBackgroundResource( R.drawable.button_selector );
+ 		v.setOnClickListener( this );
+	}
     protected void updateView() {
 		ArrayList<Friend> friends = Friend.query(this, Friend.class);
 		
@@ -151,4 +169,8 @@ public class FrienemyActivity extends ListActivity {
         }
        
 }
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
+	}
 }
