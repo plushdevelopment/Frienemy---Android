@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="85dp"
-    android:background="@drawable/gray_gradient" >
+    android:background="@drawable/row_gradient" >
 
     <ImageView
         android:id="@+id/imageView1"

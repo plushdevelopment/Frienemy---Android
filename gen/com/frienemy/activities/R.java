@@ -11,27 +11,29 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int close=0x7f020000;
-        public static final int facebook_icon=0x7f020001;
-        public static final int friends=0x7f020002;
-        public static final int frienemys=0x7f020003;
-        public static final int gradientstatus=0x7f020004;
-        public static final int gray_gradient=0x7f020005;
-        public static final int icon=0x7f020006;
-        public static final int stalker=0x7f020007;
-        public static final int white_line=0x7f020008;
+        public static final int button_selector=0x7f020000;
+        public static final int close=0x7f020001;
+        public static final int facebook_icon=0x7f020002;
+        public static final int friends=0x7f020003;
+        public static final int frienemys=0x7f020004;
+        public static final int gradientstatus=0x7f020005;
+        public static final int gray_gradient=0x7f020006;
+        public static final int icon=0x7f020007;
+        public static final int row_gradient=0x7f020008;
+        public static final int stalker=0x7f020009;
+        public static final int white_line=0x7f02000a;
     }
     public static final class id {
         public static final int break_line=0x7f050006;
-        public static final int btnCrossCover=0x7f050008;
+        public static final int btnFriends=0x7f050004;
+        public static final int btnFrienemies=0x7f050008;
         public static final int btnMessages=0x7f05000b;
-        public static final int btnPatients=0x7f050004;
         public static final int frienemyStatus=0x7f050003;
         public static final int fullname=0x7f050001;
         public static final int imageView1=0x7f050000;
         public static final int imageView2=0x7f050005;
-        public static final int refresh=0x7f05000a;
         public static final int relationshipStatus=0x7f050002;
+        public static final int stalkers=0x7f05000a;
         public static final int textView1=0x7f050007;
         public static final int textView2=0x7f050009;
     }
