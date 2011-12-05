@@ -46,10 +46,30 @@ public class FriendAdapter extends BaseAdapter {
         View vi=convertView;
         if(convertView==null)
         	vi= inflater.inflate(R.layout.friend_row, null);
+      	TextView name=(TextView)vi.findViewById(R.id.fullname);;
+        // ImageView image=(ImageView)vi.findViewById(R.id.imageView1);
+         name.setText(data.get(position).name);   
          
-        	TextView name=(TextView)vi.findViewById(R.id.fullname);;
-       // ImageView image=(ImageView)vi.findViewById(R.id.imageView1);
-        name.setText(data.get(position).name);
-        return vi;
+         TextView status=(TextView)vi.findViewById(R.id.relationshipStatus);
+        String relationship= data.get(position).relationshipStatus;
+        if(relationship==null)
+        {
+     	   relationship= "NA";
+        }
+         
+         status.setText(relationship);
+         
+         TextView frienemy=(TextView)vi.findViewById(R.id.frienemyStatus);
+         int enemy= data.get(position).frienemyStatus;
+         if(enemy==0)
+         {
+         	frienemy.setText("Friend");
+         }
+         else
+         {
+         	frienemy.setText("Frienemy");
+         }
+         
+         return vi;
     }
 }
