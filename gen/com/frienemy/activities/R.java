@@ -24,18 +24,21 @@ public final class R {
         public static final int white_line=0x7f02000a;
     }
     public static final class id {
-        public static final int break_line=0x7f050006;
-        public static final int btnFriends=0x7f050004;
-        public static final int btnFrienemies=0x7f050008;
-        public static final int btnMessages=0x7f05000b;
+        public static final int break_line=0x7f050009;
+        public static final int btnFriends=0x7f050007;
+        public static final int btnFrienemies=0x7f05000b;
+        public static final int btnMessages=0x7f05000e;
         public static final int frienemyStatus=0x7f050003;
         public static final int fullname=0x7f050001;
         public static final int imageView1=0x7f050000;
-        public static final int imageView2=0x7f050005;
+        public static final int imageView2=0x7f050008;
+        public static final int linearLayout1=0x7f050004;
+        public static final int post=0x7f050005;
+        public static final int postbutton=0x7f050006;
         public static final int relationshipStatus=0x7f050002;
-        public static final int stalkers=0x7f05000a;
-        public static final int textView1=0x7f050007;
-        public static final int textView2=0x7f050009;
+        public static final int stalkers=0x7f05000d;
+        public static final int textView1=0x7f05000a;
+        public static final int textView2=0x7f05000c;
     }
     public static final class layout {
         public static final int friend_row=0x7f030000;

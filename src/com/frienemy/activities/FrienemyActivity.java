@@ -29,6 +29,7 @@ import com.frienemy.services.FrienemyServiceAPI;
 import com.frienemy.services.FrienemyServiceListener;
 
 
+
 public class FrienemyActivity extends ListActivity implements OnClickListener {
     
 	private static final String TAG = FrienemyActivity.class.getSimpleName();
@@ -97,6 +98,8 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
         bindService(intent, serviceConnection, 0);
         updateView();
     }
+    
+    //Listeners should be implemented in onClick method
     private void setUpListeners()
 	{
     	 View v;
@@ -111,6 +114,9 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
  		v = findViewById( R.id.stalkers );
  		v.setBackgroundResource( R.drawable.button_selector );
  		v.setOnClickListener( this );
+ 		
+ 		v = findViewById(R.id.postbutton);
+ 		v.setOnClickListener(this);
 	}
     protected void updateView() {
 		ArrayList<Friend> friends = Friend.query(this, Friend.class);
@@ -172,7 +178,27 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
        
 }
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+		switch (v.getId())
+		{
+			case R.id.btnFriends:
+				
+				break;
+			case R.id.btnFrienemies:
+
+				break;
+			case R.id.stalkers:
+
+				break;
+			case R.id.postbutton:
+				post();
+				break;
+			default:
 		
 	}
+}
+
+	public void post() {
+		//post implementation
+	}
+		
 }
