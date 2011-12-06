@@ -1,5 +1,7 @@
 package com.frienemy.models;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.json.JSONException;
@@ -28,7 +30,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 	public String encryptedName;
 	
 	@Column(name = "relationshipStatus")
-	public String relationshipStatus;
+	public String relationshipStatus = "NA";
 	public String encryptedRelationshipStatus;
 	
 	@Column(name = "frienemyStatus")
@@ -102,6 +104,16 @@ public class Friend extends ActiveRecordBase<Friend> {
 			Log.w(TAG, e);
 		}
 		return friend;
+	}
+
+	public URL getProfileImageURL() {
+		URL url = null;
+		try {
+			url = new URL(String.format("https://graph.facebook.com/%s/picture", uid));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return url;
 	}
 
 }

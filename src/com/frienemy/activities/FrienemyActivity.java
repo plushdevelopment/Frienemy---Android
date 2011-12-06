@@ -95,6 +95,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
         Intent intent = new Intent(FrienemyService.class.getName()); 
         startService(intent);
         bindService(intent, serviceConnection, 0);
+        updateView();
     }
     private void setUpListeners()
 	{
@@ -117,6 +118,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 		list=(ListView)findViewById(android.R.id.list);
 		adapter=new FriendAdapter(this, friends);
         list.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 		Log.i(TAG, "Friends count: " + friends.size());
 	}
 

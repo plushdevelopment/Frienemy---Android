@@ -3,73 +3,43 @@ package com.frienemy.adapters;
 import java.util.ArrayList;
 
 import com.frienemy.activities.R;
+import com.frienemy.layouts.FriendListItem;
 import com.frienemy.models.Friend;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
 
-public class FriendAdapter extends BaseAdapter {
-    
-    private Activity activity;
-    private ArrayList<Friend> data;
-    private static LayoutInflater inflater=null;
+public class FriendAdapter extends ArrayAdapter<Friend> {
 
-    
-    public FriendAdapter(Activity a, ArrayList<Friend> friends) {
-        activity = a;
-        data=friends;
-        inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	private Context context;
+	private ArrayList<Friend> data;
+	private static LayoutInflater inflater=null;
 
-    }
+	public FriendAdapter(Context context, ArrayList<Friend> friends) {
+		super(context, android.R.layout.simple_list_item_1, friends);
+		this.context = context;
+		this.data = friends;
+		inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	}
 
-    public int getCount() {
-        return data.size();
-    }
+	public int getCount() {
+		return data.size();
+	}
 
-    public Object getItem(int position) {
-        return position;
-    }
+	public long getItemId(int position) {
+		return position;
+	}
 
-    public long getItemId(int position) {
-        return position;
-    }
-   
-    
-    //Get information for Each friend and place it into row view
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View vi=convertView;
-        if(convertView==null)
-        	vi= inflater.inflate(R.layout.friend_row, null);
-      	TextView name=(TextView)vi.findViewById(R.id.fullname);;
-        // ImageView image=(ImageView)vi.findViewById(R.id.imageView1);
-         name.setText(data.get(position).name);   
-         
-         TextView status=(TextView)vi.findViewById(R.id.relationshipStatus);
-        String relationship= data.get(position).relationshipStatus;
-        if(relationship==null)
-        {
-     	   relationship= "NA";
-        }
-         
-         status.setText(relationship);
-         
-         TextView frienemy=(TextView)vi.findViewById(R.id.frienemyStatus);
-         int enemy= data.get(position).frienemyStatus;
-         if(enemy==0)
-         {
-         	frienemy.setText("Friend");
-         }
-         else
-         {
-         	frienemy.setText("Frienemy");
-         }
-         
-         return vi;
-    }
+	//Get information for Each friend and place it into row view
+	public View getView(int position, View convertView, ViewGroup parent) {
+		FriendListItem vi=(FriendListItem)convertView;
+		if(vi==null)
+			vi = (FriendListItem)inflater.inflate(R.layout.friend_row, null);
+		vi.setFriend(data.get(position));
+		return vi;
+	}
+
 }

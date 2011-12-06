@@ -60,6 +60,7 @@ public class FrienemyService extends Service {
 		@Override
 		public void run() {
 			Log.i(TAG, "Timer task doing work");
+			refreshPreferences();
 			String access_token = mPrefs.getString("access_token", null);
 			long expires = mPrefs.getLong("access_expires", 0);
 			if(access_token != null) {
@@ -73,10 +74,11 @@ public class FrienemyService extends Service {
 				asyncRunner.request("me/friends", friendRequestListener);
 				ArrayList<Friend> friends = Friend.query(context, Friend.class, null);
 				for (Friend friend : friends) {
-					asyncRunner.request(friend.uid, new FriendDetailRequestListener(context));
+					//asyncRunner.request(friend.uid, new FriendDetailRequestListener(context));
 				}
+				asyncRunner.request("me/feed", new WallRequestListener(context));
 			}
-			notifyListeners();
+			//notifyListeners();
 		}
 	};
 
@@ -94,12 +96,15 @@ public class FrienemyService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Log.i(TAG, "Service creating");
-
-		mPrefs = this.getSharedPreferences(FILENAME, MODE_PRIVATE);
+		refreshPreferences();
 		context = this.getBaseContext();
 		friendRequestListener = new FriendsRequestListener(context);
 		timer = new Timer("FrienemyServiceTimer");
 		timer.schedule(updateTask, 1000L, 60 * 1000L);
+	}
+
+	public void refreshPreferences() {
+		mPrefs = this.getSharedPreferences(FILENAME, MODE_PRIVATE);
 	}
 
 	@Override
