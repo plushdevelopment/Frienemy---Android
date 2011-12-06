@@ -143,6 +143,17 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
      public boolean onOptionsItemSelected(MenuItem item) {
          switch (item.getItemId()) {
      	case EXIT:
+     		stopService(new Intent(this, FrienemyService.class));
+     		ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+    		List<ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
+    		 if(list != null){
+    			 for(int i=0;i<list.size();++i){
+    				 if("com.imbills.mobile".matches(list.get(i).processName)){
+    					 int pid = android.os.Process.getUidForName("com.frienemy.activities");
+    					 android.os.Process.killProcess(pid);
+    				 }
+    			 }
+    		 }
      		 Intent intent = new Intent(Intent.ACTION_MAIN);
      		    intent.addCategory(Intent.CATEGORY_HOME);
      		    startActivity(intent);
