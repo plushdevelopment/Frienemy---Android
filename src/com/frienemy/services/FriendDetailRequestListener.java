@@ -26,7 +26,7 @@ public class FriendDetailRequestListener implements RequestListener {
 	}
 
 	public void onComplete(String response, Object state) {
-		Log.d(TAG, response);
+		//Log.d(TAG, response);
 		try {
 			final JSONObject o = new JSONObject(response);
 			Friend friend = Friend.friendInContextForJSONObject(context, o);

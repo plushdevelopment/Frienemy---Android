@@ -74,11 +74,11 @@ public class FrienemyService extends Service {
 				asyncRunner.request("me/friends", friendRequestListener);
 				ArrayList<Friend> friends = Friend.query(context, Friend.class, null);
 				for (Friend friend : friends) {
-					//asyncRunner.request(friend.uid, new FriendDetailRequestListener(context));
+					asyncRunner.request(friend.uid, new FriendDetailRequestListener(context));
 				}
 				asyncRunner.request("me/feed", new WallRequestListener(context));
 			}
-			//notifyListeners();
+			notifyListeners();
 		}
 	};
 

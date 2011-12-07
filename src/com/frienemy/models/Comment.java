@@ -1,5 +1,7 @@
 package com.frienemy.models;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 
 import com.activeandroid.ActiveRecordBase;
@@ -7,7 +9,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 @Table(name = "Comment")
-public class Comment extends ActiveRecordBase<Comment> {
+public class Comment extends ActiveRecordBase<Comment> implements Likeable {
 	
 	private static final String TAG = Comment.class.getSimpleName();
 	
@@ -20,8 +22,22 @@ public class Comment extends ActiveRecordBase<Comment> {
 	@Column(name = "message")
 	public String message;
 	
-	@Column(name = "friend")
-	public Friend friend;
+	@Column(name = "from")
+	public Friend from;
+	
+	@Column(name = "to")
+	public Friend to;
+	
+	@Column(name = "post")
+	public Post post;
+	
+	@Column(name = "likesCount")
+	public int likesCount;
+	
+	public ArrayList<Like> likes() {
+		ArrayList<Like> likes = Like.query(getContext(), Like.class, null, String.format("comment = %i", getId()));
+		return likes;
+	}
 
 	public Comment(Context context) {
 		super(context);

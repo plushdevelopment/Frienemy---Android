@@ -48,7 +48,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 	}
 	
 	public ArrayList<Post> posts() {
-		ArrayList<Post> posts = Post.query(getContext(), Post.class, null, String.format("friend = %i", getId()), "updatedTime ASC");
+		ArrayList<Post> posts = Post.query(getContext(), Post.class, null, String.format("from = %i", getId()), "updatedTime ASC");
 		return posts;
 	}
 	
