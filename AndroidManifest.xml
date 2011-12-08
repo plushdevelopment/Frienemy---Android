@@ -18,7 +18,17 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>       
+            <activity
+        		android:name="com.frienemy.activities.EnemyActivity" >
+            	<intent-filter >
+            	</intent-filter>
+        	</activity>
+        	<activity
+        		android:name="com.frienemy.activities.StalkerActivity" >
+            	<intent-filter >
+            	</intent-filter>
+        	</activity>
         <service
       		android:name="com.frienemy.services.FrienemyService"
       		android:process=":remote">

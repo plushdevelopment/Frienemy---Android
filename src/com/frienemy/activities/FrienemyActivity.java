@@ -115,8 +115,8 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
  		v.setBackgroundResource( R.drawable.button_selector );
  		v.setOnClickListener( this );
  		
- 		v = findViewById(R.id.postbutton);
- 		v.setOnClickListener(this);
+ 		//v = findViewById(R.id.postbutton);
+ 		//v.setOnClickListener(this);
 	}
     protected void updateView() {
 		ArrayList<Friend> friends = Friend.query(this, Friend.class);
@@ -189,20 +189,23 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
        
 }
 	public void onClick(View v) {
+		Intent i;
 		switch (v.getId())
 		{
 			case R.id.btnFriends:
 				
 				break;
 			case R.id.btnFrienemies:
-
+				i = new Intent(FrienemyActivity.this, EnemyActivity.class);
+				startActivity(i);
 				break;
 			case R.id.stalkers:
-
+				i = new Intent(FrienemyActivity.this, StalkerActivity.class);
+				startActivity(i);
 				break;
-			case R.id.postbutton:
-				post();
-				break;
+			//case R.id.postbutton:
+			//	post();
+				//break;
 			default:
 		
 	}
