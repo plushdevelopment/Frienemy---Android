@@ -21,7 +21,7 @@ import android.widget.ListView;
 
 public class EnemyActivity extends ListActivity implements OnClickListener { 
 
-	private static final String TAG = FrienemyActivity.class.getSimpleName();
+	private static final String TAG = EnemyActivity.class.getSimpleName();
 	FriendAdapter adapter;
 	ListView list;
 	
@@ -51,7 +51,7 @@ public class EnemyActivity extends ListActivity implements OnClickListener {
  		v.setOnClickListener( this );
 	}
     protected void updateView() {
-		ArrayList<Friend> friends = Friend.query(this, Friend.class);
+		ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "frienemyStatus==1", "name ASC");
 		
 		list=(ListView)findViewById(android.R.id.list);
 		adapter=new FriendAdapter(this, friends);
