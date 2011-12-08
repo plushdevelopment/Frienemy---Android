@@ -58,11 +58,11 @@ public class Post extends ActiveRecordBase<Post> implements Likeable {
 	@Column(name = "updatedTime")
 	public String updatedTime;
 	
-	@Column(name = "from")
-	public Friend from;
+	@Column(name = "fromFriend")
+	public Friend fromFriend;
 	
-	@Column(name = "to")
-	public Friend to;
+	@Column(name = "toFriend")
+	public Friend toFriend;
 	
 	@Column(name = "likesCount")
 	public int likesCount;

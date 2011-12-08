@@ -22,11 +22,11 @@ public class Comment extends ActiveRecordBase<Comment> implements Likeable {
 	@Column(name = "message")
 	public String message;
 	
-	@Column(name = "from")
-	public Friend from;
+	@Column(name = "fromFriend")
+	public Friend fromFriend;
 	
-	@Column(name = "to")
-	public Friend to;
+	@Column(name = "toFriend")
+	public Friend toFriend;
 	
 	@Column(name = "post")
 	public Post post;

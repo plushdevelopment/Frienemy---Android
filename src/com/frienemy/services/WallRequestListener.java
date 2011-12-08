@@ -13,7 +13,9 @@ import android.util.Log;
 
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.FacebookError;
+import com.frienemy.models.Comment;
 import com.frienemy.models.Friend;
+import com.frienemy.models.Like;
 import com.frienemy.models.Post;
 
 public class WallRequestListener implements RequestListener {
@@ -37,6 +39,13 @@ public class WallRequestListener implements RequestListener {
 				if (post == null) {
 					post = new Post(context);
 					post.uid = uid;
+				} else {
+					for (Like existingLike : post.likes()) {
+						existingLike.delete();
+					}
+					for (Comment existingComment : post.comments()) {
+						existingComment.delete();
+					}
 				}
 				post.attribution = o.getString("attribution");
 				post.caption = o.getString("caption");
@@ -54,7 +63,35 @@ public class WallRequestListener implements RequestListener {
 				post.updatedTime = o.getString("updated_time");
 				JSONObject fromObject = o.getJSONObject("from");
 				Friend fromFriend = Friend.friendInContextForJSONObject(context, fromObject);
-				post.from = fromFriend;
+				post.fromFriend = fromFriend;
+				JSONObject toObject = o.getJSONObject("to");
+				Friend toFriend = Friend.friendInContextForJSONObject(context, toObject);
+				post.toFriend = toFriend;
+				JSONObject likesObject = o.getJSONObject("likes");
+				post.likesCount = likesObject.getInt("count");
+				JSONArray likesArray = likesObject.getJSONArray("data");
+				for (int x=0; x<likesArray.length(); x++) {
+					Like like = new Like(context);
+					Friend likeFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", likesArray.getJSONObject(x).getString("uid")); 
+					like.friend = likeFriend;
+					like.post = post;
+				}
+				
+				JSONObject commentsObject = o.getJSONObject("comments");
+				post.commentsCount = commentsObject.getInt("count");
+				JSONArray commentsArray = commentsObject.getJSONArray("data");
+				for (int x=0; x<commentsArray.length(); x++) {
+					Comment comment = new Comment(context);
+					JSONObject commentFromFriend = commentsArray.getJSONObject(x).getJSONObject("from");
+					Friend commentFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", commentFromFriend.getString("uid"));
+					comment.fromFriend = commentFriend;
+					comment.toFriend = post.fromFriend;
+					comment.post = post;
+					comment.message = commentsArray.getJSONObject(x).getString("message");
+					comment.createdTime = commentsArray.getJSONObject(x).getString("created_time");
+					comment.uid = commentsArray.getJSONObject(x).getString("id");
+				}
+				
 				post.save();
 				Log.d(TAG, o.toString());
 			}
