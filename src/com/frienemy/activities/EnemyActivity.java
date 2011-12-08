@@ -21,7 +21,7 @@ import android.widget.ListView;
 
 public class EnemyActivity extends ListActivity implements OnClickListener { 
 
-	private static final String TAG = FrienemyActivity.class.getSimpleName();
+	private static final String TAG = EnemyActivity.class.getSimpleName();
 	FriendAdapter adapter;
 	ListView list;
 	

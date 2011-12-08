@@ -21,7 +21,7 @@ import android.widget.ListView;
 
 public class StalkerActivity extends ListActivity implements OnClickListener { 
 
-	private static final String TAG = FrienemyActivity.class.getSimpleName();
+	private static final String TAG = StalkerActivity.class.getSimpleName();
 	FriendAdapter adapter;
 	ListView list;
 	
