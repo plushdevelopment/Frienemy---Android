@@ -11,8 +11,13 @@ import org.json.JSONObject;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
+import com.frienemy.activities.EnemyActivity;
+import com.frienemy.activities.FrienemyActivity;
 import com.frienemy.models.Friend;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +28,8 @@ import android.util.Log;
 
 public class FrienemyService extends Service {
 
+	private NotificationManager mNM;
+	
 	private static final String TAG = FrienemyService.class.getSimpleName();
 	private Timer timer;
 	Facebook facebook = new Facebook("124132700987915");
@@ -93,6 +100,7 @@ public class FrienemyService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		this.showNotification("Frenemy","Welcome to Frenemy", com.frienemy.activities.R.drawable.icon, 0);
 		Log.i(TAG, "Service creating");
 		refreshPreferences();
 		context = this.getBaseContext();
@@ -141,5 +149,36 @@ public class FrienemyService extends Service {
 		}
 		return batchArray;
 	}
+	
+		/*To update notification bar call this method
+		Notification type is to be used to separate 
+		from different notifications, Notifications with 
+		the same type will replace and old notification 
+		with the same type.
+		*/
+	
+		private void showNotification(String title, String message, int iconId, int notificationType) {
+			
+		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+		Intent enemyIntent = new Intent(FrienemyService.this,FrienemyActivity.class);
+			
+        // Set the icon, scrolling text and timestamp
+        Notification notification = new Notification(iconId, message, System.currentTimeMillis());
+        PendingIntent contentIntent;
+       
+        // The PendingIntent to launch our activity if the user selects this notification
+         contentIntent = PendingIntent.getActivity(this, 0, enemyIntent, 0);
+       
+
+        
+		// Set the info for the views that show in the notification panel.
+        notification.setLatestEventInfo(this, title, message, contentIntent);
+        
+        // Send the notification.
+        mNM.notify(notificationType, notification);
+       
+        
+        
+    }
 
 }
