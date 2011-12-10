@@ -54,7 +54,7 @@ public class StalkerActivity extends ListActivity implements OnClickListener {
 			facebook.setAccessExpires(expires);
 		}
 		if (facebook.isSessionValid()) {
-
+			asyncRunner = new AsyncFacebookRunner(facebook);
 			// Get the user's wall
 			asyncRunner.request("me/feed", new WallRequestListener(this.getBaseContext()));
 		}

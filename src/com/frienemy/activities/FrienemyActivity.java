@@ -45,7 +45,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 	
 	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
 		public void handleFriendsUpdated() throws RemoteException {
-			updateView();
+			//updateView();
 		}
 	};
 	
