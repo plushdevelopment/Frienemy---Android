@@ -74,8 +74,7 @@ public class FrienemyService extends Service {
 				for (Friend friend : friends) {
 					asyncRunner.request(friend.uid, new FriendDetailRequestListener(context));
 				}
-				// Get the user's wall
-				asyncRunner.request("me/feed", new WallRequestListener(context));
+				
 			}
 			notifyListeners();
 		}
