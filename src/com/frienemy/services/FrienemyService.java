@@ -100,7 +100,6 @@ public class FrienemyService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		this.showNotification("Frenemy","Welcome to Frenemy", com.frienemy.activities.R.drawable.icon, 0);
 		Log.i(TAG, "Service creating");
 		refreshPreferences();
 		context = this.getBaseContext();
@@ -131,6 +130,11 @@ public class FrienemyService extends Service {
 				}
 			}
 		}
+		//Check to see if there are any new frenemies and notifys the user
+		if(!FriendsRequestListener.getList().equalsIgnoreCase(""))
+		{
+			this.showNotification("New Frenemies",FriendsRequestListener.getList(), com.frienemy.activities.R.drawable.icon, 0);
+		}
 	}
 
 	private JSONArray batchFriendDetailRequests(ArrayList<Friend> arrayList) {
@@ -160,7 +164,7 @@ public class FrienemyService extends Service {
 		private void showNotification(String title, String message, int iconId, int notificationType) {
 			
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		Intent enemyIntent = new Intent(FrienemyService.this,FrienemyActivity.class);
+		Intent enemyIntent = new Intent(FrienemyService.this,EnemyActivity.class);
 			
         // Set the icon, scrolling text and timestamp
         Notification notification = new Notification(iconId, message, System.currentTimeMillis());

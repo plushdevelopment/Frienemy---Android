@@ -16,12 +16,15 @@ import android.util.Log;
 import com.facebook.android.FacebookError;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.frienemy.models.Friend;
+import com.frienemy.services.FrienemyService;
 
 public class FriendsRequestListener implements RequestListener {
 
 	private static final String TAG = FriendsRequestListener.class.getSimpleName();
 	private Context context;
 	private List<Friend> friends;
+	private  static String frenemiesList="";
+	
 
 	public FriendsRequestListener(Context context) {
 		this.context = context;
@@ -42,6 +45,7 @@ public class FriendsRequestListener implements RequestListener {
 			int l = (d != null ? d.length() : 0);
 			Log.d(TAG, "Friend Array length(): " + l);
 			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null);
+			frenemiesList="";
 			for (int f=0; f<fetchedFriends.size(); f++) {
 				boolean exists = false;
 				Friend friend = fetchedFriends.get(f);
@@ -55,6 +59,7 @@ public class FriendsRequestListener implements RequestListener {
 				}
 				if (!exists) {
 					friend.frienemyStatus = 1;
+					frenemiesList= friend.name + " ";
 					friend.frienemyStatusChanged = true;
 					friend.save();
 				}
@@ -92,6 +97,11 @@ public class FriendsRequestListener implements RequestListener {
 	public void onFacebookError(FacebookError e, Object state) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public static String getList()
+	{
+		return frenemiesList;
 	}
 
 }
