@@ -39,6 +39,7 @@ public class WallRequestListener implements RequestListener {
 				if (post == null) {
 					post = new Post(context);
 					post.uid = uid;
+					post.save();
 				} else {
 					for (Like existingLike : post.likes()) {
 						existingLike.delete();
@@ -142,9 +143,10 @@ public class WallRequestListener implements RequestListener {
 						JSONArray likesArray = likesObject.getJSONArray("data");
 						for (int x=0; x<likesArray.length(); x++) {
 							Like like = new Like(context);
-							Friend likeFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", likesArray.getJSONObject(x).getString("uid")); 
+							Friend likeFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", likesArray.getJSONObject(x).getString("id")); 
 							like.friend = likeFriend;
 							like.post = post;
+							like.save();
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -163,7 +165,7 @@ public class WallRequestListener implements RequestListener {
 								try {
 									JSONObject commentFromFriend = commentsArray.getJSONObject(x).getJSONObject("from");
 									try {
-										Friend commentFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", commentFromFriend.getString("uid"));
+										Friend commentFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", commentFromFriend.getString("id"));
 										comment.fromFriend = commentFriend;
 										comment.toFriend = post.fromFriend;
 										comment.post = post;
@@ -185,6 +187,7 @@ public class WallRequestListener implements RequestListener {
 									} catch (JSONException e) {
 										e.printStackTrace();
 									}
+									comment.save();
 								} catch (JSONException e) {
 									e.printStackTrace();
 								}

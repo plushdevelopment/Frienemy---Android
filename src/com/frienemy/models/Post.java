@@ -75,12 +75,12 @@ public class Post extends ActiveRecordBase<Post> implements Likeable {
 	}
 	
 	public ArrayList<Like> likes() {
-		ArrayList<Like> likes = Like.query(getContext(), Like.class, null, String.format("post = %i", getId()));
+		ArrayList<Like> likes = Like.query(getContext(), Like.class, null, "post = " + getId());
 		return likes;
 	}
 
 	public ArrayList<Comment> comments() {
-		ArrayList<Comment> posts = Comment.query(getContext(), Comment.class, null, String.format("post = %i", getId()));
+		ArrayList<Comment> posts = Comment.query(getContext(), Comment.class, null, "post = " + getId());
 		return posts;
 	}
 

@@ -42,18 +42,21 @@ public class Friend extends ActiveRecordBase<Friend> {
 	@Column(name = "frienemyStatusChanged")
 	public Boolean frienemyStatusChanged;
 	
+	@Column(name = "stalkerRank")
+	public int stalkerRank;
+	
 	public ArrayList<Comment> comments() {
-		ArrayList<Comment> comments = Comment.query(getContext(), Comment.class, null, String.format("friend = %i", getId()), "createdTime ASC");
+		ArrayList<Comment> comments = Comment.query(getContext(), Comment.class, null, "friend = " + getId(), "createdTime ASC");
 		return comments;
 	}
 	
 	public ArrayList<Post> posts() {
-		ArrayList<Post> posts = Post.query(getContext(), Post.class, null, String.format("from = %i", getId()), "updatedTime ASC");
+		ArrayList<Post> posts = Post.query(getContext(), Post.class, null, "from = " + getId(), "updatedTime ASC");
 		return posts;
 	}
 	
 	public ArrayList<Status> statuses() {
-		ArrayList<Status> statuses = Status.query(getContext(), Status.class, null, String.format("friend = %i", getId()), "updatedTime ASC");
+		ArrayList<Status> statuses = Status.query(getContext(), Status.class, null, "friend = " + getId(), "updatedTime ASC");
 		return statuses;
 	}
 	

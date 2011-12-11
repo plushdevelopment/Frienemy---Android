@@ -35,7 +35,7 @@ public class Comment extends ActiveRecordBase<Comment> implements Likeable {
 	public int likesCount;
 	
 	public ArrayList<Like> likes() {
-		ArrayList<Like> likes = Like.query(getContext(), Like.class, null, String.format("comment = %i", getId()));
+		ArrayList<Like> likes = Like.query(getContext(), Like.class, null, "comment = " + getId());
 		return likes;
 	}
 

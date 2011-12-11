@@ -9,9 +9,6 @@ public class Like extends ActiveRecordBase<Like> {
 
 	private static final String TAG = Like.class.getSimpleName();
 	
-	@Column(name = "uid")
-	public String uid;
-	
 	@Column(name = "friend")
 	public Friend friend;
 	

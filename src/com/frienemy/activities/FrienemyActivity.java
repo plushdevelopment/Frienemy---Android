@@ -24,6 +24,7 @@ import com.facebook.android.*;
 import com.facebook.android.Facebook.*;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
+import com.frienemy.services.FriendDetailRequestListener;
 import com.frienemy.services.FriendsRequestListener;
 import com.frienemy.services.FrienemyService;
 import com.frienemy.services.FrienemyServiceAPI;
@@ -180,6 +181,11 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 				// Get the user's friend list
 				asyncRunner.request("me/friends", new FriendsRequestListener(getBaseContext()));
 				// Get the details for each friend in the list
+				ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null);
+				for (Friend friend : friends) {
+					asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext()));
+				}
+				updateView();
         }
 
         public void onFacebookError(FacebookError e) {

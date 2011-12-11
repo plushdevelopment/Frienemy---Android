@@ -104,7 +104,7 @@ public class FrienemyService extends Service {
 		refreshPreferences();
 		context = this.getBaseContext();
 		timer = new Timer("FrienemyServiceTimer");
-		timer.schedule(updateTask, 1000L, 60 * 1000L);
+		timer.schedule(updateTask, 1000L, 60 * 60000L);
 	}
 
 	public void refreshPreferences() {
