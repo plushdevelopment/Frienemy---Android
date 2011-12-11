@@ -24,6 +24,7 @@ import com.facebook.android.*;
 import com.facebook.android.Facebook.*;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
+import com.frienemy.services.FriendsRequestListener;
 import com.frienemy.services.FrienemyService;
 import com.frienemy.services.FrienemyServiceAPI;
 import com.frienemy.services.FrienemyServiceListener;
@@ -170,9 +171,15 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
                 editor.putString("access_token", facebook.getAccessToken());
                 editor.putLong("access_expires", facebook.getAccessExpires());
                 editor.commit();
-                Intent intent = new Intent(FrienemyService.class.getName()); 
+                Intent intent = new Intent(FrienemyService.class.getName());
                 startService(intent);
                 bindService(intent, serviceConnection, 0);
+                AsyncFacebookRunner asyncRunner = new AsyncFacebookRunner(facebook);
+				// First, lets get the info about the current user
+				asyncRunner.request("me", new FriendsRequestListener(getBaseContext()));
+				// Get the user's friend list
+				asyncRunner.request("me/friends", new FriendsRequestListener(getBaseContext()));
+				// Get the details for each friend in the list
         }
 
         public void onFacebookError(FacebookError e) {
