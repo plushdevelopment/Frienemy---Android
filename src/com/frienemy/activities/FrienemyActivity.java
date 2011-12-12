@@ -246,13 +246,11 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	}
 
 	public void friendRequestDidFinish() {
-		/*
 		// Get the details for each friend in the list
-		ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null);
+		ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
 		for (Friend friend : friends) {
 			asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext(), this));
 		}
-		*/
 		runOnUiThread(new Runnable() {
 			public void run() {
 				updateView();
