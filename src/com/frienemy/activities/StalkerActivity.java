@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class StalkerActivity extends ListActivity implements OnClickListener, WallRequestListenerResponder { 
 
@@ -31,7 +32,10 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.stalkers);
+		
+		 TextView v = (TextView) findViewById(R.id.title);
+	        v.setText("Stalkers");
 		updateView();
 		setUpListeners();
 		getFacebookWall();
@@ -65,7 +69,7 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		v.setOnClickListener( this );
 
 		v = findViewById( R.id.stalkers );
-		v.setBackgroundResource( R.drawable.button_selector );
+		v.setBackgroundResource( R.drawable.gray_gradient);
 		v.setOnClickListener( this );
 	}
 	

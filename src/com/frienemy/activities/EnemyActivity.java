@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class EnemyActivity extends ListActivity implements OnClickListener { 
 
@@ -23,7 +24,9 @@ public class EnemyActivity extends ListActivity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) 
 	{
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.frienemy);
+        TextView v = (TextView) findViewById(R.id.title);
+        v.setText("Frenemies");
         updateView();
         setUpListeners();
 	}
@@ -35,7 +38,7 @@ public class EnemyActivity extends ListActivity implements OnClickListener {
  		v.setOnClickListener( this );
 
  		v = findViewById( R.id.btnFrienemies );
- 		v.setBackgroundResource( R.drawable.button_selector );
+		v.setBackgroundResource( R.drawable.gray_gradient);
  		v.setOnClickListener( this );
 
  		v = findViewById( R.id.stalkers );
