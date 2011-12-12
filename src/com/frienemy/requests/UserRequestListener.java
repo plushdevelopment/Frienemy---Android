@@ -15,7 +15,7 @@ import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.frienemy.models.Friend;
 
 public class UserRequestListener implements RequestListener {
-	
+
 	public interface UserRequestListenerResponder {
 		public void userRequestDidFinish();
 		public void userRequestDidFail();
@@ -33,13 +33,9 @@ public class UserRequestListener implements RequestListener {
 	public void onComplete(String response, Object state) {
 		try {
 			final JSONObject json = new JSONObject(response);
-			JSONArray d = json.getJSONArray("data");
-			if (d.length() > 0) {
-				JSONObject o = d.getJSONObject(0);
-				Friend friend = Friend.friendInContextForJSONObject(context, o);
-				friend.isCurrentUser = true;
-				friend.save();
-			}
+			Friend friend = Friend.friendInContextForJSONObject(context, json);
+			friend.isCurrentUser = true;
+			friend.save();
 			responder.userRequestDidFinish();
 		} catch (JSONException e) {
 			Log.w(TAG, "JSON Error in response");

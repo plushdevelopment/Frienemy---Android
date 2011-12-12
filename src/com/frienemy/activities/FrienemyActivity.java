@@ -54,7 +54,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 
 	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
 		public void handleFriendsUpdated() throws RemoteException {
-			
+
 		}
 	};
 
@@ -81,6 +81,16 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		setContentView(R.layout.main);
 
 		setUpListeners();
+		
+		asyncRunner = new AsyncFacebookRunner(facebook);
+		userRequestListener = new UserRequestListener(getBaseContext(), this);
+		friendsRequestListener = new FriendsRequestListener(getBaseContext(), this);
+
+		Intent intent = new Intent(FrienemyService.class.getName()); 
+		startService(intent);
+		bindService(intent, serviceConnection, 0);
+		updateView();
+		
 		/*
 		 * Get existing access_token if any
 		 */
@@ -99,16 +109,10 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		 */
 		if(!facebook.isSessionValid()) {
 			facebook.authorize(this, PERMS, new LoginDialogListener());
+		} else {
+			// First, lets get the info about the current user
+			asyncRunner.request("me", userRequestListener);
 		}
-
-		asyncRunner = new AsyncFacebookRunner(facebook);
-		userRequestListener = new UserRequestListener(getBaseContext(), this);
-		friendsRequestListener = new FriendsRequestListener(getBaseContext(), this);
-
-		Intent intent = new Intent(FrienemyService.class.getName()); 
-		startService(intent);
-		bindService(intent, serviceConnection, 0);
-		updateView();
 	}
 
 	//Listeners should be implemented in onClick method
@@ -246,9 +250,9 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 			asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext(), this));
 		}
 		runOnUiThread(new Runnable() {
-		    public void run() {
-		    	updateView();
-		    }
+			public void run() {
+				updateView();
+			}
 		});
 	}
 
@@ -258,9 +262,9 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 
 	public void friendDetailRequestDidFinish() {
 		runOnUiThread(new Runnable() {
-		    public void run() {
-		    	updateView();
-		    }
+			public void run() {
+				updateView();
+			}
 		});
 	}
 
