@@ -127,14 +127,14 @@ public class WallRequestListener implements RequestListener {
 				}
 				try {
 					JSONObject fromObject = o.getJSONObject("from");
-					Friend fromFriend = Friend.friendInContextForJSONObject(context, fromObject);
+					Friend fromFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", fromObject.getString("id"));
 					post.fromFriend = fromFriend;
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 				try {
 					JSONObject toObject = o.getJSONObject("to");
-					Friend toFriend = Friend.friendInContextForJSONObject(context, toObject);
+					Friend toFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", toObject.getString("id"));
 					post.toFriend = toFriend;
 				} catch (JSONException e) {
 					e.printStackTrace();
