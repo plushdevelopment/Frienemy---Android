@@ -35,6 +35,7 @@ public class WallRequestListener implements RequestListener {
 	}
 
 	public void onComplete(String response, Object state) {
+		resetStalkerRanks();
 		try {
 			final JSONObject json = new JSONObject(response);
 			JSONArray d = json.getJSONArray("data");
@@ -128,6 +129,8 @@ public class WallRequestListener implements RequestListener {
 				try {
 					JSONObject fromObject = o.getJSONObject("from");
 					Friend fromFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", fromObject.getString("id"));
+					fromFriend.stalkerRank += 1;
+					fromFriend.save();
 					post.fromFriend = fromFriend;
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -151,6 +154,8 @@ public class WallRequestListener implements RequestListener {
 						for (int x=0; x<likesArray.length(); x++) {
 							Like like = new Like(context);
 							Friend likeFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", likesArray.getJSONObject(x).getString("id")); 
+							likeFriend.stalkerRank += 1;
+							likeFriend.save();
 							like.friend = likeFriend;
 							like.post = post;
 							like.save();
@@ -173,6 +178,8 @@ public class WallRequestListener implements RequestListener {
 									JSONObject commentFromFriend = commentsArray.getJSONObject(x).getJSONObject("from");
 									try {
 										Friend commentFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", commentFromFriend.getString("id"));
+										commentFriend.stalkerRank += 1;
+										commentFriend.save();
 										comment.fromFriend = commentFriend;
 										comment.toFriend = post.fromFriend;
 										comment.post = post;
@@ -215,6 +222,13 @@ public class WallRequestListener implements RequestListener {
 		} catch (JSONException e) {
 			e.printStackTrace();
 			responder.wallRequestDidFail();
+		}
+	}
+
+	private void resetStalkerRanks() {
+		for (Friend friend : Friend.allFriends(context)) {
+			friend.stalkerRank = 0;
+			friend.save();
 		}
 	}
 

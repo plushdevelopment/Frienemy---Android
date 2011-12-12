@@ -48,6 +48,11 @@ public class Friend extends ActiveRecordBase<Friend> {
 	@Column(name = "isCurrentUser")
 	public Boolean isCurrentUser;
 	
+	public static ArrayList<Friend> allFriends(Context context) {
+		ArrayList<Friend> allFriends = Friend.query(context, Friend.class);
+		return allFriends;
+	}
+	
 	public ArrayList<Comment> comments() {
 		ArrayList<Comment> comments = Comment.query(getContext(), Comment.class, null, "friend = " + getId(), "createdTime ASC");
 		return comments;
