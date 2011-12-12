@@ -1,11 +1,8 @@
-package com.frienemy.services;
+package com.frienemy.requests;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,15 +15,25 @@ import com.frienemy.models.Friend;
 
 public class FriendDetailRequestListener implements RequestListener {
 
+	public interface FriendDetailRequestListenerResponder {
+		public void friendDetailRequestDidFinish();
+		public void friendDetailRequestDidFail();
+	}
+	
 	private static final String TAG = FriendDetailRequestListener.class.getSimpleName();
 	private Context context;
+	private FriendDetailRequestListenerResponder responder;
 
+	public FriendDetailRequestListener(Context context, FriendDetailRequestListenerResponder responder) {
+		this.context = context;
+		this.responder = responder;
+	}
+	
 	public FriendDetailRequestListener(Context context) {
 		this.context = context;
 	}
 
 	public void onComplete(String response, Object state) {
-		//Log.d(TAG, response);
 		try {
 			final JSONObject o = new JSONObject(response);
 			Friend friend = Friend.friendInContextForJSONObject(context, o);
@@ -36,29 +43,35 @@ public class FriendDetailRequestListener implements RequestListener {
 			}
 			friend.relationshipStatus = relationshipStatus;
 			friend.save();
+			if (responder != null) {
+				responder.friendDetailRequestDidFinish();
+			}
 		} catch (JSONException e) {
 			Log.w(TAG, "JSON Error in response");
+			reportFailure();
+		}
+	}
+
+	private void reportFailure() {
+		if (responder != null) {
+			responder.friendDetailRequestDidFail();
 		}
 	}
 
 	public void onIOException(IOException e, Object state) {
-		// TODO Auto-generated method stub
-
+		reportFailure();
 	}
 
 	public void onFileNotFoundException(FileNotFoundException e, Object state) {
-		// TODO Auto-generated method stub
-
+		reportFailure();
 	}
 
 	public void onMalformedURLException(MalformedURLException e, Object state) {
-		// TODO Auto-generated method stub
-
+		reportFailure();
 	}
 
 	public void onFacebookError(FacebookError e, Object state) {
-		// TODO Auto-generated method stub
-
+		reportFailure();
 	}
 
 }

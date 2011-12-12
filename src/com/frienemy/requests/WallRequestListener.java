@@ -1,4 +1,4 @@
-package com.frienemy.services;
+package com.frienemy.requests;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,12 +19,19 @@ import com.frienemy.models.Like;
 import com.frienemy.models.Post;
 
 public class WallRequestListener implements RequestListener {
+	
+	public interface WallRequestListenerResponder {
+		public void wallRequestDidFinish();
+		public void wallRequestDidFail();
+	}
 
 	private static final String TAG = WallRequestListener.class.getSimpleName();
 	private Context context;
-
-	public WallRequestListener(Context context) {
+	private WallRequestListenerResponder responder;
+	
+	public WallRequestListener(Context context, WallRequestListenerResponder responder) {
 		this.context = context;
+		this.responder = responder;
 	}
 
 	public void onComplete(String response, Object state) {
@@ -204,30 +211,27 @@ public class WallRequestListener implements RequestListener {
 				post.save();
 				Log.d(TAG, o.toString());
 			}
+			responder.wallRequestDidFinish();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			responder.wallRequestDidFail();
 		}
 	}
 
 	public void onIOException(IOException e, Object state) {
-		// TODO Auto-generated method stub
-
+		responder.wallRequestDidFail();
 	}
 
 	public void onFileNotFoundException(FileNotFoundException e, Object state) {
-		// TODO Auto-generated method stub
-
+		responder.wallRequestDidFail();
 	}
 
 	public void onMalformedURLException(MalformedURLException e, Object state) {
-		// TODO Auto-generated method stub
-
+		responder.wallRequestDidFail();
 	}
 
 	public void onFacebookError(FacebookError e, Object state) {
-		// TODO Auto-generated method stub
-
+		responder.wallRequestDidFail();
 	}
 
 }

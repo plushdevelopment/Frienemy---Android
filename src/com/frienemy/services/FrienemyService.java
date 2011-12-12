@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 import com.frienemy.activities.EnemyActivity;
-import com.frienemy.activities.FrienemyActivity;
 import com.frienemy.models.Friend;
+import com.frienemy.requests.FriendDetailRequestListener;
+import com.frienemy.requests.FriendsRequestListener;
+import com.frienemy.requests.FriendsRequestListener.FriendRequestListenerResponder;
+import com.frienemy.requests.UserRequestListener;
+import com.frienemy.requests.UserRequestListener.UserRequestListenerResponder;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -26,10 +26,10 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-public class FrienemyService extends Service {
+public class FrienemyService extends Service implements UserRequestListenerResponder, FriendRequestListenerResponder {
 
 	private NotificationManager mNM;
-	
+
 	private static final String TAG = FrienemyService.class.getSimpleName();
 	private Timer timer;
 	Facebook facebook = new Facebook("124132700987915");
@@ -37,19 +37,21 @@ public class FrienemyService extends Service {
 	String FILENAME = "AndroidSSO_data";
 	private SharedPreferences mPrefs;
 	private Context context;
+	private UserRequestListener userRequestListener;
+	private FriendsRequestListener friendsRequestListener;
 
 	private List<FrienemyServiceListener> listeners = new ArrayList<FrienemyServiceListener>();
 
 	private FrienemyServiceAPI.Stub apiEndpoint = new FrienemyServiceAPI.Stub() {
 		public void addListener(FrienemyServiceListener listener)
-		throws RemoteException {
+				throws RemoteException {
 			synchronized (listeners) {
 				listeners.add(listener);
 			}
 		}
 
 		public void removeListener(FrienemyServiceListener listener)
-		throws RemoteException {
+				throws RemoteException {
 			synchronized (listeners) {
 				listeners.remove(listener);
 			}
@@ -71,17 +73,8 @@ public class FrienemyService extends Service {
 				facebook.setAccessExpires(expires);
 			}
 			if (facebook.isSessionValid()) {
-				asyncRunner = new AsyncFacebookRunner(facebook);
 				// First, lets get the info about the current user
-				asyncRunner.request("me", new FriendsRequestListener(context));
-				// Get the user's friend list
-				asyncRunner.request("me/friends", new FriendsRequestListener(context));
-				// Get the details for each friend in the list
-				ArrayList<Friend> friends = Friend.query(context, Friend.class, null);
-				for (Friend friend : friends) {
-					asyncRunner.request(friend.uid, new FriendDetailRequestListener(context));
-				}
-				
+				asyncRunner.request("me", userRequestListener);
 			}
 			notifyListeners();
 		}
@@ -103,6 +96,9 @@ public class FrienemyService extends Service {
 		Log.i(TAG, "Service creating");
 		refreshPreferences();
 		context = this.getBaseContext();
+		asyncRunner = new AsyncFacebookRunner(facebook);
+		userRequestListener = new UserRequestListener(context, this);
+		friendsRequestListener = new FriendsRequestListener(context, this);
 		timer = new Timer("FrienemyServiceTimer");
 		timer.schedule(updateTask, 1000L, 60 * 60000L);
 	}
@@ -137,52 +133,51 @@ public class FrienemyService extends Service {
 		}
 	}
 
-	private JSONArray batchFriendDetailRequests(ArrayList<Friend> arrayList) {
-		JSONArray batchArray = new JSONArray();
-		for (int i=0; i < 50; i++) {
-			JSONObject friendDetails = new JSONObject();
-			try {
-				friendDetails.put("method", "GET");
-				friendDetails.put("relative_url", arrayList.get(i).uid);
-				friendDetails.put("parameters", "relationship_status");
-				batchArray.put(friendDetails);
-			} catch (JSONException e) {
-				e.printStackTrace();
-				Log.e(TAG, e.getMessage());
-			}
-		}
-		return batchArray;
-	}
-	
-		/*To update notification bar call this method
+	/*To update notification bar call this method
 		Notification type is to be used to separate 
 		from different notifications, Notifications with 
 		the same type will replace and old notification 
 		with the same type.
-		*/
-	
-		private void showNotification(String title, String message, int iconId, int notificationType) {
-			
+	 */
+
+	private void showNotification(String title, String message, int iconId, int notificationType) {
+
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		Intent enemyIntent = new Intent(FrienemyService.this,EnemyActivity.class);
-			
-        // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(iconId, message, System.currentTimeMillis());
-        PendingIntent contentIntent;
-       
-        // The PendingIntent to launch our activity if the user selects this notification
-         contentIntent = PendingIntent.getActivity(this, 0, enemyIntent, 0);
-       
 
-        
+		// Set the icon, scrolling text and timestamp
+		Notification notification = new Notification(iconId, message, System.currentTimeMillis());
+		PendingIntent contentIntent;
+
+		// The PendingIntent to launch our activity if the user selects this notification
+		contentIntent = PendingIntent.getActivity(this, 0, enemyIntent, 0);
+
 		// Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(this, title, message, contentIntent);
-        
-        // Send the notification.
-        mNM.notify(notificationType, notification);
-       
-        
-        
-    }
+		notification.setLatestEventInfo(this, title, message, contentIntent);
+
+		// Send the notification.
+		mNM.notify(notificationType, notification);
+	}
+	
+	public void userRequestDidFinish() {
+		// Get the user's friend list
+		asyncRunner.request("me/friends", friendsRequestListener);
+	}
+
+	public void userRequestDidFail() {
+		Log.e(TAG, "Failed to get user");
+	}
+
+	public void friendRequestDidFinish() {
+		// Get the details for each friend in the list
+		ArrayList<Friend> friends = Friend.query(context, Friend.class, null);
+		for (Friend friend : friends) {
+			asyncRunner.request(friend.uid, new FriendDetailRequestListener(context));
+		}
+	}
+
+	public void friendRequestDidFail() {
+		Log.e(TAG, "Failed to get friends list");
+	}
 
 }

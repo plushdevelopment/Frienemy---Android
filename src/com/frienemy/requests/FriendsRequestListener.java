@@ -1,4 +1,4 @@
-package com.frienemy.services;
+package com.frienemy.requests;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,18 +16,24 @@ import android.util.Log;
 import com.facebook.android.FacebookError;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.frienemy.models.Friend;
-import com.frienemy.services.FrienemyService;
 
 public class FriendsRequestListener implements RequestListener {
+	
+	public interface FriendRequestListenerResponder {
+		public void friendRequestDidFinish();
+		public void friendRequestDidFail();
+	}
 
 	private static final String TAG = FriendsRequestListener.class.getSimpleName();
 	private Context context;
+	private FriendRequestListenerResponder responder;
 	private List<Friend> friends;
 	private  static String frenemiesList="";
 	
 
-	public FriendsRequestListener(Context context) {
+	public FriendsRequestListener(Context context, FriendRequestListenerResponder responder) {
 		this.context = context;
+		this.responder = responder;
 	}
 
 	public void setFriends(List<Friend> friends) {
@@ -74,29 +80,27 @@ public class FriendsRequestListener implements RequestListener {
 				}
 			}
 			setFriends(fetchedFriends);
+			responder.friendRequestDidFinish();
 		} catch (JSONException e) {
 			Log.w(TAG, "JSON Error in response");
+			responder.friendRequestDidFail();
 		}
 	}
 
 	public void onIOException(IOException e, Object state) {
-		// TODO Auto-generated method stub
-
+		responder.friendRequestDidFail();
 	}
 
 	public void onFileNotFoundException(FileNotFoundException e, Object state) {
-		// TODO Auto-generated method stub
-
+		responder.friendRequestDidFail();
 	}
 
 	public void onMalformedURLException(MalformedURLException e, Object state) {
-		// TODO Auto-generated method stub
-
+		responder.friendRequestDidFail();
 	}
 
 	public void onFacebookError(FacebookError e, Object state) {
-		// TODO Auto-generated method stub
-
+		responder.friendRequestDidFail();
 	}
 	
 	public static String getList()

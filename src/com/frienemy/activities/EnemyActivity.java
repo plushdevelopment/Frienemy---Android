@@ -4,16 +4,9 @@ import java.util.ArrayList;
 
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
-import com.frienemy.services.FrienemyServiceAPI;
-import com.frienemy.services.FrienemyServiceListener;
-
 import android.app.ListActivity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,8 +28,7 @@ public class EnemyActivity extends ListActivity implements OnClickListener {
         setUpListeners();
 	}
 	
-	private void setUpListeners()
-	{
+	private void setUpListeners() {
     	 View v;
  		v = findViewById( R.id.btnFriends );
  		v.setBackgroundResource( R.drawable.button_selector );
@@ -50,6 +42,7 @@ public class EnemyActivity extends ListActivity implements OnClickListener {
  		v.setBackgroundResource( R.drawable.button_selector );
  		v.setOnClickListener( this );
 	}
+	
     protected void updateView() {
 		ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "frienemyStatus==1", "name ASC");
 		

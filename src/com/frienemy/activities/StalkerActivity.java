@@ -6,24 +6,18 @@ import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
-import com.frienemy.services.FrienemyServiceAPI;
-import com.frienemy.services.FrienemyServiceListener;
-import com.frienemy.services.WallRequestListener;
-
+import com.frienemy.requests.WallRequestListener;
+import com.frienemy.requests.WallRequestListener.WallRequestListenerResponder;
 import android.app.ListActivity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 
-public class StalkerActivity extends ListActivity implements OnClickListener { 
+public class StalkerActivity extends ListActivity implements OnClickListener, WallRequestListenerResponder { 
 
 	private static final String TAG = StalkerActivity.class.getSimpleName();
 	FriendAdapter adapter;
@@ -56,12 +50,11 @@ public class StalkerActivity extends ListActivity implements OnClickListener {
 		if (facebook.isSessionValid()) {
 			asyncRunner = new AsyncFacebookRunner(facebook);
 			// Get the user's wall
-			asyncRunner.request("me/feed", new WallRequestListener(this.getBaseContext()));
+			asyncRunner.request("me/feed", new WallRequestListener(getBaseContext(), this));
 		}
 	}
 
-	private void setUpListeners()
-	{
+	private void setUpListeners() {
 		View v;
 		v = findViewById( R.id.btnFriends );
 		v.setBackgroundResource( R.drawable.button_selector );
@@ -75,6 +68,7 @@ public class StalkerActivity extends ListActivity implements OnClickListener {
 		v.setBackgroundResource( R.drawable.button_selector );
 		v.setOnClickListener( this );
 	}
+	
 	protected void updateView() {
 		ArrayList<Friend> friends = Friend.query(this, Friend.class);
 
@@ -107,6 +101,14 @@ public class StalkerActivity extends ListActivity implements OnClickListener {
 		default:
 
 		}
+	}
+
+	public void wallRequestDidFinish() {
+		updateView();
+	}
+
+	public void wallRequestDidFail() {
+		// TODO Auto-generated method stub
 	}
 }
 

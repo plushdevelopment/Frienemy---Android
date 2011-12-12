@@ -45,6 +45,9 @@ public class Friend extends ActiveRecordBase<Friend> {
 	@Column(name = "stalkerRank")
 	public int stalkerRank;
 	
+	@Column(name = "isCurrentUser")
+	public Boolean isCurrentUser;
+	
 	public ArrayList<Comment> comments() {
 		ArrayList<Comment> comments = Comment.query(getContext(), Comment.class, null, "friend = " + getId(), "createdTime ASC");
 		return comments;
@@ -53,11 +56,6 @@ public class Friend extends ActiveRecordBase<Friend> {
 	public ArrayList<Post> posts() {
 		ArrayList<Post> posts = Post.query(getContext(), Post.class, null, "from = " + getId(), "updatedTime ASC");
 		return posts;
-	}
-	
-	public ArrayList<Status> statuses() {
-		ArrayList<Status> statuses = Status.query(getContext(), Status.class, null, "friend = " + getId(), "updatedTime ASC");
-		return statuses;
 	}
 	
 	public void encrypt() {
