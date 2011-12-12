@@ -43,7 +43,7 @@ public class WallRequestListener implements RequestListener {
 			for (int i=0; i<l; i++) {
 				JSONObject o = d.getJSONObject(i);
 				String uid = o.getString("id");
-				Post post = Post.querySingle(context, Post.class, null, "uid == " + uid);
+				Post post = Post.querySingle(context, Post.class, null, String.format("uid == \"%s\"", uid));
 				if (post == null) {
 					post = new Post(context);
 					post.uid = uid;

@@ -27,6 +27,7 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	private AsyncFacebookRunner asyncRunner;
 	String FILENAME = "AndroidSSO_data";
 	private SharedPreferences mPrefs;
+	ArrayList<Friend> friends;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -72,7 +73,7 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	}
 	
 	protected void updateView() {
-		ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "stalkerRank DESC","20");
+		ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null, "isCurrentUser==0", "stalkerRank DESC","20");
 
 		list=(ListView)findViewById(android.R.id.list);
 		adapter=new FriendAdapter(this, friends);
