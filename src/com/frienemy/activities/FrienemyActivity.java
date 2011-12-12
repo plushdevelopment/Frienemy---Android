@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.app.ActivityManager;
 import android.app.ListActivity;
 import android.content.ComponentName;
@@ -79,7 +80,8 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		 TextView v = (TextView) findViewById(R.id.title);
+	        v.setText("Friends");
 		setUpListeners();
 		
 		asyncRunner = new AsyncFacebookRunner(facebook);
@@ -120,7 +122,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	{
 		View v;
 		v = findViewById( R.id.btnFriends );
-		v.setBackgroundResource( R.drawable.button_selector );
+		v.setBackgroundResource( R.drawable.gray_gradient);
 		v.setOnClickListener( this );
 
 		v = findViewById( R.id.btnFrienemies );
