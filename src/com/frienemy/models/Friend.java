@@ -104,6 +104,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 				friend.uid = uid;
 				friend.name = n;
 				friend.frienemyStatus = 2;
+				friend.isCurrentUser = false;
 				friend.save();
 			}
 		} catch (JSONException e) {

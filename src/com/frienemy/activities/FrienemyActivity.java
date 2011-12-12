@@ -138,7 +138,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	}
 
 	protected void updateView() {
-		ArrayList<Friend> friends = Friend.query(this, Friend.class, null, null, "name ASC");
+		ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "name ASC");
 
 		list=(ListView)findViewById(android.R.id.list);
 		adapter=new FriendAdapter(this, friends);
@@ -246,11 +246,13 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	}
 
 	public void friendRequestDidFinish() {
+		/*
 		// Get the details for each friend in the list
 		ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null);
 		for (Friend friend : friends) {
 			asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext(), this));
 		}
+		*/
 		runOnUiThread(new Runnable() {
 			public void run() {
 				updateView();
