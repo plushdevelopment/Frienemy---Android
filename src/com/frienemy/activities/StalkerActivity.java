@@ -104,7 +104,11 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	}
 
 	public void wallRequestDidFinish() {
-		updateView();
+		runOnUiThread(new Runnable() {
+		    public void run() {
+		    	updateView();
+		    }
+		});
 	}
 
 	public void wallRequestDidFail() {

@@ -25,6 +25,7 @@ import com.facebook.android.Facebook.*;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
 import com.frienemy.requests.FriendDetailRequestListener;
+import com.frienemy.requests.FriendDetailRequestListener.FriendDetailRequestListenerResponder;
 import com.frienemy.requests.FriendsRequestListener;
 import com.frienemy.requests.UserRequestListener;
 import com.frienemy.requests.FriendsRequestListener.FriendRequestListenerResponder;
@@ -35,7 +36,7 @@ import com.frienemy.services.FrienemyServiceListener;
 
 
 
-public class FrienemyActivity extends ListActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder {
+public class FrienemyActivity extends ListActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder, FriendDetailRequestListenerResponder {
 
 	private static final String TAG = FrienemyActivity.class.getSimpleName();
 	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
@@ -53,7 +54,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 
 	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
 		public void handleFriendsUpdated() throws RemoteException {
-			//updateView();
+			
 		}
 	};
 
@@ -67,7 +68,6 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 			} catch (RemoteException e) {
 				Log.e(TAG, "Failed to add listener", e);
 			}
-			updateView();
 		}
 
 		public void onServiceDisconnected(ComponentName name) {
@@ -243,13 +243,29 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		// Get the details for each friend in the list
 		ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null);
 		for (Friend friend : friends) {
-			asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext()));
+			asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext(), this));
 		}
-		updateView();
+		runOnUiThread(new Runnable() {
+		    public void run() {
+		    	updateView();
+		    }
+		});
 	}
 
 	public void friendRequestDidFail() {
 		Log.e(TAG, "Failed to get friends list");
+	}
+
+	public void friendDetailRequestDidFinish() {
+		runOnUiThread(new Runnable() {
+		    public void run() {
+		    	updateView();
+		    }
+		});
+	}
+
+	public void friendDetailRequestDidFail() {
+		Log.e(TAG, "Failed to get friend details");
 	}
 
 }
