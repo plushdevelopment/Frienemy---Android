@@ -33,10 +33,8 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.stalkers);
-		
 		 TextView v = (TextView) findViewById(R.id.title);
 	        v.setText("Stalkers");
-		updateView();
 		setUpListeners();
 		getFacebookWall();
 	}
