@@ -28,7 +28,7 @@ public class FriendsRequestListener implements RequestListener {
 	private Context context;
 	private FriendRequestListenerResponder responder;
 	private List<Friend> friends;
-	private  static String frenemiesList="";
+	private static String FrienemiesListString = "";
 	
 
 	public FriendsRequestListener(Context context, FriendRequestListenerResponder responder) {
@@ -51,7 +51,7 @@ public class FriendsRequestListener implements RequestListener {
 			int l = (d != null ? d.length() : 0);
 			Log.d(TAG, "Friend Array length(): " + l);
 			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null);
-			frenemiesList="";
+			FrienemiesListString="";
 			for (int f=0; f<fetchedFriends.size(); f++) {
 				boolean exists = false;
 				Friend friend = fetchedFriends.get(f);
@@ -65,7 +65,7 @@ public class FriendsRequestListener implements RequestListener {
 				}
 				if (!exists) {
 					friend.frienemyStatus = 1;
-					frenemiesList= friend.name + " ";
+					FrienemiesListString += friend.name + " ";
 					friend.frienemyStatusChanged = true;
 					friend.save();
 				}
@@ -105,7 +105,7 @@ public class FriendsRequestListener implements RequestListener {
 	
 	public static String getList()
 	{
-		return frenemiesList;
+		return FrienemiesListString;
 	}
 
 }
