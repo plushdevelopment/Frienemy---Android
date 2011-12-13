@@ -26,7 +26,7 @@ public class EnemyActivity extends ListActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frienemy);
         TextView v = (TextView) findViewById(R.id.title);
-        v.setText("Frenemies");
+        v.setText("Frienemies");
         updateView();
         setUpListeners();
 	}
