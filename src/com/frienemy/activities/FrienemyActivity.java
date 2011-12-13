@@ -138,6 +138,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	}
 
 	protected void updateView() {
+		try{
 		ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "name ASC");
 
 		list=(ListView)findViewById(android.R.id.list);
@@ -145,6 +146,10 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		list.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		Log.i(TAG, "Friends count: " + friends.size());
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -70,9 +71,13 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		v = findViewById( R.id.stalkers );
 		v.setBackgroundResource( R.drawable.gray_gradient);
 		v.setOnClickListener( this );
+		
+		Button refresh= (Button)findViewById(R.id.button);
+		refresh.setOnClickListener(this);
 	}
 	
 	protected void updateView() {
+		try{
 		ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null, "isCurrentUser==0", "stalkerRank DESC","20");
 
 		list=(ListView)findViewById(android.R.id.list);
@@ -80,6 +85,10 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		list.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		Log.i(TAG, "Friends count: " + friends.size());
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void onClick(View v) {
@@ -101,6 +110,8 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 			//case R.id.postbutton:
 			//	post();
 			//break;
+		case R.id.button:
+			updateView();
 		default:
 
 		}

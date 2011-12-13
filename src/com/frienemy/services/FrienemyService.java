@@ -169,10 +169,15 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	}
 
 	public void friendRequestDidFinish() {
+		try{
 		// Get the details for each friend in the list
 		ArrayList<Friend> friends = Friend.query(context, Friend.class, null);
 		for (Friend friend : friends) {
 			asyncRunner.request(friend.uid, new FriendDetailRequestListener(context));
+		}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 
