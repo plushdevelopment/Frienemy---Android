@@ -3,6 +3,8 @@ package com.frienemy.requests;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,7 +21,7 @@ public class FriendDetailRequestListener implements RequestListener {
 		public void friendDetailRequestDidFinish();
 		public void friendDetailRequestDidFail();
 	}
-	
+
 	private static final String TAG = FriendDetailRequestListener.class.getSimpleName();
 	private Context context;
 	private FriendDetailRequestListenerResponder responder;
@@ -28,9 +30,49 @@ public class FriendDetailRequestListener implements RequestListener {
 		this.context = context;
 		this.responder = responder;
 	}
-	
+
 	public FriendDetailRequestListener(Context context) {
 		this.context = context;
+	}
+
+	public void parseResponse(String response) {
+		Log.d(TAG, response);
+		try {
+			final JSONArray a = new JSONArray(response);
+			for (int i=0; i < a.length(); i++) {
+				try {
+					JSONObject responseItem = a.getJSONObject(i);
+					try {
+						String friendString = responseItem.getString("body");
+						try {
+							JSONObject o = new JSONObject(friendString);
+							Friend friend = Friend.friendInContextForJSONObject(context, o);
+							String relationshipStatus = o.getString("relationship_status");
+							if (relationshipStatus.equals(friend.relationshipStatus) == false) {
+								friend.relationshipStatusChanged = true;
+							}
+							friend.relationshipStatus = relationshipStatus;
+							friend.save();
+							if (responder != null) {
+								responder.friendDetailRequestDidFinish();
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+							Log.w(TAG, "JSON Error in response" + e.getMessage());
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+						Log.w(TAG, "JSON Error in response" + e.getMessage());
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					Log.w(TAG, "JSON Error in response" + e.getMessage());
+				}
+			}
+		} catch (JSONException e) {
+			Log.w(TAG, "JSON Error in response");
+			reportFailure();
+		}
 	}
 
 	public void onComplete(String response, Object state) {

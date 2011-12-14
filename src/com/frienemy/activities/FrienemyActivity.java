@@ -250,11 +250,11 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		Log.e(TAG, "Failed to get user");
 	}
 
-	public void friendRequestDidFinish() {
+	public void friendRequestDidFinish(int totalFriends) {
 		// Get the details for each friend in the list
 		ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
 		for (Friend friend : friends) {
-			asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext(), this));
+			//asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext(), this));
 		}
 		runOnUiThread(new Runnable() {
 			public void run() {

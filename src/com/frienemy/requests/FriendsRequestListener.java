@@ -20,7 +20,7 @@ import com.frienemy.models.Friend;
 public class FriendsRequestListener implements RequestListener {
 	
 	public interface FriendRequestListenerResponder {
-		public void friendRequestDidFinish();
+		public void friendRequestDidFinish(int totalFriends);
 		public void friendRequestDidFail();
 	}
 
@@ -80,7 +80,7 @@ public class FriendsRequestListener implements RequestListener {
 				}
 			}
 			setFriends(fetchedFriends);
-			responder.friendRequestDidFinish();
+			responder.friendRequestDidFinish(l);
 		} catch (JSONException e) {
 			Log.w(TAG, "JSON Error in response");
 			responder.friendRequestDidFail();
