@@ -1,5 +1,8 @@
 package com.frienemy.services;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -62,6 +65,9 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	private TimerTask updateTask = new TimerTask() {
 		@Override
 		public void run() {
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = (Date) new java.util.Date();
+			Log.d(TAG, "Service Run" + dateFormat.format(date));
 			Log.i(TAG, "Timer task doing work");
 			refreshPreferences();
 			String access_token = mPrefs.getString("access_token", null);
@@ -100,7 +106,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		userRequestListener = new UserRequestListener(context, this);
 		friendsRequestListener = new FriendsRequestListener(context, this);
 		timer = new Timer("FrienemyServiceTimer");
-		timer.schedule(updateTask, 1000L, 60 * 60000L);
+		timer.schedule(updateTask, 1000L, 5 * 60000L);
 	}
 
 	public void refreshPreferences() {
@@ -118,6 +124,10 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 
 	private void notifyListeners() {
 		synchronized (listeners) {
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = (Date) new java.util.Date();
+			Log.d(TAG, "Notify Listeners" + dateFormat.format(date));
+			
 			for (FrienemyServiceListener listener : listeners) {
 				try {
 					listener.handleFriendsUpdated();
