@@ -172,7 +172,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 			List<ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
 			if(list != null){
 				for(int i=0;i<list.size();++i){
-					if("com.imbills.mobile".matches(list.get(i).processName)){
+					if("com.frienemy.activities".matches(list.get(i).processName)){
 						int pid = android.os.Process.getUidForName("com.frienemy.activities");
 						android.os.Process.killProcess(pid);
 					}
