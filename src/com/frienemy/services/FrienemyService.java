@@ -65,9 +65,6 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	private TimerTask updateTask = new TimerTask() {
 		@Override
 		public void run() {
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = (Date) new java.util.Date();
-			Log.d(TAG, "Service Run" + dateFormat.format(date));
 			Log.i(TAG, "Timer task doing work");
 			refreshPreferences();
 			String access_token = mPrefs.getString("access_token", null);
@@ -124,10 +121,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 
 	private void notifyListeners() {
 		synchronized (listeners) {
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = (Date) new java.util.Date();
-			Log.d(TAG, "Notify Listeners" + dateFormat.format(date));
-			
+			Log.d(TAG, "Notify Listeners");
 			for (FrienemyServiceListener listener : listeners) {
 				try {
 					listener.handleFriendsUpdated();
