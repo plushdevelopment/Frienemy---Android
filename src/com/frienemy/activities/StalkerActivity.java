@@ -78,7 +78,7 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	
 	protected void updateView() {
 		try{
-		ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null, "isCurrentUser==0", "stalkerRank DESC","20");
+		ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null, "isCurrentUser==0 && stalkerRank > 0", "stalkerRank DESC");
 
 		list=(ListView)findViewById(android.R.id.list);
 		adapter=new FriendAdapter(this, friends);
