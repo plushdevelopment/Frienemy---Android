@@ -22,7 +22,7 @@ public class FriendAdapter extends ArrayAdapter<Friend> {
 		super(context, android.R.layout.simple_list_item_1, friends);
 		this.context = context;
 		this.data = friends;
-		inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	public int getCount() {

@@ -25,8 +25,6 @@ import com.facebook.android.*;
 import com.facebook.android.Facebook.*;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
-import com.frienemy.requests.FriendDetailRequestListener;
-import com.frienemy.requests.FriendDetailRequestListener.FriendDetailRequestListenerResponder;
 import com.frienemy.requests.FriendsRequestListener;
 import com.frienemy.requests.UserRequestListener;
 import com.frienemy.requests.FriendsRequestListener.FriendRequestListenerResponder;
@@ -34,10 +32,12 @@ import com.frienemy.requests.UserRequestListener.UserRequestListenerResponder;
 import com.frienemy.services.FrienemyService;
 import com.frienemy.services.FrienemyServiceAPI;
 import com.frienemy.services.FrienemyServiceListener;
+import com.frienemy.tasks.FacebookBatchRequest;
+import com.frienemy.tasks.FacebookBatchRequest.FacebookBatchRequestResponder;
 
 
 
-public class FrienemyActivity extends ListActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder, FriendDetailRequestListenerResponder {
+public class FrienemyActivity extends ListActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder, FacebookBatchRequestResponder {
 
 	private static final String TAG = FrienemyActivity.class.getSimpleName();
 	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
@@ -80,10 +80,10 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		 TextView v = (TextView) findViewById(R.id.title);
-	        v.setText("Friends");
+		TextView v = (TextView) findViewById(R.id.title);
+		v.setText("Friends");
 		setUpListeners();
-		
+
 		asyncRunner = new AsyncFacebookRunner(facebook);
 		userRequestListener = new UserRequestListener(getBaseContext(), this);
 		friendsRequestListener = new FriendsRequestListener(getBaseContext(), this);
@@ -92,7 +92,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		startService(intent);
 		bindService(intent, serviceConnection, 0);
 		updateView();
-		
+
 		/*
 		 * Get existing access_token if any
 		 */
@@ -139,13 +139,13 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 
 	protected void updateView() {
 		try{
-		ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "name ASC");
+			ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "name ASC");
 
-		list=(ListView)findViewById(android.R.id.list);
-		adapter=new FriendAdapter(this, friends);
-		list.setAdapter(adapter);
-		adapter.notifyDataSetChanged();
-		Log.i(TAG, "Friends count: " + friends.size());
+			list=(ListView)findViewById(android.R.id.list);
+			adapter=new FriendAdapter(this, friends);
+			list.setAdapter(adapter);
+			adapter.notifyDataSetChanged();
+			Log.i(TAG, "Friends count: " + friends.size());
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -250,11 +250,13 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		Log.e(TAG, "Failed to get user");
 	}
 
+	@SuppressWarnings("unchecked")
 	public void friendRequestDidFinish(int totalFriends) {
-		// Get the details for each friend in the list
-		ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
-		for (Friend friend : friends) {
-			//asyncRunner.request(friend.uid, new FriendDetailRequestListener(getBaseContext(), this));
+		try {
+			ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
+			new FacebookBatchRequest(getBaseContext(), facebook, this).execute(friends);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -267,16 +269,20 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		Log.e(TAG, "Failed to get friends list");
 	}
 
-	public void friendDetailRequestDidFinish() {
+	public void friendDetailsLoading() {
+
+	}
+
+	public void friendDetailsLoadCancelled() {
+
+	}
+
+	public void friendDetailsLoaded() {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				updateView();
 			}
 		});
-	}
-
-	public void friendDetailRequestDidFail() {
-		Log.e(TAG, "Failed to get friend details");
 	}
 
 }

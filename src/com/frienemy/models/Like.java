@@ -7,6 +7,7 @@ import com.activeandroid.annotation.Column;
 
 public class Like extends ActiveRecordBase<Like> {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = Like.class.getSimpleName();
 	
 	@Column(name = "friend")

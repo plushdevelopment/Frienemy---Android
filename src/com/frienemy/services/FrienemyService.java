@@ -1,30 +1,20 @@
 package com.frienemy.services;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
-import com.facebook.android.Util;
 import com.frienemy.activities.EnemyActivity;
 import com.frienemy.models.Friend;
-import com.frienemy.requests.FriendDetailRequestListener;
-import com.frienemy.requests.FriendDetailRequestListener.FriendDetailRequestListenerResponder;
 import com.frienemy.requests.FriendsRequestListener;
 import com.frienemy.requests.FriendsRequestListener.FriendRequestListenerResponder;
 import com.frienemy.requests.UserRequestListener;
 import com.frienemy.requests.UserRequestListener.UserRequestListenerResponder;
+import com.frienemy.tasks.FacebookBatchRequest;
+import com.frienemy.tasks.FacebookBatchRequest.FacebookBatchRequestResponder;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,12 +23,11 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-public class FrienemyService extends Service implements UserRequestListenerResponder, FriendRequestListenerResponder, FriendDetailRequestListenerResponder {
+public class FrienemyService extends Service implements UserRequestListenerResponder, FriendRequestListenerResponder, FacebookBatchRequestResponder {
 
 	private NotificationManager notificationManager;
 
@@ -51,7 +40,6 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	private Context context;
 	private UserRequestListener userRequestListener;
 	private FriendsRequestListener friendsRequestListener;
-	private int totalFriends = 0;
 	private List<FrienemyServiceListener> listeners = new ArrayList<FrienemyServiceListener>();
 
 	private FrienemyServiceAPI.Stub apiEndpoint = new FrienemyServiceAPI.Stub() {
@@ -153,7 +141,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		Intent enemyIntent = new Intent(FrienemyService.this,EnemyActivity.class);
 
-		// Set the icon, scrolling text and timestamp
+		// Set the icon, scrolling text and time stamp
 		Notification notification = new Notification(iconId, message, System.currentTimeMillis());
 		PendingIntent contentIntent;
 
@@ -167,32 +155,6 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		notificationManager.notify(notificationType, notification);
 	}
 
-	private ArrayList<JSONArray> batchFriendDetailRequests(ArrayList<Friend> arrayList) {
-		ArrayList<JSONArray> arrayOfBatchArrays = new ArrayList<JSONArray>();
-		for (int l=0; l < arrayList.size(); l+= 50) {
-			JSONArray batchArray = new JSONArray();
-			int loopStopValue = (l + 50);
-			if (loopStopValue > arrayList.size()) {
-				loopStopValue = arrayList.size();
-			}
-			for (int i=l; i < loopStopValue; i++) {
-				JSONObject friendDetails = new JSONObject();
-				try {
-					friendDetails.put("method", "GET");
-					friendDetails.put("relative_url", arrayList.get(i).uid);
-					friendDetails.put("parameters", "relationship_status");
-					batchArray.put(friendDetails);
-				} catch (JSONException e) {
-					e.printStackTrace();
-					Log.e(TAG, e.getMessage());
-				}
-			}
-			arrayOfBatchArrays.add(batchArray);
-		}
-		return arrayOfBatchArrays;
-	}
-
-
 	public void userRequestDidFinish() {
 		// Get the user's friend list
 		asyncRunner.request("me/friends", friendsRequestListener);
@@ -202,37 +164,17 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		Log.e(TAG, "Failed to get user");
 	}
 
+	@SuppressWarnings("unchecked")
 	public void friendRequestDidFinish(int totalFriends) {
 		//Check to see if there are any new frienemies and notifies the user
 		if(!FriendsRequestListener.getList().equalsIgnoreCase(""))
 		{
 			this.showNotification("New Frenemies",FriendsRequestListener.getList(), com.frienemy.activities.R.drawable.icon, 0);
 		}
-		try{
-			// Get the details for each friend in the list
-			ArrayList<Friend> friends = Friend.query(context, Friend.class, new String[]{"uid"}, "isCurrentUser==0");
-			ArrayList<JSONArray>batchFriends = batchFriendDetailRequests(friends);
-			for (int i=0; i < batchFriends.size(); i++) {
-				/* URL */
-				String url = "https://graph.facebook.com/";
-
-				/* Arguments */
-				Bundle args = new Bundle();
-				args.putString("access_token", facebook.getAccessToken());
-				args.putString("batch", batchFriends.get(i).toString());
-				String ret = "";
-				try {
-					ret = Util.openUrl(url, "POST", args);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				FriendDetailRequestListener friendDetailRequestListener = new FriendDetailRequestListener(context, this);
-				friendDetailRequestListener.parseResponse(ret);
-			}
-		}catch(Exception e)
-		{
+		try {
+			ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
+			new FacebookBatchRequest(getBaseContext(), facebook, this).execute(friends);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -241,12 +183,16 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		Log.e(TAG, "Failed to get friends list");
 	}
 
-	public void friendDetailRequestDidFinish() {
-		Log.d(TAG, "FriendDetailRequestListener did finish");
+	public void friendDetailsLoading() {
+		
 	}
 
-	public void friendDetailRequestDidFail() {
-		Log.d(TAG, "FriendDetailRequestListener did finish");
+	public void friendDetailsLoadCancelled() {
+		
+	}
+
+	public void friendDetailsLoaded() {
+		
 	}
 
 }

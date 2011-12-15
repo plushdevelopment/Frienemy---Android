@@ -11,6 +11,7 @@ import com.activeandroid.annotation.Table;
 @Table(name = "Comment")
 public class Comment extends ActiveRecordBase<Comment> implements Likeable {
 	
+	@SuppressWarnings("unused")
 	private static final String TAG = Comment.class.getSimpleName();
 	
 	@Column(name = "uid")
