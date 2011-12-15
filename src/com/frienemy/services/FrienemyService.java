@@ -23,6 +23,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -173,7 +174,8 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		}
 		try {
 			ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
-			new FacebookBatchRequest(getBaseContext(), facebook, this).execute(friends);
+			AsyncTask<ArrayList<Friend>, Void, Void> latestLoadTask = new FacebookBatchRequest(getBaseContext(), facebook, this);
+			latestLoadTask.execute(friends);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

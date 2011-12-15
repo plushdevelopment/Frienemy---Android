@@ -1,8 +1,10 @@
 package com.frienemy.activities;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -20,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 
 import com.facebook.android.*;
 import com.facebook.android.Facebook.*;
@@ -254,7 +257,8 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	public void friendRequestDidFinish(int totalFriends) {
 		try {
 			ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
-			new FacebookBatchRequest(getBaseContext(), facebook, this).execute(friends);
+			AsyncTask<ArrayList<Friend>, Void, Void> latestLoadTask = new FacebookBatchRequest(getBaseContext(), facebook, this);
+			latestLoadTask.execute(friends);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
