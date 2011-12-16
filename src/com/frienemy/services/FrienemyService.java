@@ -111,7 +111,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		userRequestListener = new UserRequestListener(context, this);
 		friendsRequestListener = new FriendsRequestListener(context, this);
 		timer = new Timer("FrienemyServiceTimer");
-		timer.schedule(updateTask, 1000L, 1 * 60000L);
+		timer.schedule(updateTask, 10 * 60000L, 60 * 60000L);
 	}
 
 	public void refreshPreferences() {
