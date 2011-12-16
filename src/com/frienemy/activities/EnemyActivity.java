@@ -30,11 +30,6 @@ public class EnemyActivity extends ListActivity implements OnClickListener {
 		TextView v = (TextView) findViewById(R.id.title);
 		v.setText("Frienemies");
 		setUpListeners();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
 		loadFriendsIfNotLoaded();
 	}
 

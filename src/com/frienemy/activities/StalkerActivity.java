@@ -40,11 +40,6 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		 TextView v = (TextView) findViewById(R.id.title);
 	        v.setText("Stalkers");
 		setUpListeners();
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
 		loadFriendsIfNotLoaded();
 	}
 

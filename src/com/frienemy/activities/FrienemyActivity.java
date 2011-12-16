@@ -108,13 +108,6 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		if(expires != 0) {
 			facebook.setAccessExpires(expires);
 		}
-	}
-
-
-
-	@Override
-	protected void onResume() {
-		super.onResume();
 		/*
 		 * Only call authorize if the access_token has expired.
 		 */
@@ -124,8 +117,6 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 			loadFriendsIfNotLoaded();
 		}
 	}
-
-
 
 	private void loadFriendsIfNotLoaded() {
 		if (null == getListAdapter()) {
