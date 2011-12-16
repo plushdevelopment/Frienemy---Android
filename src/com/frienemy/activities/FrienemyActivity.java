@@ -252,21 +252,24 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	public void userRequestDidFail() {
 		Log.e(TAG, "Failed to get user");
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	public void friendRequestDidFinish(int totalFriends) {
 		try {
-			ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
-			AsyncTask<ArrayList<Friend>, Void, Void> latestLoadTask = new FacebookBatchRequest(getBaseContext(), facebook, this);
-			latestLoadTask.execute(friends);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		runOnUiThread(new Runnable() {
 			public void run() {
 				updateView();
+				//requestDetails();
 			}
 		});
+	}
+
+	protected void requestDetails() {
+		ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
+		AsyncTask<ArrayList<Friend>, Void, Void> latestLoadTask = new FacebookBatchRequest(getBaseContext(), facebook, this);
+		latestLoadTask.execute(friends);
 	}
 
 	public void friendRequestDidFail() {
