@@ -174,6 +174,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		{
 			e.printStackTrace();
 		}
+		progressDialog.dismiss();
 	}
 
 	@Override
@@ -282,8 +283,6 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		}
 		runOnUiThread(new Runnable() {
 			public void run() {
-				//setProgressBarIndeterminateVisibility(false);
-				progressDialog.dismiss();
 				updateView();
 				//requestDetails();
 			}

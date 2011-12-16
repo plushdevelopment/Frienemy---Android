@@ -9,6 +9,7 @@ import com.frienemy.models.Friend;
 import com.frienemy.requests.WallRequestListener;
 import com.frienemy.requests.WallRequestListener.WallRequestListenerResponder;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	String FILENAME = "AndroidSSO_data";
 	private SharedPreferences mPrefs;
 	ArrayList<Friend> friends;
+	protected ProgressDialog progressDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -38,7 +40,23 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		 TextView v = (TextView) findViewById(R.id.title);
 	        v.setText("Stalkers");
 		setUpListeners();
-		getFacebookWall();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		loadFriendsIfNotLoaded();
+	}
+
+	private void loadFriendsIfNotLoaded() {
+		if (null == getListAdapter()) {
+			progressDialog = ProgressDialog.show(
+					StalkerActivity.this,
+					"Loading...",
+					"Loading your stalkers from Facebook");
+			getFacebookWall();
+		}
+
 	}
 
 	private void getFacebookWall() {
@@ -89,6 +107,7 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		{
 			e.printStackTrace();
 		}
+		progressDialog.dismiss();
 	}
 
 	public void onClick(View v) {
