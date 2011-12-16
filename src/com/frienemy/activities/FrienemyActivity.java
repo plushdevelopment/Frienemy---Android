@@ -1,6 +1,5 @@
 package com.frienemy.activities;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,18 +11,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.app.ActivityManager;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
-
 import com.facebook.android.*;
 import com.facebook.android.Facebook.*;
 import com.frienemy.adapters.FriendAdapter;
@@ -52,6 +51,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	private FrienemyServiceAPI api;
 	private UserRequestListener userRequestListener;
 	private FriendsRequestListener friendsRequestListener;
+	protected ProgressDialog progressDialog;
 
 	FriendAdapter adapter;
 	ListView list;
@@ -83,6 +83,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		TextView v = (TextView) findViewById(R.id.title);
 		v.setText("Friends");
 		setUpListeners();
@@ -94,7 +95,6 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		Intent intent = new Intent(FrienemyService.class.getName()); 
 		startService(intent);
 		bindService(intent, serviceConnection, 0);
-		updateView();
 
 		/*
 		 * Get existing access_token if any
@@ -108,17 +108,39 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		if(expires != 0) {
 			facebook.setAccessExpires(expires);
 		}
+	}
 
+
+
+	@Override
+	protected void onResume() {
+		super.onResume();
 		/*
 		 * Only call authorize if the access_token has expired.
 		 */
 		if(!facebook.isSessionValid()) {
 			facebook.authorize(this, PERMS, new LoginDialogListener());
 		} else {
+			loadFriendsIfNotLoaded();
+		}
+	}
+
+
+
+	private void loadFriendsIfNotLoaded() {
+		if (null == getListAdapter()) {
+			progressDialog = ProgressDialog.show(
+			          FrienemyActivity.this,
+			          "Loading...",
+			          "Loading your friends list from Facebook");
+			//setProgressBarIndeterminateVisibility(true);
 			// First, lets get the info about the current user
 			asyncRunner.request("me", userRequestListener);
 		}
+		
 	}
+
+
 
 	//Listeners should be implemented in onClick method
 	private void setUpListeners()
@@ -143,7 +165,6 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	protected void updateView() {
 		try{
 			ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "name ASC");
-
 			list=(ListView)findViewById(android.R.id.list);
 			adapter=new FriendAdapter(this, friends);
 			list.setAdapter(adapter);
@@ -189,6 +210,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		}
 		return false;
 	}
+
 	private class LoginDialogListener implements DialogListener {
 
 
@@ -204,8 +226,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 			startService(intent);
 			bindService(intent, serviceConnection, 0);
 
-			// First, lets get the info about the current user
-			asyncRunner.request("me", userRequestListener);
+			loadFriendsIfNotLoaded();
 		}
 
 		public void onFacebookError(FacebookError e) {
@@ -221,6 +242,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		}
 
 	}
+
 	public void onClick(View v) {
 		Intent i;
 		switch (v.getId())
@@ -252,7 +274,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	public void userRequestDidFail() {
 		Log.e(TAG, "Failed to get user");
 	}
-	
+
 	public void friendRequestDidFinish(int totalFriends) {
 		try {
 		} catch (Exception e) {
@@ -260,6 +282,8 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		}
 		runOnUiThread(new Runnable() {
 			public void run() {
+				//setProgressBarIndeterminateVisibility(false);
+				progressDialog.dismiss();
 				updateView();
 				//requestDetails();
 			}
