@@ -13,13 +13,11 @@ import android.util.Log;
 import com.activeandroid.ActiveRecordBase;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.frienemy.encryption.SimpleCrypto;
 
 @Table(name = "Friend")
 public class Friend extends ActiveRecordBase<Friend> {
 	
 	private static final String TAG = Friend.class.getSimpleName();
-	private static final String KEY = "MAHMOUD";
 	
 	@Column(name = "uid")
 	public String uid;
@@ -62,28 +60,6 @@ public class Friend extends ActiveRecordBase<Friend> {
 		ArrayList<Post> posts = Post.query(getContext(), Post.class, null, "from = " + getId(), "updatedTime ASC");
 		return posts;
 	}
-	
-	public void encrypt() {
-			try {
-				encryptedUid = SimpleCrypto.encrypt(KEY, uid);
-				encryptedName = SimpleCrypto.encrypt(KEY, name);
-				encryptedRelationshipStatus = SimpleCrypto.encrypt(KEY, relationshipStatus);
-			} catch (Exception e) {
-				Log.e(TAG, "Failed to encrypt friend");
-				e.printStackTrace();
-			}
-	}
-	
-	public void decrypt() {
-			try {
-				uid = SimpleCrypto.decrypt(KEY, encryptedUid);
-				name = SimpleCrypto.decrypt(KEY, encryptedName);
-				relationshipStatus = SimpleCrypto.decrypt(KEY, encryptedRelationshipStatus);
-			} catch (Exception e) {
-				Log.e(TAG, "Failed to decrypt friend");
-				e.printStackTrace();
-			}
-	}
 
 	public Friend(Context context) {
 		super(context);
@@ -105,10 +81,19 @@ public class Friend extends ActiveRecordBase<Friend> {
 				friend.name = n;
 				friend.frienemyStatus = 2;
 				friend.isCurrentUser = false;
-				friend.save();
 			}
+			try {
+			String relationshipStatus = object.getString("relationship_status");
+			if (relationshipStatus.equals(friend.relationshipStatus) == false) {
+				friend.relationshipStatusChanged = true;
+			}
+			friend.relationshipStatus = relationshipStatus;
+			} catch (JSONException e) {
+				
+			}
+			friend.save();
 		} catch (JSONException e) {
-			Log.w(TAG, e);
+			
 		}
 		return friend;
 	}
@@ -118,7 +103,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 		try {
 			url = new URL(String.format("https://graph.facebook.com/%s/picture", uid));
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			
 		}
 		return url;
 	}

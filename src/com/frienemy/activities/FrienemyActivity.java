@@ -3,7 +3,6 @@ package com.frienemy.activities;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,12 +32,10 @@ import com.frienemy.requests.UserRequestListener.UserRequestListenerResponder;
 import com.frienemy.services.FrienemyService;
 import com.frienemy.services.FrienemyServiceAPI;
 import com.frienemy.services.FrienemyServiceListener;
-import com.frienemy.tasks.FacebookBatchRequest;
-import com.frienemy.tasks.FacebookBatchRequest.FacebookBatchRequestResponder;
 
 
 
-public class FrienemyActivity extends ListActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder, FacebookBatchRequestResponder {
+public class FrienemyActivity extends ListActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder {
 
 	private static final String TAG = FrienemyActivity.class.getSimpleName();
 	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
@@ -260,7 +256,9 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 
 	public void userRequestDidFinish() {
 		// Get the user's friend list
-		asyncRunner.request("me/friends", friendsRequestListener);
+		Bundle parameters = new Bundle();
+		parameters.putString("fields", "id,name,relationship_status");
+		asyncRunner.request("me/friends", parameters, friendsRequestListener);
 	}
 
 	public void userRequestDidFail() {
@@ -275,35 +273,12 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		runOnUiThread(new Runnable() {
 			public void run() {
 				updateView();
-				//requestDetails();
 			}
 		});
-	}
-
-	protected void requestDetails() {
-		ArrayList<Friend> friends = Friend.allFriends(getBaseContext());
-		AsyncTask<ArrayList<Friend>, Void, Void> latestLoadTask = new FacebookBatchRequest(getBaseContext(), facebook, this);
-		latestLoadTask.execute(friends);
 	}
 
 	public void friendRequestDidFail() {
 		Log.e(TAG, "Failed to get friends list");
-	}
-
-	public void friendDetailsLoading() {
-
-	}
-
-	public void friendDetailsLoadCancelled() {
-
-	}
-
-	public void friendDetailsLoaded() {
-		runOnUiThread(new Runnable() {
-			public void run() {
-				updateView();
-			}
-		});
 	}
 
 }

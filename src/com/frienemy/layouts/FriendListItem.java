@@ -29,10 +29,8 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 
 	public void setFriend(Friend friend) {
 		findViews();
-
 		nameTextView.setText(friend.name);
-		//relationshipStatusTextView.setText(friend.relationshipStatus);
-		relationshipStatusTextView.setText("");
+		relationshipStatusTextView.setText(friend.relationshipStatus);
 		switch (friend.frienemyStatus) {
 			case 0:
 				frienemyStatusTextView.setText("Friend");

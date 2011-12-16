@@ -49,7 +49,6 @@ public class FriendsRequestListener implements RequestListener {
 			final JSONObject json = new JSONObject(response);
 			JSONArray d = json.getJSONArray("data");
 			int l = (d != null ? d.length() : 0);
-			Log.d(TAG, "Friend Array length(): " + l);
 			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null);
 			FrienemiesListString="";
 			for (int f=0; f<fetchedFriends.size(); f++) {
@@ -82,7 +81,6 @@ public class FriendsRequestListener implements RequestListener {
 			setFriends(fetchedFriends);
 			responder.friendRequestDidFinish(l);
 		} catch (JSONException e) {
-			Log.w(TAG, "JSON Error in response");
 			responder.friendRequestDidFail();
 		}
 	}
