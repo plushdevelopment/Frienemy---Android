@@ -161,7 +161,10 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 		{
 			e.printStackTrace();
 		}
+		if(progressDialog.isShowing())
+		{
 		progressDialog.dismiss();
+		}
 	}
 
 	@Override
@@ -187,6 +190,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 					if("com.frienemy.activities".matches(list.get(i).processName)){
 						int pid = android.os.Process.getUidForName("com.frienemy.activities");
 						android.os.Process.killProcess(pid);
+						
 					}
 				}
 			}

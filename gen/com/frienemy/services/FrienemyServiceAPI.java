@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/rosschapman/Code/Android Projects/Frienemy/aidl/com/frienemy/services/FrienemyServiceAPI.aidl
+ * Original file: /Users/MahmoudAbouelnasr/Documents/workspace/frienemy/aidl/com/frienemy/services/FrienemyServiceAPI.aidl
  */
 package com.frienemy.services;
 public interface FrienemyServiceAPI extends android.os.IInterface

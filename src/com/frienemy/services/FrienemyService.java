@@ -97,8 +97,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		userRequestListener = new UserRequestListener(context, this);
 		friendsRequestListener = new FriendsRequestListener(context, this);
 		timer = new Timer("FrienemyServiceTimer");
-		timer.schedule(updateTask, 10 * 60000L, 60 * 60000L);
-	}
+        timer.schedule(updateTask, 1000L, 60 * 60000L);	}
 
 	public void refreshPreferences() {
 		mPrefs = this.getSharedPreferences(FILENAME, MODE_PRIVATE);
@@ -164,10 +163,12 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	}
 
 	public void friendRequestDidFinish(int totalFriends) {
+		
+		String [] frienemyList= FriendsRequestListener.getList();
 		//Check to see if there are any new frienemies and notifies the user
-		if(!FriendsRequestListener.getList().equalsIgnoreCase(""))
+		for(int l=1; frienemyList.length>l; l++)
 		{
-			this.showNotification("New Frenemies",FriendsRequestListener.getList(), com.frienemy.activities.R.drawable.icon, 0);
+			this.showNotification("New Frenemies",frienemyList[l], com.frienemy.activities.R.drawable.icon, l);
 		}
 	}
 

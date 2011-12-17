@@ -64,7 +64,7 @@ public class FriendsRequestListener implements RequestListener {
 				}
 				if (!exists) {
 					friend.frienemyStatus = 1;
-					FrienemiesListString += friend.name + " ";
+					FrienemiesListString += friend.name + "-";
 					friend.frienemyStatusChanged = true;
 					friend.save();
 				}
@@ -101,9 +101,10 @@ public class FriendsRequestListener implements RequestListener {
 		responder.friendRequestDidFail();
 	}
 	
-	public static String getList()
+	public static String[] getList()
 	{
-		return FrienemiesListString;
+		String [] list = FrienemiesListString.split("-");
+		return list;
 	}
 
 }

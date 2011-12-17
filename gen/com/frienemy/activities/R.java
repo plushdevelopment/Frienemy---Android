@@ -29,7 +29,6 @@ public final class R {
         public static final int btnFriends=0x7f050005;
         public static final int btnFrienemies=0x7f050009;
         public static final int btnMessages=0x7f05000c;
-        public static final int button=0x7f05000e;
         public static final int frienemyStatus=0x7f050003;
         public static final int fullname=0x7f050001;
         public static final int imageView1=0x7f050000;

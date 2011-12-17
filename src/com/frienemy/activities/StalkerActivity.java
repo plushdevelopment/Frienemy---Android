@@ -85,8 +85,6 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		v.setBackgroundResource( R.drawable.gray_gradient);
 		v.setOnClickListener( this );
 		
-		Button refresh= (Button)findViewById(R.id.button);
-		refresh.setOnClickListener(this);
 	}
 	
 	protected void updateView() {
@@ -102,7 +100,10 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		{
 			e.printStackTrace();
 		}
+		if(progressDialog.isShowing())
+		{
 		progressDialog.dismiss();
+		}
 	}
 
 	public void onClick(View v) {
@@ -124,8 +125,6 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 			//case R.id.postbutton:
 			//	post();
 			//break;
-		case R.id.button:
-			updateView();
 		default:
 
 		}
