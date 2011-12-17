@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 import com.frienemy.activities.EnemyActivity;
+import com.frienemy.models.Friend;
 import com.frienemy.requests.FriendsRequestListener;
 import com.frienemy.requests.FriendsRequestListener.FriendRequestListenerResponder;
 import com.frienemy.requests.UserRequestListener;
@@ -163,12 +164,17 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	}
 
 	public void friendRequestDidFinish(int totalFriends) {
-		
+		String[] relationshipList = Friend.getList();
 		String [] frienemyList= FriendsRequestListener.getList();
+		int l=1;
 		//Check to see if there are any new frienemies and notifies the user
-		for(int l=1; frienemyList.length>l; l++)
+		for( l=1; frienemyList.length>l; l++)
 		{
 			this.showNotification("New Frenemy",frienemyList[l], com.frienemy.activities.R.drawable.icon, l);
+		}
+		for(int k=0; frienemyList.length>k; k++)
+		{
+			this.showNotification("New Relationship Status",relationshipList[k], com.frienemy.activities.R.drawable.icon, k+l);
 		}
 	}
 

@@ -18,6 +18,8 @@ import com.activeandroid.annotation.Table;
 public class Friend extends ActiveRecordBase<Friend> {
 	
 	private static final String TAG = Friend.class.getSimpleName();
+	private static String RelationshipChangedListString = "";
+
 	
 	@Column(name = "uid")
 	public String uid;
@@ -71,6 +73,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 	
 	public static Friend friendInContextForJSONObject(Context context, JSONObject object) {
 		Friend friend = null;
+		RelationshipChangedListString="";
 		try {
 			String n = object.getString("name");
 			String uid = object.getString("id");
@@ -86,6 +89,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 			String relationshipStatus = object.getString("relationship_status");
 			if (relationshipStatus.equals(friend.relationshipStatus) == false) {
 				friend.relationshipStatusChanged = true;
+				RelationshipChangedListString+=friend.name + "-";
 			}
 			friend.relationshipStatus = relationshipStatus;
 			} catch (JSONException e) {
@@ -106,6 +110,11 @@ public class Friend extends ActiveRecordBase<Friend> {
 			
 		}
 		return url;
+	}
+	public static String[] getList()
+	{
+		String [] list = RelationshipChangedListString.split("-");
+		return list;
 	}
 
 }
