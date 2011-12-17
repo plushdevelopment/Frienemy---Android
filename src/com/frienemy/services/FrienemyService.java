@@ -168,7 +168,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		//Check to see if there are any new frienemies and notifies the user
 		for(int l=1; frienemyList.length>l; l++)
 		{
-			this.showNotification("New Frenemies",frienemyList[l], com.frienemy.activities.R.drawable.icon, l);
+			this.showNotification("New Frenemy",frienemyList[l], com.frienemy.activities.R.drawable.icon, l);
 		}
 	}
 
