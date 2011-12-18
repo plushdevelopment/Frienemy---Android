@@ -11,13 +11,18 @@
         android:label="@string/app_name" android:name="com.frienemy.FrienemyApplication">
         <meta-data android:name="AA_DB_NAME" android:value="Frienemy.db" />
         <meta-data android:name="AA_DB_VERSION" android:value="1" />
+        <activity 
+            android:label="@string/app_name"
+            android:name=".LicenseCheckActivity"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
         <activity
             android:label="@string/app_name"
             android:name="com.frienemy.activities.FrienemyActivity" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>       
             <activity
         		android:name="com.frienemy.activities.EnemyActivity" >
@@ -48,4 +53,5 @@
     </application>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="com.android.vending.CHECK_LICENSE" />
 </manifest>

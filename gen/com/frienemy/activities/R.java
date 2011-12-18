@@ -47,7 +47,19 @@ public final class R {
         public static final int stalkers=0x7f030003;
     }
     public static final class string {
-        public static final int app_name=0x7f040001;
-        public static final int hello=0x7f040000;
+        public static final int allow=0x7f040004;
+        public static final int app_name=0x7f040000;
+        public static final int application_error=0x7f040005;
+        public static final int buy_button=0x7f040008;
+        /**  License checking status messages 
+         */
+        public static final int check_license=0x7f040001;
+        public static final int checking_license=0x7f040002;
+        public static final int dont_allow=0x7f040003;
+        public static final int quit_button=0x7f040009;
+        public static final int unlicensed_dialog_body=0x7f040007;
+        /**  Unlicensed dialog messages 
+         */
+        public static final int unlicensed_dialog_title=0x7f040006;
     }
 }
