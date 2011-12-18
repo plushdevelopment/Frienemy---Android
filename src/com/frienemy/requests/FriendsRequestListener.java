@@ -18,7 +18,7 @@ import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.frienemy.models.Friend;
 
 public class FriendsRequestListener implements RequestListener {
-	
+
 	public interface FriendRequestListenerResponder {
 		public void friendRequestDidFinish(int totalFriends);
 		public void friendRequestDidFail();
@@ -29,7 +29,7 @@ public class FriendsRequestListener implements RequestListener {
 	private FriendRequestListenerResponder responder;
 	private List<Friend> friends;
 	private static String FrienemiesListString = "";
-	
+
 
 	public FriendsRequestListener(Context context, FriendRequestListenerResponder responder) {
 		this.context = context;
@@ -50,6 +50,10 @@ public class FriendsRequestListener implements RequestListener {
 			JSONArray d = json.getJSONArray("data");
 			int l = (d != null ? d.length() : 0);
 			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null);
+			if (fetchedFriends.size() < 1) {
+				saveFirstFriendsList(d);
+				return;
+			}
 			FrienemiesListString="";
 			for (int f=0; f<fetchedFriends.size(); f++) {
 				boolean exists = false;
@@ -85,6 +89,21 @@ public class FriendsRequestListener implements RequestListener {
 		}
 	}
 
+	private void saveFirstFriendsList(JSONArray array) {
+		FrienemiesListString="";
+		int l = (array != null ? array.length() : 0);
+		for (int i=0; i<l; i++) {
+			try {
+				JSONObject o = array.getJSONObject(i);
+				Friend friend = new Friend(context, o);
+				friend.save();
+			} catch (JSONException e) {
+
+			}
+		}
+		responder.friendRequestDidFinish(l);
+	}
+
 	public void onIOException(IOException e, Object state) {
 		responder.friendRequestDidFail();
 	}
@@ -100,7 +119,7 @@ public class FriendsRequestListener implements RequestListener {
 	public void onFacebookError(FacebookError e, Object state) {
 		responder.friendRequestDidFail();
 	}
-	
+
 	public static String[] getList()
 	{
 		String [] list = FrienemiesListString.split("-");

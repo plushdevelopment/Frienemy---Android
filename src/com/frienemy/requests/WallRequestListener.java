@@ -19,7 +19,7 @@ import com.frienemy.models.Like;
 import com.frienemy.models.Post;
 
 public class WallRequestListener implements RequestListener {
-	
+
 	public interface WallRequestListenerResponder {
 		public void wallRequestDidFinish();
 		public void wallRequestDidFail();
@@ -28,7 +28,7 @@ public class WallRequestListener implements RequestListener {
 	private static final String TAG = WallRequestListener.class.getSimpleName();
 	private Context context;
 	private WallRequestListenerResponder responder;
-	
+
 	public WallRequestListener(Context context, WallRequestListenerResponder responder) {
 		this.context = context;
 		this.responder = responder;
@@ -129,16 +129,20 @@ public class WallRequestListener implements RequestListener {
 				try {
 					JSONObject fromObject = o.getJSONObject("from");
 					Friend fromFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", fromObject.getString("id"));
-					fromFriend.stalkerRank += 1;
-					fromFriend.save();
-					post.fromFriend = fromFriend;
+					if (null != fromFriend) {
+						fromFriend.stalkerRank += 1;
+						fromFriend.save();
+						post.fromFriend = fromFriend;
+					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 				try {
 					JSONObject toObject = o.getJSONObject("to");
 					Friend toFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", toObject.getString("id"));
-					post.toFriend = toFriend;
+					if (null != toFriend) {
+						post.toFriend = toFriend;
+					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -153,10 +157,12 @@ public class WallRequestListener implements RequestListener {
 						JSONArray likesArray = likesObject.getJSONArray("data");
 						for (int x=0; x<likesArray.length(); x++) {
 							Like like = new Like(context);
-							Friend likeFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", likesArray.getJSONObject(x).getString("id")); 
-							likeFriend.stalkerRank += 1;
-							likeFriend.save();
-							like.friend = likeFriend;
+							Friend likeFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", likesArray.getJSONObject(x).getString("id"));
+							if (null != likeFriend) {
+								likeFriend.stalkerRank += 1;
+								likeFriend.save();
+								like.friend = likeFriend;
+							}
 							like.post = post;
 							like.save();
 						}
@@ -178,10 +184,14 @@ public class WallRequestListener implements RequestListener {
 									JSONObject commentFromFriend = commentsArray.getJSONObject(x).getJSONObject("from");
 									try {
 										Friend commentFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", commentFromFriend.getString("id"));
-										commentFriend.stalkerRank += 1;
-										commentFriend.save();
-										comment.fromFriend = commentFriend;
-										comment.toFriend = post.fromFriend;
+										if (null != commentFriend) {
+											commentFriend.stalkerRank += 1;
+											commentFriend.save();
+											comment.fromFriend = commentFriend;
+										}
+										if (null != post.fromFriend) {
+											comment.toFriend = post.fromFriend;
+										}
 										comment.post = post;
 										try {
 											comment.message = commentsArray.getJSONObject(x).getString("message");

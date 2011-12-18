@@ -120,7 +120,11 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 			          FrienemyActivity.this,
 			          "Loading...",
 			          "Loading your friends list from Facebook");
-			//setProgressBarIndeterminateVisibility(true);
+			// Get the user's friend list
+			Bundle parameters = new Bundle();
+			parameters.putString("fields", "id,name,relationship_status");
+			asyncRunner.request("me/friends", parameters, friendsRequestListener);
+			
 			// First, lets get the info about the current user
 			asyncRunner.request("me", userRequestListener);
 		}
@@ -259,10 +263,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener, U
 	}
 
 	public void userRequestDidFinish() {
-		// Get the user's friend list
-		Bundle parameters = new Bundle();
-		parameters.putString("fields", "id,name,relationship_status");
-		asyncRunner.request("me/friends", parameters, friendsRequestListener);
+		
 	}
 
 	public void userRequestDidFail() {
