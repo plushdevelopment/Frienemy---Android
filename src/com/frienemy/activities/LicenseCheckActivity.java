@@ -58,8 +58,8 @@ public class LicenseCheckActivity extends Activity {
    private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2suz1G622Qu1z5XINL8QB/AeZmBOOByV6GxWQJ53M5aeUHFEvwKQMGNNZ7CQLSkSRIKkvjtWRFQ7bkOvauDAwhw/TBKyK0y+j/diIMc+7W0uAshIay0XIR0+rWCqcje1cxGk6d77uNYUDF7OiPoL9Xm/AZ0/mtyLz4Z3hNRA0D43M9T6z7qxcBPkD35napafRZXtadrQ5siH+FDlyCHyu9I65Dmqtar+9VLE9/nEHZfU65sqblrZaWs4A3WrePSRU/6SkTg0OfIBeIv7YF0qt/SHgmdeWgvcUKNOitFyqlSVrw3BTFD/fjGJWj8x14dxlFS76YrHmIOWazy6sakbEQIDAQAB";
 
    private static final byte[] SALT = new byte[] {
-       -46, 65, 30, -128, -103, -57, 74, -64, 51, 88, -95, -45, 77, -117, -36, -113, -11, 32, -64,
-       89
+       -4, 60, 32, -38, -3, -57, 74, -64, 51, 89, -95, -43, 24, -117, -36, -113, -11, 33, -64,
+       90
    };
    private LicenseChecker mChecker;
 
