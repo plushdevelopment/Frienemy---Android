@@ -1,5 +1,7 @@
 package com.frienemy;
 
-public class FrienemyApplication extends com.activeandroid.Application  {
+import greendroid.app.GDApplication;
+
+public class FrienemyApplication extends GDApplication  {
 
 }
