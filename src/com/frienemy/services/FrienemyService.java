@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 import com.frienemy.activities.EnemyActivity;
+import com.frienemy.activities.FrienemyActivity;
 import com.frienemy.models.Friend;
 import com.frienemy.requests.FriendsRequestListener;
 import com.frienemy.requests.FriendsRequestListener.FriendRequestListenerResponder;
@@ -137,13 +138,21 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 
 		notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		Intent enemyIntent = new Intent(FrienemyService.this,EnemyActivity.class);
+		Intent friendIntent = new Intent(FrienemyService.this,FrienemyActivity.class);
 
 		// Set the icon, scrolling text and time stamp
 		Notification notification = new Notification(iconId, message, System.currentTimeMillis());
 		PendingIntent contentIntent;
 
 		// The PendingIntent to launch our activity if the user selects this notification
+		if(title.equalsIgnoreCase("New Frenemy"))
+		{
 		contentIntent = PendingIntent.getActivity(this, 0, enemyIntent, 0);
+		}
+		else
+		{
+			contentIntent = PendingIntent.getActivity(this, 0, friendIntent, 0);	
+		}
 
 		// Set the info for the views that show in the notification panel.
 		notification.setLatestEventInfo(this, title, message, contentIntent);
@@ -172,9 +181,12 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		{
 			this.showNotification("New Frenemy",frienemyList[l], com.frienemy.activities.R.drawable.icon, l);
 		}
-		for(int k=0; frienemyList.length>k; k++)
+		for(int k=0; relationshipList.length>k; k++)
 		{
+			if(!relationshipList[k].equalsIgnoreCase(""))
+			{
 			this.showNotification("New Relationship Status",relationshipList[k], com.frienemy.activities.R.drawable.icon, k+l);
+			}
 		}
 	}
 
