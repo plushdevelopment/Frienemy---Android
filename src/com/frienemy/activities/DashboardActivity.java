@@ -6,9 +6,9 @@ import greendroid.widget.ActionBar;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.ActionBarItem.Type;
 
-public class MainActivity extends GDActivity {
+public class DashboardActivity extends GDActivity {
 
-	public MainActivity() {
+	public DashboardActivity() {
 		super(ActionBar.Type.Dashboard);
 	}
 

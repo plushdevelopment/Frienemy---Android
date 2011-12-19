@@ -127,7 +127,7 @@ public class LicenseCheckActivity extends Activity {
    }
 
    private void startMainActivity() {
-      startActivity(new Intent(this, MainActivity.class));
+      startActivity(new Intent(this, DashboardActivity.class));
       finish();
    }
 

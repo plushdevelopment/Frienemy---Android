@@ -7,8 +7,8 @@ import java.util.TimerTask;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
-import com.frienemy.activities.EnemyActivity;
 import com.frienemy.activities.FrienemyActivity;
+import com.frienemy.activities.FriendsActivity;
 import com.frienemy.models.Friend;
 import com.frienemy.requests.FriendsRequestListener;
 import com.frienemy.requests.FriendsRequestListener.FriendRequestListenerResponder;
@@ -137,8 +137,8 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	private void showNotification(String title, String message, int iconId, int notificationType) {
 
 		notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		Intent enemyIntent = new Intent(FrienemyService.this,EnemyActivity.class);
-		Intent friendIntent = new Intent(FrienemyService.this,FrienemyActivity.class);
+		Intent enemyIntent = new Intent(FrienemyService.this,FrienemyActivity.class);
+		Intent friendIntent = new Intent(FrienemyService.this,FriendsActivity.class);
 
 		// Set the icon, scrolling text and time stamp
 		Notification notification = new Notification(iconId, message, System.currentTimeMillis());

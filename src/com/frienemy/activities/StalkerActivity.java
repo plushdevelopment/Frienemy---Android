@@ -111,11 +111,11 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		switch (v.getId())
 		{
 		case R.id.btnFriends:
-			i = new Intent(StalkerActivity.this, FrienemyActivity.class);
+			i = new Intent(StalkerActivity.this, FriendsActivity.class);
 			startActivity(i);
 			break;
 		case R.id.btnFrienemies:
-			i = new Intent(StalkerActivity.this, EnemyActivity.class);
+			i = new Intent(StalkerActivity.this, FrienemyActivity.class);
 			startActivity(i);
 
 			break;
