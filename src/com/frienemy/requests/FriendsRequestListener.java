@@ -83,9 +83,13 @@ public class FriendsRequestListener implements RequestListener {
 				}
 			}
 			setFriends(fetchedFriends);
-			responder.friendRequestDidFinish(l);
+			if (responder != null) {
+				responder.friendRequestDidFinish(l);
+			}
 		} catch (JSONException e) {
-			responder.friendRequestDidFail();
+			if (responder != null) {
+				responder.friendRequestDidFail();
+			}
 		}
 	}
 
@@ -101,23 +105,33 @@ public class FriendsRequestListener implements RequestListener {
 
 			}
 		}
-		responder.friendRequestDidFinish(l);
+		if (responder != null) {
+			responder.friendRequestDidFinish(l);
+		}
 	}
 
 	public void onIOException(IOException e, Object state) {
-		responder.friendRequestDidFail();
+		if (responder != null) {
+			responder.friendRequestDidFail();
+		}
 	}
 
 	public void onFileNotFoundException(FileNotFoundException e, Object state) {
-		responder.friendRequestDidFail();
+		if (responder != null) {
+			responder.friendRequestDidFail();
+		}
 	}
 
 	public void onMalformedURLException(MalformedURLException e, Object state) {
-		responder.friendRequestDidFail();
+		if (responder != null) {
+			responder.friendRequestDidFail();
+		}
 	}
 
 	public void onFacebookError(FacebookError e, Object state) {
-		responder.friendRequestDidFail();
+		if (responder != null) {
+			responder.friendRequestDidFail();
+		}
 	}
 
 	public static String[] getList()

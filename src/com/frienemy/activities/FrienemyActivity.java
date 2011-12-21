@@ -58,7 +58,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 		v.setBackgroundResource( R.drawable.button_selector );
 		v.setOnClickListener( this );
 	}
-
+	
 	protected void updateView() {
 		try{
 			ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "frienemyStatus==1 AND isCurrentUser==0", "name ASC");
@@ -72,7 +72,10 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 		{
 			e.printStackTrace();
 		}
-		progressDialog.dismiss();
+		if((progressDialog != null) && (progressDialog.isShowing()))
+		{
+			progressDialog.dismiss();
+		}
 	}
 
 	public void onClick(View v) {

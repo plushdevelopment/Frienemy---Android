@@ -11,9 +11,12 @@ import com.frienemy.activities.FrienemyActivity;
 import com.frienemy.activities.FriendsActivity;
 import com.frienemy.models.Friend;
 import com.frienemy.requests.FriendsRequestListener;
+import com.frienemy.requests.WallRequestListener;
 import com.frienemy.requests.FriendsRequestListener.FriendRequestListenerResponder;
 import com.frienemy.requests.UserRequestListener;
 import com.frienemy.requests.UserRequestListener.UserRequestListenerResponder;
+import com.frienemy.requests.WallRequestListener.WallRequestListenerResponder;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,7 +29,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-public class FrienemyService extends Service implements UserRequestListenerResponder, FriendRequestListenerResponder {
+public class FrienemyService extends Service implements UserRequestListenerResponder, FriendRequestListenerResponder, WallRequestListenerResponder {
 
 	private NotificationManager notificationManager;
 
@@ -39,6 +42,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	private Context context;
 	private UserRequestListener userRequestListener;
 	private FriendsRequestListener friendsRequestListener;
+	private WallRequestListener wallRequestListener;
 	private List<FrienemyServiceListener> listeners = new ArrayList<FrienemyServiceListener>();
 
 	private FrienemyServiceAPI.Stub apiEndpoint = new FrienemyServiceAPI.Stub() {
@@ -75,7 +79,6 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 				// First, lets get the info about the current user
 				asyncRunner.request("me", userRequestListener);
 			}
-			notifyListeners();
 		}
 	};
 
@@ -98,6 +101,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		asyncRunner = new AsyncFacebookRunner(facebook);
 		userRequestListener = new UserRequestListener(context, this);
 		friendsRequestListener = new FriendsRequestListener(context, this);
+		wallRequestListener = new WallRequestListener(context, this);
 		timer = new Timer("FrienemyServiceTimer");
         timer.schedule(updateTask, 1000L, 60 * 60000L);	}
 
@@ -188,10 +192,24 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 			this.showNotification("New Relationship Status",relationshipList[k], com.frienemy.activities.R.drawable.icon, k+l);
 			}
 		}
+		
+		notifyListeners();
+		
+		// Get the user's wall
+		//asyncRunner.request("me/feed", wallRequestListener);
 	}
 
 	public void friendRequestDidFail() {
 		Log.e(TAG, "Failed to get friends list");
+	}
+
+	public void wallRequestDidFinish() {
+		notifyListeners();
+	}
+
+	public void wallRequestDidFail() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

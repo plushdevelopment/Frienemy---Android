@@ -4,15 +4,25 @@ import java.util.ArrayList;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
+import com.frienemy.FrienemyApplication;
+import com.frienemy.FrienemyApplication.StalkerListener;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
 import com.frienemy.requests.WallRequestListener;
 import com.frienemy.requests.WallRequestListener.WallRequestListenerResponder;
+import com.frienemy.services.FrienemyService;
+import com.frienemy.services.FrienemyServiceAPI;
+import com.frienemy.services.FrienemyServiceListener;
+
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,26 +41,59 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	private SharedPreferences mPrefs;
 	ArrayList<Friend> friends;
 	protected ProgressDialog progressDialog;
+	private FrienemyServiceAPI api;
+
+	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
+		public void handleFriendsUpdated() throws RemoteException {
+			runOnUiThread(new Runnable() {
+				public void run() {
+					updateView();
+				}
+			});
+		}
+	};
+
+	private ServiceConnection serviceConnection = new ServiceConnection() {
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			Log.i(TAG, "Service connection established");
+			// that's how we get the client side of the IPC connection
+			api = FrienemyServiceAPI.Stub.asInterface(service);
+			try {
+				api.addListener(collectorListener);
+			} catch (RemoteException e) {
+				Log.e(TAG, "Failed to add listener", e);
+			}
+		}
+
+		public void onServiceDisconnected(ComponentName name) {
+			Log.i(TAG, "Service connection closed");			
+		}
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.stalkers);
-		 TextView v = (TextView) findViewById(R.id.title);
-	        v.setText("Stalkers");
+		TextView v = (TextView) findViewById(R.id.title);
+		v.setText("Stalkers");
 		setUpListeners();
 		loadFriendsIfNotLoaded();
+
+		Intent intent = new Intent(FrienemyService.class.getName()); 
+		startService(intent);
+		bindService(intent, serviceConnection, 0);
 	}
 
 	private void loadFriendsIfNotLoaded() {
-		if (null == getListAdapter()) {
+		updateView();
+		if ((null == friends) || (friends.size() < 1)) {
 			progressDialog = ProgressDialog.show(
 					StalkerActivity.this,
 					"Loading...",
 					"Loading your stalkers from Facebook");
-			getFacebookWall();
 		}
+		getFacebookWall();
 
 	}
 
@@ -84,25 +127,22 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		v = findViewById( R.id.stalkers );
 		v.setBackgroundResource( R.drawable.gray_gradient);
 		v.setOnClickListener( this );
-		
+
 	}
-	
+
 	protected void updateView() {
 		try{
-		ArrayList<Friend> friends = Friend.query(getBaseContext(), Friend.class, null, "isCurrentUser==0 AND stalkerRank > 0", "stalkerRank DESC");
-
-		list=(ListView)findViewById(android.R.id.list);
-		adapter=new FriendAdapter(this, friends);
-		list.setAdapter(adapter);
-		adapter.notifyDataSetChanged();
-		Log.i(TAG, "Friends count: " + friends.size());
-		}catch(Exception e)
-		{
+			friends = Friend.query(getBaseContext(), Friend.class, null, "isCurrentUser==0 AND stalkerRank > 0", "stalkerRank DESC");
+			list=(ListView)findViewById(android.R.id.list);
+			adapter=new FriendAdapter(this, friends);
+			list.setAdapter(adapter);
+			adapter.notifyDataSetChanged();
+			Log.i(TAG, "Friends count: " + friends.size());
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		if(progressDialog.isShowing())
-		{
-		progressDialog.dismiss();
+		if((progressDialog != null) && (progressDialog.isShowing())) {
+			progressDialog.dismiss();
 		}
 	}
 
@@ -132,9 +172,9 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 
 	public void wallRequestDidFinish() {
 		runOnUiThread(new Runnable() {
-		    public void run() {
-		    	updateView();
-		    }
+			public void run() {
+				updateView();
+			}
 		});
 	}
 

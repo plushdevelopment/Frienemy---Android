@@ -48,13 +48,17 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 	private UserRequestListener userRequestListener;
 	private FriendsRequestListener friendsRequestListener;
 	protected ProgressDialog progressDialog;
-
+	private ArrayList<Friend> friends;
 	FriendAdapter adapter;
 	ListView list;
 
 	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
 		public void handleFriendsUpdated() throws RemoteException {
-
+			runOnUiThread(new Runnable() {
+				public void run() {
+					updateView();
+				}
+			});
 		}
 	};
 
@@ -83,7 +87,7 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 		TextView v = (TextView) findViewById(R.id.title);
 		v.setText("Friends");
 		setUpListeners();
-
+		
 		asyncRunner = new AsyncFacebookRunner(facebook);
 		userRequestListener = new UserRequestListener(getBaseContext(), this);
 		friendsRequestListener = new FriendsRequestListener(getBaseContext(), this);
@@ -115,11 +119,12 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 	}
 
 	private void loadFriendsIfNotLoaded() {
-		if (null == getListAdapter()) {
+		updateView();
+		if ((null == friends) || (friends.size() < 1)) {
 			progressDialog = ProgressDialog.show(
-			          FriendsActivity.this,
-			          "Loading...",
-			          "Loading your friends list from Facebook");
+					FriendsActivity.this,
+					"Loading...",
+					"Loading your friends list from Facebook");
 			// Get the user's friend list
 			Bundle parameters = new Bundle();
 			parameters.putString("fields", "id,name,relationship_status");
@@ -130,7 +135,7 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 		}
 		
 	}
-
+	
 
 
 	//Listeners should be implemented in onClick method
@@ -155,19 +160,18 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 
 	protected void updateView() {
 		try{
-			ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "name ASC");
+			friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "name ASC");
 			list=(ListView)findViewById(android.R.id.list);
 			adapter=new FriendAdapter(this, friends);
 			list.setAdapter(adapter);
 			adapter.notifyDataSetChanged();
 			Log.i(TAG, "Friends count: " + friends.size());
-		}catch(Exception e)
-		{
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(progressDialog.isShowing())
+		if((progressDialog != null) && (progressDialog.isShowing()))
 		{
-		progressDialog.dismiss();
+			progressDialog.dismiss();
 		}
 	}
 
@@ -194,7 +198,7 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 					if("com.frienemy.activities".matches(list.get(i).processName)){
 						int pid = android.os.Process.getUidForName("com.frienemy.activities");
 						android.os.Process.killProcess(pid);
-						
+
 					}
 				}
 			}
@@ -271,10 +275,6 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 	}
 
 	public void friendRequestDidFinish(int totalFriends) {
-		try {
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		runOnUiThread(new Runnable() {
 			public void run() {
 				updateView();

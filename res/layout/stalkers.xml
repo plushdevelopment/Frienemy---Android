@@ -8,13 +8,13 @@
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
         android:background="@drawable/gradientstatus">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="TextView"
