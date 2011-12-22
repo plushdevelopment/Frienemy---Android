@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
+import com.flurry.android.FlurryAgent;
 import com.frienemy.FrienemyApplication;
 import com.frienemy.FrienemyApplication.StalkerListener;
 import com.frienemy.adapters.FriendAdapter;
@@ -83,6 +84,18 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 		Intent intent = new Intent(FrienemyService.class.getName()); 
 		startService(intent);
 		bindService(intent, serviceConnection, 0);
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, "EB7H7EBXI7Z7CM21DJSM");
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 
 	private void loadFriendsIfNotLoaded() {

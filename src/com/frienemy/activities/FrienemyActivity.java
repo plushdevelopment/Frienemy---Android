@@ -2,6 +2,7 @@ package com.frienemy.activities;
 
 import java.util.ArrayList;
 
+import com.flurry.android.FlurryAgent;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
 import android.app.ListActivity;
@@ -31,6 +32,18 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 		v.setText("Frienemies");
 		setUpListeners();
 		loadFriendsIfNotLoaded();
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, "EB7H7EBXI7Z7CM21DJSM");
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 
 	private void loadFriendsIfNotLoaded() {

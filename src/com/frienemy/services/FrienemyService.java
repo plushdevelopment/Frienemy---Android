@@ -103,7 +103,8 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		friendsRequestListener = new FriendsRequestListener(context, this);
 		wallRequestListener = new WallRequestListener(context, this);
 		timer = new Timer("FrienemyServiceTimer");
-        timer.schedule(updateTask, 1000L, 60 * 60000L);	}
+		timer.schedule(updateTask, 1000L, 60 * 60000L);
+	}
 
 	public void refreshPreferences() {
 		mPrefs = this.getSharedPreferences(FILENAME, MODE_PRIVATE);
@@ -151,7 +152,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		// The PendingIntent to launch our activity if the user selects this notification
 		if(title.equalsIgnoreCase("New Frenemy"))
 		{
-		contentIntent = PendingIntent.getActivity(this, 0, enemyIntent, 0);
+			contentIntent = PendingIntent.getActivity(this, 0, enemyIntent, 0);
 		}
 		else
 		{
@@ -189,12 +190,12 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		{
 			if(!relationshipList[k].equalsIgnoreCase(""))
 			{
-			this.showNotification("New Relationship Status",relationshipList[k], com.frienemy.activities.R.drawable.icon, k+l);
+				this.showNotification("New Relationship Status",relationshipList[k], com.frienemy.activities.R.drawable.icon, k+l);
 			}
 		}
-		
+
 		notifyListeners();
-		
+
 		// Get the user's wall
 		//asyncRunner.request("me/feed", wallRequestListener);
 	}
@@ -209,7 +210,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 
 	public void wallRequestDidFail() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

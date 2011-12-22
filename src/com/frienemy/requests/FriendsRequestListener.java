@@ -66,7 +66,7 @@ public class FriendsRequestListener implements RequestListener {
 						break;
 					}
 				}
-				if (!exists) {
+				if (!exists && friend.frienemyStatus != 1) {
 					friend.frienemyStatus = 1;
 					FrienemiesListString += friend.name + "-";
 					friend.frienemyStatusChanged = true;

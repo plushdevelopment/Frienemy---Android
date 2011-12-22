@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import com.facebook.android.*;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook.*;
+import com.flurry.android.FlurryAgent;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
 import com.frienemy.requests.FriendsRequestListener;
@@ -91,7 +92,7 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 		TextView v = (TextView) findViewById(R.id.title);
 		v.setText("Friends");
 		setUpListeners();
-		
+
 		asyncRunner = new AsyncFacebookRunner(facebook);
 		userRequestListener = new UserRequestListener(getBaseContext(), this);
 		friendsRequestListener = new FriendsRequestListener(getBaseContext(), this);
@@ -99,7 +100,12 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 		Intent intent = new Intent(FrienemyService.class.getName()); 
 		startService(intent);
 		bindService(intent, serviceConnection, 0);
+	}
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 		/*
 		 * Get existing access_token if any
 		 */
@@ -122,6 +128,18 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 		}
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, "EB7H7EBXI7Z7CM21DJSM");
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
+	}
+
 	private void loadFriendsIfNotLoaded() {
 		updateView();
 		if ((null == friends) || (friends.size() < 1)) {
@@ -133,13 +151,13 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 			Bundle parameters = new Bundle();
 			parameters.putString("fields", "id,name,relationship_status");
 			asyncRunner.request("me/friends", parameters, friendsRequestListener);
-			
+
 			// First, lets get the info about the current user
 			asyncRunner.request("me", userRequestListener);
 		}
-		
+
 	}
-	
+
 
 
 	//Listeners should be implemented in onClick method
@@ -195,27 +213,27 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 		switch (item.getItemId()) {
 		case EXIT:
 			asyncRunner.logout(getBaseContext(), new RequestListener() {
-				
+
 				public void onMalformedURLException(MalformedURLException e, Object state) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void onIOException(IOException e, Object state) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void onFileNotFoundException(FileNotFoundException e, Object state) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void onFacebookError(FacebookError e, Object state) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void onComplete(String response, Object state) {
 					runOnUiThread(new Runnable() {
 						public void run() {
@@ -229,8 +247,15 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 		}
 		return false;
 	}
-	
+
 	public void logout() {
+		// Preferences
+		SharedPreferences.Editor editor = mPrefs.edit();
+		editor.putString("access_token", null);
+		editor.commit();
+		
+		facebook.setAccessToken(null);
+
 		stopService(new Intent(this, FrienemyService.class));
 		ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 		List<ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
@@ -304,7 +329,9 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 	}
 
 	public void userRequestDidFinish() {
-		
+		Friend user = Friend.querySingle(getBaseContext(), Friend.class, null, "isCurrentUser==1");
+		FlurryAgent.setUserId(user.name);
+		user = null;
 	}
 
 	public void userRequestDidFail() {
