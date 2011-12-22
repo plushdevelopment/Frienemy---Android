@@ -1,5 +1,8 @@
 package com.frienemy.activities;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import com.facebook.android.*;
+import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook.*;
 import com.frienemy.adapters.FriendAdapter;
 import com.frienemy.models.Friend;
@@ -190,25 +194,58 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case EXIT:
-			stopService(new Intent(this, FrienemyService.class));
-			ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-			List<ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
-			if(list != null){
-				for(int i=0;i<list.size();++i){
-					if("com.frienemy.activities".matches(list.get(i).processName)){
-						int pid = android.os.Process.getUidForName("com.frienemy.activities");
-						android.os.Process.killProcess(pid);
-
-					}
+			asyncRunner.logout(getBaseContext(), new RequestListener() {
+				
+				public void onMalformedURLException(MalformedURLException e, Object state) {
+					// TODO Auto-generated method stub
+					
 				}
-			}
-			Intent intent = new Intent(Intent.ACTION_MAIN);
-			intent.addCategory(Intent.CATEGORY_HOME);
-			startActivity(intent);
+				
+				public void onIOException(IOException e, Object state) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void onFileNotFoundException(FileNotFoundException e, Object state) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void onFacebookError(FacebookError e, Object state) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void onComplete(String response, Object state) {
+					runOnUiThread(new Runnable() {
+						public void run() {
+							logout();
+						}
+					});
+				}
+			});
 
 			return true;
 		}
 		return false;
+	}
+	
+	public void logout() {
+		stopService(new Intent(this, FrienemyService.class));
+		ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
+		if(list != null){
+			for(int i=0;i<list.size();++i){
+				if("com.frienemy.activities".matches(list.get(i).processName)){
+					int pid = android.os.Process.getUidForName("com.frienemy.activities");
+					android.os.Process.killProcess(pid);
+
+				}
+			}
+		}
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_HOME);
+		startActivity(intent);
 	}
 
 	private class LoginDialogListener implements DialogListener {
