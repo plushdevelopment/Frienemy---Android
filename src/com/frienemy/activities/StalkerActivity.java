@@ -1,5 +1,7 @@
 package com.frienemy.activities;
 
+import greendroid.app.GDActivity;
+
 import java.util.ArrayList;
 
 import com.facebook.android.AsyncFacebookRunner;
@@ -31,7 +33,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class StalkerActivity extends ListActivity implements OnClickListener, WallRequestListenerResponder { 
+public class StalkerActivity extends GDActivity implements OnClickListener, WallRequestListenerResponder { 
 
 	private static final String TAG = StalkerActivity.class.getSimpleName();
 	FriendAdapter adapter;
@@ -75,9 +77,8 @@ public class StalkerActivity extends ListActivity implements OnClickListener, Wa
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.stalkers);
-		TextView v = (TextView) findViewById(R.id.title);
-		v.setText("Stalkers");
+		setActionBarContentView(R.layout.main);
+		setTitle("Stalkers");
 		setUpListeners();
 		loadFriendsIfNotLoaded();
 

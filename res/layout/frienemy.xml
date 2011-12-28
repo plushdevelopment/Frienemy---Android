@@ -4,16 +4,17 @@
 	android:orientation="vertical" 
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent" 
-	android:fitsSystemWindows="true">
+	android:fitsSystemWindows="true"
+	android:background="#2e6290">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:text="TextView"
         android:textColor="#ffffff"
-        android:textSize="22dp"
-        android:background="@drawable/gradientstatus" android:gravity="center_horizontal"/>
+        android:textSize="16dp"
+        android:background="#2e6290" android:gravity="center_vertical" android:textStyle="bold" android:layout_marginLeft="45dp"/>
 	
 	<ListView android:id="@android:id/list" 
 			  android:layout_height="0dp"

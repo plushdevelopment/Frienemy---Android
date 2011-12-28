@@ -1,5 +1,11 @@
 package com.frienemy.activities;
 
+import greendroid.app.GDActivity;
+import greendroid.app.GDListActivity;
+import greendroid.widget.QuickAction;
+import greendroid.widget.QuickActionBar;
+import greendroid.widget.QuickActionWidget;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -10,10 +16,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnCreateContextMenuListener;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.app.ActivityManager;
@@ -40,7 +50,7 @@ import com.frienemy.services.FrienemyServiceListener;
 
 
 
-public class FriendsActivity extends ListActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder {
+public class FriendsActivity extends GDActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder, OnCreateContextMenuListener {
 
 	private static final String TAG = FriendsActivity.class.getSimpleName();
 	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
@@ -56,6 +66,8 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 	private ArrayList<Friend> friends;
 	FriendAdapter adapter;
 	ListView list;
+	
+	private QuickActionWidget mBar;
 
 	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
 		public void handleFriendsUpdated() throws RemoteException {
@@ -87,10 +99,14 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setActionBarContentView(R.layout.main);
+		setTitle("Friends");
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		TextView v = (TextView) findViewById(R.id.title);
-		v.setText("Friends");
+		
+		 mBar = new QuickActionBar(this);
+	        mBar.addQuickAction(new QuickAction(this, R.drawable.stalker, "Stalk"));
+	      
+	    
 		setUpListeners();
 
 		asyncRunner = new AsyncFacebookRunner(facebook);
@@ -186,6 +202,7 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 			list=(ListView)findViewById(android.R.id.list);
 			adapter=new FriendAdapter(this, friends);
 			list.setAdapter(adapter);
+			registerForContextMenu(list);
 			adapter.notifyDataSetChanged();
 			Log.i(TAG, "Friends count: " + friends.size());
 		}catch (Exception e) {
@@ -349,5 +366,22 @@ public class FriendsActivity extends ListActivity implements OnClickListener, Us
 	public void friendRequestDidFail() {
 		Log.e(TAG, "Failed to get friends list");
 	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	    ContextMenuInfo menuInfo) {
+	  if (v.getId()==android.R.id.list) {
+		 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+	  	mBar.show(v);
+	  	/*
+	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+	    menu.setHeaderTitle(friends.get(info.position).name);
+	    String[] menuItems = {"Stalk","User's Stalkers"};
+	    for (int i = 0; i<menuItems.length; i++) {
+	      menu.add(Menu.NONE, i, i, menuItems[i]);
+	    }*/
+	  }
+	}
+
 
 }

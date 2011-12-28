@@ -751,7 +751,6 @@ containing a value of this type.
         public static final int multiple=0x7f05000f;
         public static final int normal=0x7f050000;
         public static final int relationshipStatus=0x7f050017;
-        public static final int relativeLayout1=0x7f05003a;
         public static final int right=0x7f05000a;
         public static final int single=0x7f05000e;
         public static final int stalkers=0x7f050020;
