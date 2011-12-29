@@ -696,10 +696,13 @@ containing a value of this type.
         public static final int gradientstatus=0x7f020051;
         public static final int gray_gradient=0x7f020052;
         public static final int icon=0x7f020053;
-        public static final int refresh=0x7f020054;
-        public static final int row_gradient=0x7f020055;
-        public static final int stalker=0x7f020056;
-        public static final int white_line=0x7f020057;
+        public static final int info=0x7f020054;
+        public static final int refresh=0x7f020055;
+        public static final int row_gradient=0x7f020056;
+        public static final int stalker=0x7f020057;
+        public static final int stalkers=0x7f020058;
+        public static final int stalking=0x7f020059;
+        public static final int white_line=0x7f02005a;
     }
     public static final class id {
         public static final int bottom=0x7f050008;

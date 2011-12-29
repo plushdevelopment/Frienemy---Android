@@ -78,6 +78,7 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 	{
 		super.onCreate(savedInstanceState);
 		setActionBarContentView(R.layout.main);
+		this.getActionBar().removeViewAt(0);
 		setTitle("Stalkers");
 		setUpListeners();
 		loadFriendsIfNotLoaded();

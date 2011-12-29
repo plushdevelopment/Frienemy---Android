@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.app.ActivityManager;
@@ -104,7 +105,10 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		
 		 mBar = new QuickActionBar(this);
-	        mBar.addQuickAction(new QuickAction(this, R.drawable.stalker, "Stalk"));
+		 mBar.addQuickAction(new QuickAction(this, R.drawable.info, "Info"));
+	        mBar.addQuickAction(new QuickAction(this, R.drawable.stalkers, "Stalk"));
+	        mBar.addQuickAction(new QuickAction(this, R.drawable.stalking, "Stalkers"));
+	        this.getActionBar().removeViewAt(0);
 	      
 	    
 		setUpListeners();
@@ -194,6 +198,15 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 		//v = findViewById(R.id.postbutton);
 		//v.setOnClickListener(this);
+		
+		ListView k =(ListView) findViewById(android.R.id.list);
+		k.setOnItemClickListener(new OnItemClickListener() {
+
+	        public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+	           
+	        	mBar.show(v);
+	        }
+	    });
 	}
 
 	protected void updateView() {
@@ -367,10 +380,11 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		Log.e(TAG, "Failed to get friends list");
 	}
 	
-	@Override
+	/*@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	  if (v.getId()==android.R.id.list) {
+		  
 		 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	  	mBar.show(v);
 	  	/*
@@ -379,9 +393,9 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 	    String[] menuItems = {"Stalk","User's Stalkers"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
-	    }*/
+	    }
 	  }
-	}
+	}*/
 
 
 }
