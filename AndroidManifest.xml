@@ -38,6 +38,12 @@
             	<intent-filter >
             	</intent-filter>
         	</activity>
+        	<activity
+        		android:name=".InfoActivity"
+        		android:screenOrientation="portrait" >
+            	<intent-filter >
+            	</intent-filter>
+        	</activity>
         <service
       		android:name="com.frienemy.services.FrienemyService"
       		android:process=":remote">

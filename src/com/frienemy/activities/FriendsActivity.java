@@ -5,10 +5,12 @@ import greendroid.app.GDListActivity;
 import greendroid.widget.QuickAction;
 import greendroid.widget.QuickActionBar;
 import greendroid.widget.QuickActionWidget;
+import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +53,7 @@ import com.frienemy.services.FrienemyServiceListener;
 
 
 
-public class FriendsActivity extends GDActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder, OnCreateContextMenuListener {
+public class FriendsActivity extends GDActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder, OnCreateContextMenuListener, OnQuickActionClickListener {
 
 	private static final String TAG = FriendsActivity.class.getSimpleName();
 	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
@@ -67,6 +69,10 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 	private ArrayList<Friend> friends;
 	FriendAdapter adapter;
 	ListView list;
+	String name ="";
+	String relationshipStatus="";
+	String frienemyStatus="";
+	URL image= null;
 	
 	private QuickActionWidget mBar;
 
@@ -198,12 +204,29 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 		//v = findViewById(R.id.postbutton);
 		//v.setOnClickListener(this);
+		mBar.setOnQuickActionClickListener(this);
 		
 		ListView k =(ListView) findViewById(android.R.id.list);
 		k.setOnItemClickListener(new OnItemClickListener() {
 
 	        public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-	           
+	        	
+	        	name =friends.get(position).name;
+	        	
+	        	relationshipStatus = friends.get(position).relationshipStatus;
+	        	
+	        	  image = friends.get(position).getProfileImageURL();
+	        	
+	        	if(friends.get(position).frienemyStatus==1)
+	        	{
+	        	frienemyStatus = "Frienemy";
+	        	}
+	        	else
+	        	{
+	        		frienemyStatus = "Friend";
+	        	}
+	   		// AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)v;
+
 	        	mBar.show(v);
 	        }
 	    });
@@ -356,6 +379,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			//	post();
 			//break;
 		default:
+			
 
 		}
 	}
@@ -378,6 +402,30 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 	public void friendRequestDidFail() {
 		Log.e(TAG, "Failed to get friends list");
+	}
+
+	public void onQuickActionClicked(QuickActionWidget widget, int position) {
+		Intent k;
+		switch (position)
+		{
+		case 0:
+			k = new Intent(FriendsActivity.this, InfoActivity.class);
+			k.putExtra("name".trim(), name);
+			k.putExtra("relationship".trim(), relationshipStatus);
+			k.putExtra("frienemy".trim(), frienemyStatus);
+			k.putExtra("image".trim(), image.toString());
+			startActivity(k);
+			break;
+		case 1:
+			
+			break;
+		case 2:
+			
+			break;
+		
+		default:
+		}
+		
 	}
 	
 	/*@Override
