@@ -104,6 +104,8 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 			break;
 		case R.id.stalkers:
 			i = new Intent(FrienemyActivity.this, StalkerActivity.class);
+			Friend user = Friend.querySingle(this, Friend.class, null, "isCurrentUser==1");
+			i.putExtra("id", user.getId());
 			startActivity(i);
 			break;
 			//case R.id.postbutton:

@@ -114,8 +114,8 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		setUpListeners();
 
 		asyncRunner = new AsyncFacebookRunner(facebook);
-		userRequestListener = new UserRequestListener(getBaseContext(), this);
-		friendsRequestListener = new FriendsRequestListener(getBaseContext(), this);
+		userRequestListener = new UserRequestListener(this, this);
+		friendsRequestListener = new FriendsRequestListener(this, this);
 
 		Intent intent = new Intent(FrienemyService.class.getName()); 
 		startService(intent);
@@ -211,7 +211,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 	protected void updateView() {
 		try{
-			friends = Friend.query(this, Friend.class, null, "isCurrentUser==0", "name ASC");
+			friends = Friend.query(this, Friend.class, null, "isCurrentUser==0 AND frienemyStatus==0", "name ASC");
 			list=(ListView)findViewById(android.R.id.list);
 			adapter=new FriendAdapter(this, friends);
 			list.setAdapter(adapter);
@@ -348,6 +348,8 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			break;
 		case R.id.stalkers:
 			i = new Intent(FriendsActivity.this, StalkerActivity.class);
+			Friend user = Friend.querySingle(this, Friend.class, null, "isCurrentUser==1");
+			i.putExtra("id", user.getId());
 			startActivity(i);
 			break;
 			//case R.id.postbutton:
@@ -359,9 +361,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 	}
 
 	public void userRequestDidFinish() {
-		Friend user = Friend.querySingle(getBaseContext(), Friend.class, null, "isCurrentUser==1");
-		FlurryAgent.setUserId(user.name);
-		user = null;
+		
 	}
 
 	public void userRequestDidFail() {

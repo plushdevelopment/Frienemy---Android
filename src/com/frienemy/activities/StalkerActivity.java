@@ -7,17 +7,15 @@ import java.util.ArrayList;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 import com.flurry.android.FlurryAgent;
-import com.frienemy.FrienemyApplication;
-import com.frienemy.FrienemyApplication.StalkerListener;
-import com.frienemy.adapters.FriendAdapter;
+import com.frienemy.adapters.StalkerAdapter;
 import com.frienemy.models.Friend;
+import com.frienemy.models.StalkerRelationship;
 import com.frienemy.requests.WallRequestListener;
 import com.frienemy.requests.WallRequestListener.WallRequestListenerResponder;
 import com.frienemy.services.FrienemyService;
 import com.frienemy.services.FrienemyServiceAPI;
 import com.frienemy.services.FrienemyServiceListener;
 
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -29,22 +27,22 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class StalkerActivity extends GDActivity implements OnClickListener, WallRequestListenerResponder { 
 
 	private static final String TAG = StalkerActivity.class.getSimpleName();
-	FriendAdapter adapter;
+	StalkerAdapter adapter;
 	ListView list;
 	Facebook facebook = new Facebook("124132700987915");
 	private AsyncFacebookRunner asyncRunner;
 	String FILENAME = "AndroidSSO_data";
 	private SharedPreferences mPrefs;
-	ArrayList<Friend> friends;
+	ArrayList<StalkerRelationship> stalkerRelationships;
 	protected ProgressDialog progressDialog;
 	private FrienemyServiceAPI api;
+	public Friend user;
+	private WallRequestListener wallRequestListener;
 
 	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
 		public void handleFriendsUpdated() throws RemoteException {
@@ -81,13 +79,31 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 		this.getActionBar().removeViewAt(0);
 		setTitle("Stalkers");
 		setUpListeners();
+		
+		Intent intent = getIntent();
+		if (intent.hasExtra("id")) {
+			user = Friend.load(this, Friend.class, intent.getLongExtra("id", 0));
+		} else {
+			user = Friend.querySingle(this, Friend.class, null, "isCurrentUser==1");
+		}
+		
+		Intent serviceIntent = new Intent(FrienemyService.class.getName()); 
+		startService(serviceIntent);
+		bindService(serviceIntent, serviceConnection, 0);
+		
+		wallRequestListener = new WallRequestListener(this, user, this);
+		
 		loadFriendsIfNotLoaded();
-
-		Intent intent = new Intent(FrienemyService.class.getName()); 
-		startService(intent);
-		bindService(intent, serviceConnection, 0);
 	}
-	
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		
+	}
+
+
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -102,11 +118,11 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 
 	private void loadFriendsIfNotLoaded() {
 		updateView();
-		if ((null == friends) || (friends.size() < 1)) {
+		if ((null == stalkerRelationships) || (stalkerRelationships.size() < 1)) {
 			progressDialog = ProgressDialog.show(
 					StalkerActivity.this,
 					"Loading...",
-					"Loading your stalkers from Facebook");
+					"Loading " + user.name + "'s stalkers from Facebook");
 		}
 		getFacebookWall();
 
@@ -125,7 +141,7 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 		if (facebook.isSessionValid()) {
 			asyncRunner = new AsyncFacebookRunner(facebook);
 			// Get the user's wall
-			asyncRunner.request("me/feed", new WallRequestListener(getBaseContext(), this));
+			asyncRunner.request(user.uid + "/feed", wallRequestListener);
 		}
 	}
 
@@ -147,12 +163,12 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 
 	protected void updateView() {
 		try{
-			friends = Friend.query(getBaseContext(), Friend.class, null, "isCurrentUser==0 AND stalkerRank > 0", "stalkerRank DESC");
+			stalkerRelationships = user.stalkers();
 			list=(ListView)findViewById(android.R.id.list);
-			adapter=new FriendAdapter(this, friends);
+			adapter=new StalkerAdapter(this, stalkerRelationships);
 			list.setAdapter(adapter);
 			adapter.notifyDataSetChanged();
-			Log.i(TAG, "Friends count: " + friends.size());
+			Log.i(TAG, "Stalkers count: " + stalkerRelationships.size());
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

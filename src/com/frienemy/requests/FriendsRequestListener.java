@@ -70,7 +70,7 @@ public class FriendsRequestListener implements RequestListener {
 					friend.frienemyStatus = 1;
 					FrienemiesListString += friend.name + "-";
 					friend.frienemyStatusChanged = true;
-					friend.save();
+						friend.save();
 				}
 			}
 			for (int i=0; i<l; i++) {
@@ -78,7 +78,7 @@ public class FriendsRequestListener implements RequestListener {
 				Friend friend = Friend.friendInContextForJSONObject(context, o);
 				if (friend.frienemyStatus == 2) {
 					friend.frienemyStatus = 0;
-					friend.save();
+						friend.save();
 					fetchedFriends.add(friend);
 				}
 			}
@@ -100,7 +100,7 @@ public class FriendsRequestListener implements RequestListener {
 			try {
 				JSONObject o = array.getJSONObject(i);
 				Friend friend = new Friend(context, o);
-				friend.save();
+					friend.save();
 			} catch (JSONException e) {
 
 			}

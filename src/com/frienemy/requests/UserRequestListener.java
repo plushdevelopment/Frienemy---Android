@@ -36,7 +36,7 @@ public class UserRequestListener implements RequestListener {
 			Friend friend = Friend.friendInContextForJSONObject(context, json);
 			friend.isCurrentUser = true;
 			try {
-				friend.save();
+					friend.save();
 			}
 			catch (SQLiteException e) {
 				responder.userRequestDidFail();

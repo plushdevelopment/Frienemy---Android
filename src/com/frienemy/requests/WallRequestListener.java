@@ -17,6 +17,7 @@ import com.frienemy.models.Comment;
 import com.frienemy.models.Friend;
 import com.frienemy.models.Like;
 import com.frienemy.models.Post;
+import com.frienemy.models.StalkerRelationship;
 
 public class WallRequestListener implements RequestListener {
 
@@ -27,10 +28,12 @@ public class WallRequestListener implements RequestListener {
 
 	private static final String TAG = WallRequestListener.class.getSimpleName();
 	private Context context;
+	private Friend user;
 	private WallRequestListenerResponder responder;
 
-	public WallRequestListener(Context context, WallRequestListenerResponder responder) {
+	public WallRequestListener(Context context, Friend user, WallRequestListenerResponder responder) {
 		this.context = context;
+		this.user = user;
 		this.responder = responder;
 	}
 
@@ -127,21 +130,26 @@ public class WallRequestListener implements RequestListener {
 					e.printStackTrace();
 				}
 				try {
-					JSONObject fromObject = o.getJSONObject("from");
-					Friend fromFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", fromObject.getString("id"));
-					if (null != fromFriend) {
-						fromFriend.stalkerRank += 1;
-						fromFriend.save();
-						post.fromFriend = fromFriend;
+					JSONObject toObject = o.getJSONObject("to");
+					Friend toFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", toObject.getString("id"));
+					if (null != toFriend) {
+						post.toFriend = toFriend;
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 				try {
-					JSONObject toObject = o.getJSONObject("to");
-					Friend toFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", toObject.getString("id"));
-					if (null != toFriend) {
-						post.toFriend = toFriend;
+					JSONObject fromObject = o.getJSONObject("from");
+					Friend fromFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", fromObject.getString("id"));
+					if (null != fromFriend) {
+						fromFriend.stalkerRank += 1;
+						fromFriend.save();
+						StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + fromFriend.getId());
+						if (null == relationship)
+							relationship = new StalkerRelationship(context, user, fromFriend);
+						relationship.rank += 1;
+						relationship.save();
+						post.fromFriend = fromFriend;
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -155,12 +163,18 @@ public class WallRequestListener implements RequestListener {
 					}
 					try {
 						JSONArray likesArray = likesObject.getJSONArray("data");
+
 						for (int x=0; x<likesArray.length(); x++) {
 							Like like = new Like(context);
 							Friend likeFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", likesArray.getJSONObject(x).getString("id"));
 							if (null != likeFriend) {
 								likeFriend.stalkerRank += 1;
 								likeFriend.save();
+								StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + likeFriend.getId());
+								if (null == relationship)
+									relationship = new StalkerRelationship(context, user, likeFriend);
+								relationship.rank += 1;
+								relationship.save();
 								like.friend = likeFriend;
 							}
 							like.post = post;
@@ -187,6 +201,11 @@ public class WallRequestListener implements RequestListener {
 										if (null != commentFriend) {
 											commentFriend.stalkerRank += 1;
 											commentFriend.save();
+											StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + commentFriend.getId());
+											if (null == relationship)
+												relationship = new StalkerRelationship(context, user, commentFriend);
+											relationship.rank += 1;
+											relationship.save();
 											comment.fromFriend = commentFriend;
 										}
 										if (null != post.fromFriend) {
@@ -236,10 +255,7 @@ public class WallRequestListener implements RequestListener {
 	}
 
 	private void resetStalkerRanks() {
-		for (Friend friend : Friend.allFriends(context)) {
-			friend.stalkerRank = 0;
-			friend.save();
-		}
+		StalkerRelationship.delete(context, StalkerRelationship.class, "toFriend==" + user.getId());
 	}
 
 	public void onIOException(IOException e, Object state) {

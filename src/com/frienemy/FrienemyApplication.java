@@ -38,6 +38,7 @@ public class FrienemyApplication extends GDApplication implements UserRequestLis
 	public ArrayList<Friend> friends;
 	public ArrayList<Friend> frienemies;
 	public ArrayList<Friend> stalkers;
+	public Friend user;
 	
 	private List<FriendListener> friendListeners = new ArrayList<FriendListener>();
 	private List<StalkerListener> stalkerListeners = new ArrayList<StalkerListener>();
@@ -48,7 +49,9 @@ public class FrienemyApplication extends GDApplication implements UserRequestLis
 		super.onCreate();
 		userRequestListener = new UserRequestListener(this, this);
 		friendsRequestListener = new FriendsRequestListener(this, this);
-		wallRequestListener = new WallRequestListener(this, this);
+		user = Friend.querySingle(getApplicationContext(), Friend.class, null, "isCurrentUser==1");
+		if (null != user)
+			wallRequestListener = new WallRequestListener(this, user, this);
 	}
 	
 	public void addFriendListener(FriendListener listener) {
@@ -110,6 +113,7 @@ public class FrienemyApplication extends GDApplication implements UserRequestLis
 	}
 
 	public void userRequestDidFinish() {
+		
 		// Get the user's wall
 		asyncRunner.request("me/feed", wallRequestListener);
 	}

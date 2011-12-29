@@ -20,7 +20,6 @@ public class Friend extends ActiveRecordBase<Friend> {
 	private static final String TAG = Friend.class.getSimpleName();
 	private static String RelationshipChangedListString = "";
 
-
 	@Column(name = "uid")
 	public String uid;
 	public String encryptedUid;
@@ -52,6 +51,11 @@ public class Friend extends ActiveRecordBase<Friend> {
 		ArrayList<Friend> allFriends = Friend.query(context, Friend.class);
 		return allFriends;
 	}
+	
+	public ArrayList<StalkerRelationship> stalkers() {
+		ArrayList<StalkerRelationship> stalkers = StalkerRelationship.query(getContext(), StalkerRelationship.class, null, "toFriend== " + getId() + "AND fromFriend!=" + getId(), "rank DESC");
+		return stalkers;
+	}
 
 	public ArrayList<Comment> comments() {
 		ArrayList<Comment> comments = Comment.query(getContext(), Comment.class, null, "friend = " + getId(), "createdTime ASC");
@@ -73,7 +77,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 			this.name = object.getString("name");
 			this.uid = object.getString("id");
 
-			this.frienemyStatus = 2;
+			this.frienemyStatus = 0;
 			this.isCurrentUser = false;
 			try {
 				String relationshipStatus = object.getString("relationship_status");
@@ -102,7 +106,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 				friend = new Friend(context);
 				friend.uid = uid;
 				friend.name = n;
-				friend.frienemyStatus = 2;
+				friend.frienemyStatus = 0;
 				friend.isCurrentUser = false;
 			}
 			try {

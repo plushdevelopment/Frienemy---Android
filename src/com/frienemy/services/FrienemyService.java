@@ -42,7 +42,6 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	private Context context;
 	private UserRequestListener userRequestListener;
 	private FriendsRequestListener friendsRequestListener;
-	private WallRequestListener wallRequestListener;
 	private List<FrienemyServiceListener> listeners = new ArrayList<FrienemyServiceListener>();
 
 	private FrienemyServiceAPI.Stub apiEndpoint = new FrienemyServiceAPI.Stub() {
@@ -101,7 +100,6 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		asyncRunner = new AsyncFacebookRunner(facebook);
 		userRequestListener = new UserRequestListener(context, this);
 		friendsRequestListener = new FriendsRequestListener(context, this);
-		wallRequestListener = new WallRequestListener(context, this);
 		timer = new Timer("FrienemyServiceTimer");
 		timer.schedule(updateTask, 1000L, 60 * 60000L);
 	}
