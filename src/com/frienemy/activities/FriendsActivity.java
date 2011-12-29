@@ -69,11 +69,12 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 	private ArrayList<Friend> friends;
 	FriendAdapter adapter;
 	ListView list;
+	private long friendId;
 	String name ="";
 	String relationshipStatus="";
 	String frienemyStatus="";
 	URL image= null;
-	
+
 	private QuickActionWidget mBar;
 
 	private FrienemyServiceListener.Stub collectorListener = new FrienemyServiceListener.Stub() {
@@ -109,14 +110,14 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		setActionBarContentView(R.layout.main);
 		setTitle("Friends");
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		
-		 mBar = new QuickActionBar(this);
-		 mBar.addQuickAction(new QuickAction(this, R.drawable.info, "Info"));
-	        mBar.addQuickAction(new QuickAction(this, R.drawable.stalkers, "Stalk"));
-	        mBar.addQuickAction(new QuickAction(this, R.drawable.stalking, "Stalkers"));
-	        this.getActionBar().removeViewAt(0);
-	      
-	    
+
+		mBar = new QuickActionBar(this);
+		mBar.addQuickAction(new QuickAction(this, R.drawable.info, "Info"));
+		mBar.addQuickAction(new QuickAction(this, R.drawable.stalkers, "Stalk"));
+		mBar.addQuickAction(new QuickAction(this, R.drawable.stalking, "Stalkers"));
+		this.getActionBar().removeViewAt(0);
+
+
 		setUpListeners();
 
 		asyncRunner = new AsyncFacebookRunner(facebook);
@@ -205,31 +206,33 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		//v = findViewById(R.id.postbutton);
 		//v.setOnClickListener(this);
 		mBar.setOnQuickActionClickListener(this);
-		
+
 		ListView k =(ListView) findViewById(android.R.id.list);
 		k.setOnItemClickListener(new OnItemClickListener() {
 
-	        public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-	        	
-	        	name =friends.get(position).name;
-	        	
-	        	relationshipStatus = friends.get(position).relationshipStatus;
-	        	
-	        	  image = friends.get(position).getProfileImageURL();
-	        	
-	        	if(friends.get(position).frienemyStatus==1)
-	        	{
-	        	frienemyStatus = "Frienemy";
-	        	}
-	        	else
-	        	{
-	        		frienemyStatus = "Friend";
-	        	}
-	   		// AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)v;
+			public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+				
+				friendId = friends.get(position).getId();
+				
+				name =friends.get(position).name;
 
-	        	mBar.show(v);
-	        }
-	    });
+				relationshipStatus = friends.get(position).relationshipStatus;
+
+				image = friends.get(position).getProfileImageURL();
+
+				if(friends.get(position).frienemyStatus==1)
+				{
+					frienemyStatus = "Frienemy";
+				}
+				else
+				{
+					frienemyStatus = "Friend";
+				}
+				// AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)v;
+
+				mBar.show(v);
+			}
+		});
 	}
 
 	protected void updateView() {
@@ -306,7 +309,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		SharedPreferences.Editor editor = mPrefs.edit();
 		editor.putString("access_token", null);
 		editor.commit();
-		
+
 		facebook.setAccessToken(null);
 
 		stopService(new Intent(this, FrienemyService.class));
@@ -379,13 +382,13 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			//	post();
 			//break;
 		default:
-			
+
 
 		}
 	}
 
 	public void userRequestDidFinish() {
-		
+
 	}
 
 	public void userRequestDidFail() {
@@ -420,19 +423,21 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			
 			break;
 		case 2:
-			
+			k = new Intent(FriendsActivity.this, StalkerActivity.class);
+			k.putExtra("id", friendId);
+			startActivity(k);
 			break;
-		
+
 		default:
 		}
-		
+
 	}
-	
+
 	/*@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	  if (v.getId()==android.R.id.list) {
-		  
+
 		 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	  	mBar.show(v);
 	  	/*

@@ -75,7 +75,6 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 	protected void updateView() {
 		try{
 			ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "frienemyStatus==1 AND isCurrentUser==0", "name ASC");
-
 			list=(ListView)findViewById(android.R.id.list);
 			adapter=new FriendAdapter(this, friends);
 			list.setAdapter(adapter);
