@@ -6,12 +6,15 @@ import java.net.URL;
 import com.frienemy.tasks.LoadImageAsyncTask;
 import com.frienemy.tasks.LoadImageAsyncTask.LoadImageAsyncTaskResponder;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import greendroid.app.GDActivity;
+import greendroid.widget.ActionBarItem;
+import greendroid.widget.ActionBarItem.Type;
 
 public class InfoActivity extends GDActivity implements LoadImageAsyncTaskResponder{
 	private AsyncTask<URL, Void, Drawable> latestLoadTask;
@@ -20,8 +23,9 @@ public class InfoActivity extends GDActivity implements LoadImageAsyncTaskRespon
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setActionBarContentView(R.layout.friend_info);
+		this.getActionBar().removeViewAt(0);
+		addActionBarItem(Type.GoHome);
 		setTitle("Info");
-		//this.getActionBar().removeViewAt(0);
 		
 		TextView v = (TextView) findViewById(R.id.name);
 		String name =getIntent().getStringExtra("name".trim());
@@ -56,6 +60,15 @@ public class InfoActivity extends GDActivity implements LoadImageAsyncTaskRespon
 
 	public void imageLoaded(Drawable drawable) {
 		k.setImageDrawable(drawable);
+	}
+	@Override
+	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+		switch (position) {
+        case 0:
+            startActivity(new Intent(this, FriendsActivity.class));
+            break;
+	}
+		return true;
 	}
 
 }
