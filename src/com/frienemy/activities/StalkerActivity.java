@@ -1,6 +1,8 @@
 package com.frienemy.activities;
 
 import greendroid.app.GDActivity;
+import greendroid.widget.ActionBarItem;
+import greendroid.widget.ActionBarItem.Type;
 
 import java.util.ArrayList;
 
@@ -75,17 +77,33 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		setActionBarContentView(R.layout.main);
+		setActionBarContentView(R.layout.stalkers);
 		this.getActionBar().removeViewAt(0);
 		setTitle("Stalkers");
 		setUpListeners();
 		
 		Intent intent = getIntent();
-		if (intent.hasExtra("id")) {
-			user = Friend.load(this, Friend.class, intent.getLongExtra("id", 0));
-		} else {
-			user = Friend.querySingle(this, Friend.class, null, "isCurrentUser==1");
-		}
+		 if (intent.hasExtra("id")) 
+		 	{
+			 	user = Friend.load(this, Friend.class, intent.getLongExtra("id", 0));
+			 	if (false == user.isCurrentUser) 
+			 		{
+			 			View v = (View) findViewById(R.id.tabs);
+			 			v.setVisibility(View.GONE);
+			 			addActionBarItem(Type.GoHome);
+			 		} 
+			 		else 
+			 		{
+			 			View v = (View) findViewById(R.id.tabs);
+			 			v.setVisibility(View.VISIBLE);
+			 		}
+		 	}
+		 	else 
+		 	{
+		 		user = Friend.querySingle(this, Friend.class, null, "isCurrentUser==1");
+		 		View v = (View) findViewById(R.id.tabs);
+		 		v.setVisibility(View.VISIBLE);
+		 	}
 		
 		Intent serviceIntent = new Intent(FrienemyService.class.getName()); 
 		startService(serviceIntent);
@@ -175,6 +193,15 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 		if((progressDialog != null) && (progressDialog.isShowing())) {
 			progressDialog.dismiss();
 		}
+	}
+	@Override
+	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+		switch (position) {
+        case 0:
+            startActivity(new Intent(this, FriendsActivity.class));
+            break;
+	}
+		return true;
 	}
 
 	public void onClick(View v) {

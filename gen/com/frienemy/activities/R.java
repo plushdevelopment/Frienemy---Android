@@ -771,6 +771,7 @@ containing a value of this type.
         public static final int single=0x7f05000e;
         public static final int stalkers=0x7f05002c;
         public static final int tableRow1=0x7f050042;
+        public static final int tabs=0x7f050046;
         public static final int textView1=0x7f050029;
         public static final int textView2=0x7f05002b;
         public static final int title=0x7f050025;
