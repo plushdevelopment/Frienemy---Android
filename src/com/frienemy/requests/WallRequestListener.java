@@ -48,16 +48,20 @@ public class WallRequestListener implements RequestListener {
 				try {
 					JSONObject fromObject = o.getJSONObject("from");
 					Friend fromFriend = Friend.friendInContextForJSONObject(context, fromObject);
-					StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + fromFriend.getId());
-					if (null == relationship)
-						relationship = new StalkerRelationship(context, user, fromFriend);
-					relationship.rank += 1;
 					try {
-						relationship.save();
+						StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + fromFriend.getId());
+						if (null == relationship)
+							relationship = new StalkerRelationship(context, user, fromFriend);
+						relationship.rank += 1;
+						try {
+							relationship.save();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						relationship = null;
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					relationship = null;
 					fromFriend = null;
 					fromObject = null;
 				} catch (JSONException e) {
@@ -96,16 +100,20 @@ public class WallRequestListener implements RequestListener {
 								try {
 									JSONObject commentFromFriend = commentsArray.getJSONObject(x).getJSONObject("from");
 									Friend commentFriend = Friend.friendInContextForJSONObject(context, commentFromFriend);
-									StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + commentFriend.getId());
-									if (null == relationship)
-										relationship = new StalkerRelationship(context, user, commentFriend);
-									relationship.rank += 1;
 									try {
-										relationship.save();
+										StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + commentFriend.getId());
+										if (null == relationship)
+											relationship = new StalkerRelationship(context, user, commentFriend);
+										relationship.rank += 1;
+										try {
+											relationship.save();
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+										relationship = null;
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
-									relationship = null;
 									commentFromFriend = null;
 									commentFriend = null;
 								} catch (JSONException e) {

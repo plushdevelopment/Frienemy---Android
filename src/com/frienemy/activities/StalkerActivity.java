@@ -21,8 +21,6 @@ import com.frienemy.services.FrienemyServiceListener;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -85,44 +83,44 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 		this.getActionBar().removeViewAt(0);
 		setTitle("Stalkers");
 		setUpListeners();
-		
+
 		Intent intent = getIntent();
-		 if (intent.hasExtra("id")) 
-		 	{
-			 	user = Friend.load(getApplicationContext(), Friend.class, intent.getLongExtra("id", 0));
-			 	if (false == user.isCurrentUser) 
-			 		{
-			 			View v = (View) findViewById(R.id.tabs);
-			 			v.setVisibility(View.GONE);
-			 			addActionBarItem(Type.GoHome);
-			 		} 
-			 		else 
-			 		{
-			 			View v = (View) findViewById(R.id.tabs);
-			 			v.setVisibility(View.VISIBLE);
-			 			addActionBarItem(Type.Export);
-			 		}
-		 	}
-		 	else 
-		 	{
-		 		user = Friend.querySingle(getApplicationContext(), Friend.class, null, "isCurrentUser==1");
-		 		View v = (View) findViewById(R.id.tabs);
-		 		v.setVisibility(View.VISIBLE);
-		 	}
-		
+		if (intent.hasExtra("id")) 
+		{
+			user = Friend.load(getApplicationContext(), Friend.class, intent.getLongExtra("id", 0));
+			if (false == user.isCurrentUser) 
+			{
+				View v = (View) findViewById(R.id.tabs);
+				v.setVisibility(View.GONE);
+				addActionBarItem(Type.GoHome);
+			} 
+			else 
+			{
+				View v = (View) findViewById(R.id.tabs);
+				v.setVisibility(View.VISIBLE);
+				addActionBarItem(Type.Export);
+			}
+		}
+		else 
+		{
+			user = Friend.querySingle(getApplicationContext(), Friend.class, null, "isCurrentUser==1");
+			View v = (View) findViewById(R.id.tabs);
+			v.setVisibility(View.VISIBLE);
+		}
+
 		Intent serviceIntent = new Intent(FrienemyService.class.getName()); 
 		startService(serviceIntent);
 		bindService(serviceIntent, serviceConnection, 0);
-		
+
 		wallRequestListener = new WallRequestListener(getApplicationContext(), user, this);
-		
+
 		loadFriendsIfNotLoaded();
 	}
 
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
-		
+
 	}
 
 
@@ -202,35 +200,35 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 	@Override
 	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 		switch (position) {
-        case 0:
-        	if (false == user.isCurrentUser) 
-	 		{
-            startActivity(new Intent(this, FriendsActivity.class));
-	 		}
-        	else
-        	{
-       
-        	String post = "Post Stalkers To Wall?";
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    	builder.setMessage(post)
-	    		   .setTitle("Post")
-	    	       .setCancelable(true)
-	    	       .setNegativeButton("No",new DialogInterface.OnClickListener() {
-	    	           public void onClick(DialogInterface dialog, int id) {
-	    	        	   dialog.cancel();
-	    	           }
-	    	           })
-	    	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-	    	           public void onClick(DialogInterface dialog, int id) {
-	    	        	
-	    	        	   dialog.cancel();
-	    	           }
-	    	       });
-	    	AlertDialog alert = builder.create();
-	    	alert.show();
-			
-        	break;
-        	}
+		case 0:
+			if (false == user.isCurrentUser) 
+			{
+				startActivity(new Intent(this, FriendsActivity.class));
+			}
+			else
+			{
+
+				String post = "Post Stalkers To Wall?";
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage(post)
+				.setTitle("Post")
+				.setCancelable(true)
+				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				})
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+
+						dialog.cancel();
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+
+				break;
+			}
 		}
 		return true;
 
