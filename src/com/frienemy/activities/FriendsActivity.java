@@ -218,7 +218,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 				relationshipStatus = friends.get(position).relationshipStatus;
 
-				image = friends.get(position).getProfileImageURL();
+				image = friends.get(position).getLargeProfileImageURL();
 
 				if(friends.get(position).frienemyStatus==1)
 				{
