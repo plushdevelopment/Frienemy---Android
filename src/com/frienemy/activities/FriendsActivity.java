@@ -237,7 +237,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 	protected void updateView() {
 		try{
-			friends = Friend.query(this, Friend.class, null, "isCurrentUser==0 AND frienemyStatus==0", "name ASC");
+			friends = Friend.query(this, Friend.class, null, "isCurrentUser==0 AND frienemyStatus==0 AND isCurrentUsersFriend==1", "name ASC");
 			list=(ListView)findViewById(android.R.id.list);
 			adapter=new FriendAdapter(this, friends);
 			list.setAdapter(adapter);

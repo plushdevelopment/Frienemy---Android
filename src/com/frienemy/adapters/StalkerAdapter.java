@@ -3,7 +3,7 @@ package com.frienemy.adapters;
 import java.util.ArrayList;
 
 import com.frienemy.activities.R;
-import com.frienemy.layouts.FriendListItem;
+import com.frienemy.layouts.StalkerListItem;
 import com.frienemy.models.StalkerRelationship;
 
 import android.content.Context;
@@ -35,9 +35,9 @@ public class StalkerAdapter extends ArrayAdapter<StalkerRelationship> {
 
 	//Get information for Each friend and place it into row view
 	public View getView(int position, View convertView, ViewGroup parent) {
-		FriendListItem vi=(FriendListItem)convertView;
+		StalkerListItem vi=(StalkerListItem)convertView;
 		if(vi==null)
-			vi = (FriendListItem)inflater.inflate(R.layout.friend_row, null);
+			vi = (StalkerListItem)inflater.inflate(R.layout.stalker_row, null);
 		vi.setFriend(data.get(position).fromFriend);
 		return vi;
 	}

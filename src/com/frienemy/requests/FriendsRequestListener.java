@@ -49,7 +49,7 @@ public class FriendsRequestListener implements RequestListener {
 			final JSONObject json = new JSONObject(response);
 			JSONArray d = json.getJSONArray("data");
 			int l = (d != null ? d.length() : 0);
-			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null);
+			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null, "isCurrentUsersFriend==1");
 			if (fetchedFriends.size() < 1) {
 				saveFirstFriendsList(d);
 				return;
@@ -70,7 +70,7 @@ public class FriendsRequestListener implements RequestListener {
 					friend.frienemyStatus = 1;
 					FrienemiesListString += friend.name + "-";
 					friend.frienemyStatusChanged = true;
-						friend.save();
+					friend.save();
 				}
 			}
 			for (int i=0; i<l; i++) {
@@ -78,7 +78,8 @@ public class FriendsRequestListener implements RequestListener {
 				Friend friend = Friend.friendInContextForJSONObject(context, o);
 				if (friend.frienemyStatus == 2) {
 					friend.frienemyStatus = 0;
-						friend.save();
+					friend.isCurrentUsersFriend = true;
+					friend.save();
 					fetchedFriends.add(friend);
 				}
 			}
@@ -100,7 +101,8 @@ public class FriendsRequestListener implements RequestListener {
 			try {
 				JSONObject o = array.getJSONObject(i);
 				Friend friend = new Friend(context, o);
-					friend.save();
+				friend.isCurrentUsersFriend = true;
+				friend.save();
 			} catch (JSONException e) {
 
 			}

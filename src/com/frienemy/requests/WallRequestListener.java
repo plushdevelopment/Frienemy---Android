@@ -131,7 +131,7 @@ public class WallRequestListener implements RequestListener {
 				}
 				try {
 					JSONObject toObject = o.getJSONObject("to");
-					Friend toFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", toObject.getString("id"));
+					Friend toFriend = Friend.friendInContextForJSONObject(context, toObject);
 					if (null != toFriend) {
 						post.toFriend = toFriend;
 					}
@@ -140,7 +140,7 @@ public class WallRequestListener implements RequestListener {
 				}
 				try {
 					JSONObject fromObject = o.getJSONObject("from");
-					Friend fromFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", fromObject.getString("id"));
+					Friend fromFriend = Friend.friendInContextForJSONObject(context, fromObject);
 					if (null != fromFriend) {
 						fromFriend.stalkerRank += 1;
 						fromFriend.save();
@@ -166,7 +166,7 @@ public class WallRequestListener implements RequestListener {
 
 						for (int x=0; x<likesArray.length(); x++) {
 							Like like = new Like(context);
-							Friend likeFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", likesArray.getJSONObject(x).getString("id"));
+							Friend likeFriend = Friend.friendInContextForJSONObject(context, likesArray.getJSONObject(x));
 							if (null != likeFriend) {
 								likeFriend.stalkerRank += 1;
 								likeFriend.save();
@@ -196,37 +196,33 @@ public class WallRequestListener implements RequestListener {
 								Comment comment = new Comment(context);
 								try {
 									JSONObject commentFromFriend = commentsArray.getJSONObject(x).getJSONObject("from");
+									Friend commentFriend = Friend.friendInContextForJSONObject(context, commentFromFriend);
+									if (null != commentFriend) {
+										commentFriend.stalkerRank += 1;
+										commentFriend.save();
+										StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + commentFriend.getId());
+										if (null == relationship)
+											relationship = new StalkerRelationship(context, user, commentFriend);
+										relationship.rank += 1;
+										relationship.save();
+										comment.fromFriend = commentFriend;
+									}
+									if (null != post.fromFriend) {
+										comment.toFriend = post.fromFriend;
+									}
+									comment.post = post;
 									try {
-										Friend commentFriend = Friend.friendInContextForKeyWithStringValue(context, "uid", commentFromFriend.getString("id"));
-										if (null != commentFriend) {
-											commentFriend.stalkerRank += 1;
-											commentFriend.save();
-											StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + commentFriend.getId());
-											if (null == relationship)
-												relationship = new StalkerRelationship(context, user, commentFriend);
-											relationship.rank += 1;
-											relationship.save();
-											comment.fromFriend = commentFriend;
-										}
-										if (null != post.fromFriend) {
-											comment.toFriend = post.fromFriend;
-										}
-										comment.post = post;
-										try {
-											comment.message = commentsArray.getJSONObject(x).getString("message");
-										} catch (JSONException e) {
-											e.printStackTrace();
-										}
-										try {
-											comment.createdTime = commentsArray.getJSONObject(x).getString("created_time");
-										} catch (JSONException e) {
-											e.printStackTrace();
-										}
-										try {
-											comment.uid = commentsArray.getJSONObject(x).getString("id");
-										} catch (JSONException e) {
-											e.printStackTrace();
-										}
+										comment.message = commentsArray.getJSONObject(x).getString("message");
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+									try {
+										comment.createdTime = commentsArray.getJSONObject(x).getString("created_time");
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+									try {
+										comment.uid = commentsArray.getJSONObject(x).getString("id");
 									} catch (JSONException e) {
 										e.printStackTrace();
 									}

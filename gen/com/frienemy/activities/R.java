@@ -808,7 +808,8 @@ containing a value of this type.
         public static final int gd_thumbnail_item_view=0x7f030020;
         public static final int main=0x7f030021;
         public static final int main_activity=0x7f030022;
-        public static final int stalkers=0x7f030023;
+        public static final int stalker_row=0x7f030023;
+        public static final int stalkers=0x7f030024;
     }
     public static final class string {
         public static final int allow=0x7f080020;
