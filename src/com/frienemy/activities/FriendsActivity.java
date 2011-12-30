@@ -73,7 +73,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 	String name ="";
 	String relationshipStatus="";
 	String frienemyStatus="";
-	URL image= null;
+	public static URL image= null;
 
 	private QuickActionWidget mBar;
 

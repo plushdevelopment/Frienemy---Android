@@ -1,13 +1,21 @@
 package com.frienemy.activities;
 
 
-import android.net.Uri;
+import java.net.URL;
+
+import com.frienemy.tasks.LoadImageAsyncTask;
+import com.frienemy.tasks.LoadImageAsyncTask.LoadImageAsyncTaskResponder;
+
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import greendroid.app.GDActivity;
 
-public class InfoActivity extends GDActivity{
+public class InfoActivity extends GDActivity implements LoadImageAsyncTaskResponder{
+	private AsyncTask<URL, Void, Drawable> latestLoadTask;
+	ImageView k=null;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,13 +35,27 @@ public class InfoActivity extends GDActivity{
 			String frienemy =getIntent().getStringExtra("frienemy".trim());
 			v.setText("Frienemy Status: " +frienemy);
 			
-		ImageView k = (ImageView) findViewById(R.id.image);
-		
+		 k = (ImageView) findViewById(R.id.image);
+		if (null != latestLoadTask) {
+			latestLoadTask.cancel(true);
+		}
+		latestLoadTask = new LoadImageAsyncTask(this).execute(FriendsActivity.image);
 		//String image = getIntent().getStringExtra("image".trim());
 		
 		//Uri myUri = Uri.parse(image);
 		//k.setImageURI(myUri);
 		
+	}
+	public void imageLoading() {
+		k.setImageDrawable(null);
+	}
+
+	public void imageLoadCancelled() {
+		// do nothing
+	}
+
+	public void imageLoaded(Drawable drawable) {
+		k.setImageDrawable(drawable);
 	}
 
 }
