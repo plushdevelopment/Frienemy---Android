@@ -53,7 +53,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 	}
 	
 	public ArrayList<StalkerRelationship> stalkers() {
-		ArrayList<StalkerRelationship> stalkers = StalkerRelationship.query(getContext(), StalkerRelationship.class, null, "toFriend== " + getId() + "AND fromFriend!=" + getId(), "rank DESC");
+		ArrayList<StalkerRelationship> stalkers = StalkerRelationship.query(getContext(), StalkerRelationship.class, null, "toFriend==" + getId() + " AND fromFriend<>" + getId(), "rank DESC");
 		return stalkers;
 	}
 
