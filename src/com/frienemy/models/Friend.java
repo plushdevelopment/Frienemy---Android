@@ -139,6 +139,16 @@ public class Friend extends ActiveRecordBase<Friend> {
 		return url;
 	}
 	
+	public URL getLargeProfileImageURL() {
+		URL url = null;
+		try {
+			url = new URL(String.format("https://graph.facebook.com/%s/picture?type=large", uid));
+		} catch (MalformedURLException e) {
+
+		}
+		return url;
+	}
+	
 	public String getObjectURLString() {
 		return String.format("https://graph.facebook.com/%s/?fields=id,name,relationship_status", uid);
 	}
