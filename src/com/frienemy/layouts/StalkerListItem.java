@@ -16,12 +16,14 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class StalkerListItem extends RelativeLayout implements LoadImageAsyncTaskResponder, LoadFacebookObjectAsyncTaskResponder {
 
+	private static final String TAG = StalkerListItem.class.getSimpleName();
 	private Friend friend;
 	private ImageView     imageView;
 	private TextView      nameTextView;
@@ -37,6 +39,7 @@ public class StalkerListItem extends RelativeLayout implements LoadImageAsyncTas
 
 	public void setFriend(Friend friend) {
 		this.friend = friend;
+		Log.d(TAG, friend.uid + " " + friend.name);
 		findViews();
 		updateViews();
 		// cancel old task
@@ -109,7 +112,7 @@ public class StalkerListItem extends RelativeLayout implements LoadImageAsyncTas
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		friend.save();
+		//friend.save();
 	}
 
 }

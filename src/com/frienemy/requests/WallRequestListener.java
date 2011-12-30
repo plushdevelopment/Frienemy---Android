@@ -45,6 +45,7 @@ public class WallRequestListener implements RequestListener {
 			int l = (d != null ? d.length() : 0);
 			for (int i=0; i<l; i++) {
 				JSONObject o = d.getJSONObject(i);
+				/*
 				String uid = o.getString("id");
 				Post post = Post.querySingle(context, Post.class, null, String.format("uid == \"%s\"", uid));
 				if (post == null) {
@@ -138,6 +139,7 @@ public class WallRequestListener implements RequestListener {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
+				 */
 				try {
 					JSONObject fromObject = o.getJSONObject("from");
 					Friend fromFriend = Friend.friendInContextForJSONObject(context, fromObject);
@@ -149,23 +151,25 @@ public class WallRequestListener implements RequestListener {
 							relationship = new StalkerRelationship(context, user, fromFriend);
 						relationship.rank += 1;
 						relationship.save();
-						post.fromFriend = fromFriend;
+						//post.fromFriend = fromFriend;
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 				try {
 					JSONObject likesObject = o.getJSONObject("likes");
+					/*
 					try {
 						post.likesCount = likesObject.getInt("count");
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
+					 */
 					try {
 						JSONArray likesArray = likesObject.getJSONArray("data");
 
 						for (int x=0; x<likesArray.length(); x++) {
-							Like like = new Like(context);
+							//Like like = new Like(context);
 							Friend likeFriend = Friend.friendInContextForJSONObject(context, likesArray.getJSONObject(x));
 							if (null != likeFriend) {
 								likeFriend.stalkerRank += 1;
@@ -175,38 +179,41 @@ public class WallRequestListener implements RequestListener {
 									relationship = new StalkerRelationship(context, user, likeFriend);
 								relationship.rank += 1;
 								relationship.save();
-								like.friend = likeFriend;
+								//like.friend = likeFriend;
 							}
-							like.post = post;
-							like.save();
+							//like.post = post;
+							//like.save();
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
 					try {
 						JSONObject commentsObject = o.getJSONObject("comments");
+						/*
 						try {
 							post.commentsCount = commentsObject.getInt("count");
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
+						 */
 						try {
 							JSONArray commentsArray = commentsObject.getJSONArray("data");
 							for (int x=0; x<commentsArray.length(); x++) {
-								Comment comment = new Comment(context);
+								//Comment comment = new Comment(context);
 								try {
 									JSONObject commentFromFriend = commentsArray.getJSONObject(x).getJSONObject("from");
 									Friend commentFriend = Friend.friendInContextForJSONObject(context, commentFromFriend);
 									if (null != commentFriend) {
-										commentFriend.stalkerRank += 1;
-										commentFriend.save();
+										//commentFriend.stalkerRank += 1;
+										//commentFriend.save();
 										StalkerRelationship relationship = StalkerRelationship.querySingle(context, StalkerRelationship.class, null, "toFriend==" + user.getId() + " AND fromFriend==" + commentFriend.getId());
 										if (null == relationship)
 											relationship = new StalkerRelationship(context, user, commentFriend);
 										relationship.rank += 1;
 										relationship.save();
-										comment.fromFriend = commentFriend;
+										//comment.fromFriend = commentFriend;
 									}
+									/*
 									if (null != post.fromFriend) {
 										comment.toFriend = post.fromFriend;
 									}
@@ -227,6 +234,7 @@ public class WallRequestListener implements RequestListener {
 										e.printStackTrace();
 									}
 									comment.save();
+									 */
 								} catch (JSONException e) {
 									e.printStackTrace();
 								}
@@ -240,7 +248,7 @@ public class WallRequestListener implements RequestListener {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				post.save();
+				//post.save();
 				Log.d(TAG, o.toString());
 			}
 			responder.wallRequestDidFinish();
@@ -251,7 +259,12 @@ public class WallRequestListener implements RequestListener {
 	}
 
 	private void resetStalkerRanks() {
-		StalkerRelationship.delete(context, StalkerRelationship.class, "toFriend==" + user.getId());
+		try {
+			StalkerRelationship.delete(context, StalkerRelationship.class, "toFriend==" + user.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			responder.wallRequestDidFail();
+		}
 	}
 
 	public void onIOException(IOException e, Object state) {
