@@ -18,8 +18,12 @@ import com.frienemy.services.FrienemyService;
 import com.frienemy.services.FrienemyServiceAPI;
 import com.frienemy.services.FrienemyServiceListener;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -96,6 +100,7 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 			 		{
 			 			View v = (View) findViewById(R.id.tabs);
 			 			v.setVisibility(View.VISIBLE);
+			 			addActionBarItem(Type.Export);
 			 		}
 		 	}
 		 	else 
@@ -198,10 +203,37 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 		switch (position) {
         case 0:
+        	if (false == user.isCurrentUser) 
+	 		{
             startActivity(new Intent(this, FriendsActivity.class));
-            break;
-	}
+	 		}
+        	else
+        	{
+       
+        	String post = "Post Stalkers To Wall?";
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    	builder.setMessage(post)
+	    		   .setTitle("Post")
+	    	       .setCancelable(true)
+	    	       .setNegativeButton("No",new DialogInterface.OnClickListener() {
+	    	           public void onClick(DialogInterface dialog, int id) {
+	    	        	   dialog.cancel();
+	    	           }
+	    	           })
+	    	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	    	           public void onClick(DialogInterface dialog, int id) {
+	    	        	
+	    	        	   dialog.cancel();
+	    	           }
+	    	       });
+	    	AlertDialog alert = builder.create();
+	    	alert.show();
+			
+        	break;
+        	}
+		}
 		return true;
+
 	}
 
 	public void onClick(View v) {
