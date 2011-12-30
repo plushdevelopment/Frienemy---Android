@@ -46,7 +46,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 	@Column(name = "isCurrentUser")
 	public boolean isCurrentUser;
-	
+
 	@Column(name = "isCurrentUsersFriend")
 	public boolean isCurrentUsersFriend;
 
@@ -54,7 +54,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 		ArrayList<Friend> allFriends = Friend.query(context, Friend.class);
 		return allFriends;
 	}
-	
+
 	public ArrayList<StalkerRelationship> stalkers() {
 		ArrayList<StalkerRelationship> stalkers = StalkerRelationship.query(getContext(), StalkerRelationship.class, null, "toFriend==" + getId() + " AND fromFriend<>" + getId(), "rank DESC");
 		return stalkers;
@@ -122,7 +122,11 @@ public class Friend extends ActiveRecordBase<Friend> {
 			} catch (JSONException e) {
 
 			}
-			friend.save();
+			try {
+				friend.save();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} catch (JSONException e) {
 
 		}
@@ -138,7 +142,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 		}
 		return url;
 	}
-	
+
 	public URL getLargeProfileImageURL() {
 		URL url = null;
 		try {
@@ -148,11 +152,11 @@ public class Friend extends ActiveRecordBase<Friend> {
 		}
 		return url;
 	}
-	
+
 	public String getObjectURLString() {
 		return String.format("https://graph.facebook.com/%s/?fields=id,name,relationship_status", uid);
 	}
-	
+
 	public static String[] getList()
 	{
 		String [] list = RelationshipChangedListString.split("-");

@@ -66,7 +66,7 @@ public class StalkerListItem extends RelativeLayout implements LoadImageAsyncTas
 	public void imageLoaded(Drawable drawable) {
 		imageView.setImageDrawable(drawable);
 	}
-	
+
 	private void updateViews() {
 		nameTextView.setText(friend.name);
 		relationshipStatusTextView.setText(friend.relationshipStatus);
@@ -94,25 +94,26 @@ public class StalkerListItem extends RelativeLayout implements LoadImageAsyncTas
 	}
 
 	public void objectLoading() {
-		
+
 	}
 
 	public void objectLoadCancelled() {
-		
+
 	}
 
 	public void objectLoaded(JSONObject object) {
-		try {
-			friend.name = object.getString("name");
-		} catch (JSONException e) {
-			e.printStackTrace();
+		if (null != object) {
+			try {
+				friend.name = object.getString("name");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			try {
+				friend.relationshipStatus = object.getString("relationship_status");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
-		try {
-			friend.relationshipStatus = object.getString("relationship_status");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		//friend.save();
 	}
 
 }

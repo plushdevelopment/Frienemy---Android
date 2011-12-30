@@ -74,7 +74,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 	
 	protected void updateView() {
 		try{
-			ArrayList<Friend> friends = Friend.query(this, Friend.class, null, "frienemyStatus==1 AND isCurrentUser==0", "name ASC");
+			ArrayList<Friend> friends = Friend.query(getApplicationContext(), Friend.class, null, "frienemyStatus==1 AND isCurrentUser==0", "name ASC");
 			list=(ListView)findViewById(android.R.id.list);
 			adapter=new FriendAdapter(this, friends);
 			list.setAdapter(adapter);
@@ -103,7 +103,7 @@ public class FrienemyActivity extends ListActivity implements OnClickListener {
 			break;
 		case R.id.stalkers:
 			i = new Intent(FrienemyActivity.this, StalkerActivity.class);
-			Friend user = Friend.querySingle(this, Friend.class, null, "isCurrentUser==1");
+			Friend user = Friend.querySingle(getApplicationContext(), Friend.class, null, "isCurrentUser==1");
 			i.putExtra("id", user.getId());
 			startActivity(i);
 			break;

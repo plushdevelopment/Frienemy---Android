@@ -85,7 +85,7 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 		Intent intent = getIntent();
 		 if (intent.hasExtra("id")) 
 		 	{
-			 	user = Friend.load(this, Friend.class, intent.getLongExtra("id", 0));
+			 	user = Friend.load(getApplicationContext(), Friend.class, intent.getLongExtra("id", 0));
 			 	if (false == user.isCurrentUser) 
 			 		{
 			 			View v = (View) findViewById(R.id.tabs);
@@ -100,7 +100,7 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 		 	}
 		 	else 
 		 	{
-		 		user = Friend.querySingle(this, Friend.class, null, "isCurrentUser==1");
+		 		user = Friend.querySingle(getApplicationContext(), Friend.class, null, "isCurrentUser==1");
 		 		View v = (View) findViewById(R.id.tabs);
 		 		v.setVisibility(View.VISIBLE);
 		 	}
@@ -109,7 +109,7 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 		startService(serviceIntent);
 		bindService(serviceIntent, serviceConnection, 0);
 		
-		wallRequestListener = new WallRequestListener(this, user, this);
+		wallRequestListener = new WallRequestListener(getApplicationContext(), user, this);
 		
 		loadFriendsIfNotLoaded();
 	}

@@ -121,8 +121,8 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		setUpListeners();
 
 		asyncRunner = new AsyncFacebookRunner(facebook);
-		userRequestListener = new UserRequestListener(this, this);
-		friendsRequestListener = new FriendsRequestListener(this, this);
+		userRequestListener = new UserRequestListener(getApplicationContext(), this);
+		friendsRequestListener = new FriendsRequestListener(getApplicationContext(), this);
 
 		Intent intent = new Intent(FrienemyService.class.getName()); 
 		startService(intent);
@@ -237,7 +237,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 	protected void updateView() {
 		try{
-			friends = Friend.query(this, Friend.class, null, "isCurrentUser==0 AND frienemyStatus==0 AND isCurrentUsersFriend==1", "name ASC");
+			friends = Friend.query(getApplicationContext(), Friend.class, null, "isCurrentUser==0 AND frienemyStatus==0 AND isCurrentUsersFriend==1", "name ASC");
 			list=(ListView)findViewById(android.R.id.list);
 			adapter=new FriendAdapter(this, friends);
 			list.setAdapter(adapter);
@@ -374,7 +374,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			break;
 		case R.id.stalkers:
 			i = new Intent(FriendsActivity.this, StalkerActivity.class);
-			Friend user = Friend.querySingle(this, Friend.class, null, "isCurrentUser==1");
+			Friend user = Friend.querySingle(getApplicationContext(), Friend.class, null, "isCurrentUser==1");
 			i.putExtra("id", user.getId());
 			startActivity(i);
 			break;
