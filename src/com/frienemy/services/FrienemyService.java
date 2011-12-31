@@ -101,7 +101,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		userRequestListener = new UserRequestListener(context, this);
 		friendsRequestListener = new FriendsRequestListener(context, this);
 		timer = new Timer("FrienemyServiceTimer");
-		timer.schedule(updateTask, 1000L, 60 * 60000L);
+		timer.schedule(updateTask, 1000L, 5 * 60000L);
 	}
 
 	public void refreshPreferences() {
@@ -176,7 +176,7 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 	}
 
 	public void friendRequestDidFinish(int totalFriends) {
-		String[] relationshipList = Friend.getList();
+		ArrayList<Friend> changedArray = Friend.changedFriends(context);
 		String [] frienemyList= FriendsRequestListener.getList();
 		int l=1;
 		//Check to see if there are any new frienemies and notifies the user
@@ -184,11 +184,12 @@ public class FrienemyService extends Service implements UserRequestListenerRespo
 		{
 			this.showNotification("New Frenemy",frienemyList[l], com.frienemy.activities.R.drawable.icon, l);
 		}
-		for(int k=0; relationshipList.length>k; k++)
+		
+		for(int k=0; changedArray.size() > k; k++)
 		{
-			if(!relationshipList[k].equalsIgnoreCase(""))
+			if(!changedArray.get(k).changedFields.equalsIgnoreCase(""))
 			{
-				this.showNotification("New Relationship Status",relationshipList[k], com.frienemy.activities.R.drawable.icon, k+l);
+				this.showNotification("Stalked Friend Changed", changedArray.get(k).name + " " + changedArray.get(k).changedFields, com.frienemy.activities.R.drawable.icon, k+l);
 			}
 		}
 

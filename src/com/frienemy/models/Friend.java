@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +32,12 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 	@Column(name = "frienemyStatus")
 	public int frienemyStatus;
+
+	@Column(name = "infoChanged")
+	public boolean infoChanged;
+
+	@Column(name = "changedFields")
+	public String changedFields;
 
 	@Column(name = "relationshipChanged")
 	public boolean relationshipStatusChanged;
@@ -107,6 +114,13 @@ public class Friend extends ActiveRecordBase<Friend> {
 	@Column(name = "work")
 	public String work;
 
+	public ArrayList<String> changedFieldsArray;
+	
+	public static ArrayList<Friend> changedFriends(Context context) {
+		ArrayList<Friend> changedFriends = Friend.query(context, Friend.class, null, "infoChanged==1", "name ASC");
+		return changedFriends;
+	}
+	
 	public static ArrayList<Friend> stalkingFriends(Context context) {
 		ArrayList<Friend> stalkingFriends = Friend.query(context, Friend.class, null, "stalking==1", "name ASC");
 		return stalkingFriends;
@@ -138,11 +152,13 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 	public Friend(Context context, JSONObject object) {
 		super(context);
-		
+
 		this.stalking = false;
 		this.frienemyStatus = 0;
 		this.isCurrentUser = false;
-		
+		this.infoChanged = false;
+		this.changedFields = "";
+
 		try {
 			this.uid = object.getString("id");
 		} catch (JSONException e) {
@@ -204,17 +220,21 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 		}
 		try {
-			this.hometown = object.getString("hometown");
+			JSONObject hometownJSON = object.getJSONObject("hometown");
+			this.hometown = hometownJSON.getString("name");
 		} catch (JSONException e) {
 
 		}
 		try {
-			this.interestedIn = object.getString("interested_in");
+			JSONArray interestedInArray = object.getJSONArray("interested_in");
+			if (interestedInArray.length() > 0)
+				this.interestedIn = interestedInArray.getString(0);
 		} catch (JSONException e) {
 
 		}
 		try {
-			this.location = object.getString("location");
+			JSONObject locationJSON = object.getJSONObject("location");
+			this.location = locationJSON.getString("name");
 		} catch (JSONException e) {
 
 		}
@@ -229,12 +249,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 		}
 		try {
-			String relationshipStatus = object.getString("relationship_status");
-			if (relationshipStatus.equals(this.relationshipStatus) == false) {
-				this.relationshipStatusChanged = true;
-				RelationshipChangedListString+=this.name + "-";
-			}
-			this.relationshipStatus = relationshipStatus;
+			this.relationshipStatus = object.getString("relationship_status");
 		} catch (JSONException e) {
 
 		}
@@ -244,7 +259,8 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 		}
 		try {
-			this.significantOther = object.getString("significant_other");
+			JSONObject significantOtherJSON = object.getJSONObject("significant_other");
+			this.significantOther = significantOtherJSON.getString("name"); 
 		} catch (JSONException e) {
 
 		}
@@ -277,115 +293,273 @@ public class Friend extends ActiveRecordBase<Friend> {
 				friend.isCurrentUser = false;
 				friend.stalking = false;
 			}
+			friend.changedFields = "";
+			friend.changedFieldsArray = new ArrayList<String>();
 			try {
-				friend.name = object.getString("name");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.firstName = object.getString("first_name");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.middleName = object.getString("middle_name");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.lastName = object.getString("last_name");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.gender = object.getString("gender");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.link = object.getString("link");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.username = object.getString("username");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.bio = object.getString("bio");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.birthday = object.getString("birthday");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.education = object.getJSONArray("education").toString();
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.email = object.getString("email");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.hometown = object.getString("hometown");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.interestedIn = object.getString("interested_in");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.location = object.getString("location");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.political = object.getString("political");
-			} catch (JSONException e) {
-
-			}
-			try {
-				friend.quotes = object.getString("quotes");
-			} catch (JSONException e) {
-
-			}
-			try {
-				String relationshipStatus = object.getString("relationship_status");
-				if (relationshipStatus.equals(friend.relationshipStatus) == false) {
-					friend.relationshipStatusChanged = true;
-					RelationshipChangedListString+=friend.name + "-";
+				String newValue = object.getString("name");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.name) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Name");
+					}
 				}
-				friend.relationshipStatus = relationshipStatus;
+				friend.name = newValue;
 			} catch (JSONException e) {
 
 			}
 			try {
-				friend.religion = object.getString("religion");
+				String newValue = object.getString("first_name");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.firstName) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("First Name");
+					}
+				}
+				friend.firstName = newValue;
 			} catch (JSONException e) {
 
 			}
 			try {
-				friend.significantOther = object.getString("significant_other");
+				String newValue = object.getString("middle_name");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.middleName) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Middle Name");
+					}
+				}
+				friend.middleName = newValue;
 			} catch (JSONException e) {
 
 			}
 			try {
-				friend.website = object.getString("website");
+				String newValue = object.getString("last_name");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.lastName) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Last Name");
+					}
+				}
+				friend.lastName = newValue;
 			} catch (JSONException e) {
 
 			}
 			try {
-				friend.work = object.getJSONArray("work").toString();
+				String newValue = object.getString("gender");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.gender) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Gender");
+					}
+				}
+				friend.gender = newValue;
 			} catch (JSONException e) {
 
+			}
+			try {
+				String newValue = object.getString("link");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.link) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Link");
+					}
+				}
+				friend.link = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("username");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.username) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Username");
+					}
+				}
+				friend.username = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("bio");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.bio) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Bio");
+					}
+				}
+				friend.bio = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("birthday");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.birthday) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Birthday");
+					}
+				}
+				friend.birthday = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("education").toString();
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.education) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Education");
+					}
+				}
+				friend.education = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("email");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.email) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Email");
+					}
+				}
+				friend.email = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				JSONObject newJSON = object.getJSONObject("hometown");
+				String newValue = newJSON.getString("name");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.hometown) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Hometown");
+					}
+				}
+				friend.hometown = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				JSONArray newArray = object.getJSONArray("interested_in");
+				if (newArray.length() > 0) {
+					String newValue = newArray.getString(0);
+					if (true == friend.stalking) {
+						if (newValue.equals(friend.interestedIn) == false) {
+							friend.infoChanged = true;
+							friend.changedFieldsArray.add("Interested In");
+						}
+					}
+					friend.interestedIn = newValue;
+				}
+			} catch (JSONException e) {
+
+			}
+			try {
+				JSONObject newJSON = object.getJSONObject("location");
+				String newValue = newJSON.getString("name");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.location) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Location");
+					}
+				}
+				friend.location = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("political");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.political) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Political");
+					}
+				}
+				friend.political = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("quotes");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.quotes) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Quotes");
+					}
+				}
+				friend.quotes = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("relationship_status");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.relationshipStatus) == false) {
+						friend.relationshipStatusChanged = true;
+						RelationshipChangedListString+=friend.name + "-";
+					}
+				}
+				friend.relationshipStatus = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("religion");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.religion) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Religion");
+					}
+				}
+				friend.religion = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				JSONObject newJSON = object.getJSONObject("significant_other");
+				String newValue = newJSON.getString("name");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.significantOther) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Significant Other");
+					}
+				}
+				friend.significantOther = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getString("website");
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.website) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Website");
+					}
+				}
+				friend.website = newValue;
+			} catch (JSONException e) {
+
+			}
+			try {
+				String newValue = object.getJSONArray("work").toString();
+				if (true == friend.stalking) {
+					if (newValue.equals(friend.work) == false) {
+						friend.infoChanged = true;
+						friend.changedFieldsArray.add("Work");
+					}
+				}
+				friend.work = newValue;
+			} catch (JSONException e) {
+
+			}
+			if (true == friend.stalking) {
+				for (int i=0; i < friend.changedFieldsArray.size(); i++) {
+					friend.changedFields += friend.changedFieldsArray.get(i);
+					if (i != 0 && i < friend.changedFieldsArray.size()) {
+						friend.changedFields += ", ";
+					}
+				}
 			}
 			try {
 				friend.save();
