@@ -22,15 +22,12 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 	@Column(name = "uid")
 	public String uid;
-	public String encryptedUid;
 
 	@Column(name = "name")
 	public String name;
-	public String encryptedName;
 
 	@Column(name = "relationshipStatus")
 	public String relationshipStatus = "NA";
-	public String encryptedRelationshipStatus;
 
 	@Column(name = "frienemyStatus")
 	public int frienemyStatus;
@@ -52,6 +49,63 @@ public class Friend extends ActiveRecordBase<Friend> {
 	
 	@Column(name = "stalking")
 	public boolean stalking;
+	
+	@Column(name = "firstName")
+	public String firstName;
+	
+	@Column(name = "middleName")
+	public String middleName;
+	
+	@Column(name = "lastName")
+	public String lastName;
+	
+	@Column(name = "gender")
+	public String gender;
+	
+	@Column(name = "link")
+	public String link;
+	
+	@Column(name = "username")
+	public String username;
+	
+	@Column(name = "bio")
+	public String bio;
+	
+	@Column(name = "birthday")
+	public String birthday;
+	
+	@Column(name = "education")
+	public String education;
+	
+	@Column(name = "email")
+	public String email;
+	
+	@Column(name = "hometown")
+	public String hometown;
+	
+	@Column(name = "interestedIn")
+	public String interestedIn;
+	
+	@Column(name = "location")
+	public String location;
+	
+	@Column(name = "political")
+	public String political;
+	
+	@Column(name = "quotes")
+	public String quotes;
+	
+	@Column(name = "religion")
+	public String religion;
+	
+	@Column(name = "significantOther")
+	public String significantOther;
+	
+	@Column(name = "website")
+	public String website;
+	
+	@Column(name = "work")
+	public String work;
 
 	public static ArrayList<Friend> stalkingFriends(Context context) {
 		ArrayList<Friend> stalkingFriends = Friend.query(context, Friend.class, null, "stalking==1", "name ASC");
