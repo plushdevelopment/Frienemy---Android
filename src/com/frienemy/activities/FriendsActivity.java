@@ -25,6 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -127,6 +129,8 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		Intent intent = new Intent(FrienemyService.class.getName()); 
 		startService(intent);
 		bindService(intent, serviceConnection, 0);
+		
+
 	}
 
 	@Override

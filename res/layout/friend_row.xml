@@ -47,4 +47,17 @@
         android:textSize="12dp"
         android:layout_below="@id/relationshipStatus"
         android:layout_alignLeft="@id/fullname"/>
+
+
+
+    <TextView
+        android:id="@+id/textstalk"
+        android:layout_width="85dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:text="Stalking" 
+        android:textColor="#ffffff" 
+        android:layout_marginTop="30dp"
+        android:background="#2c7fba" android:gravity="center"/>
+
 </com.frienemy.layouts.FriendListItem>

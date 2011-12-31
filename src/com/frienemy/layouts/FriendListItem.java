@@ -10,6 +10,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 	private TextView      nameTextView;
 	private TextView      relationshipStatusTextView;
 	private TextView      frienemyStatusTextView;
+	private TextView      stalkFriend;
 
 	private AsyncTask<URL, Void, Drawable> latestLoadTask;
 
@@ -42,6 +45,9 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 				frienemyStatusTextView.setText("New Friend");
 				break;
 		}
+		RotateAnimation ranim = (RotateAnimation)AnimationUtils.loadAnimation(getContext(), R.drawable.anim);
+		ranim.setFillAfter(true);
+		stalkFriend.setAnimation(ranim);
 
 		// cancel old task
 		if (null != latestLoadTask) {
@@ -67,6 +73,7 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 		nameTextView = (TextView) findViewById(R.id.fullname);
 		relationshipStatusTextView = (TextView) findViewById(R.id.relationshipStatus);
 		frienemyStatusTextView = (TextView) findViewById(R.id.frienemyStatus);
+		stalkFriend= (TextView) findViewById(R.id.textstalk);
 	}
 
 }
