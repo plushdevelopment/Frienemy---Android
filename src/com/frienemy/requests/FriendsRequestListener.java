@@ -75,6 +75,7 @@ public class FriendsRequestListener implements RequestListener {
 			}
 			for (int i=0; i<l; i++) {
 				JSONObject o = d.getJSONObject(i);
+				Log.d(TAG, o.toString());
 				Friend friend = Friend.friendInContextForJSONObject(context, o);
 				if (friend.frienemyStatus == 2) {
 					friend.frienemyStatus = 0;

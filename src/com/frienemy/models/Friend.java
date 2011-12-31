@@ -46,64 +46,64 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 	@Column(name = "isCurrentUsersFriend")
 	public boolean isCurrentUsersFriend;
-	
+
 	@Column(name = "stalking")
 	public boolean stalking;
-	
+
 	@Column(name = "firstName")
 	public String firstName;
-	
+
 	@Column(name = "middleName")
 	public String middleName;
-	
+
 	@Column(name = "lastName")
 	public String lastName;
-	
+
 	@Column(name = "gender")
 	public String gender;
-	
+
 	@Column(name = "link")
 	public String link;
-	
+
 	@Column(name = "username")
 	public String username;
-	
+
 	@Column(name = "bio")
 	public String bio;
-	
+
 	@Column(name = "birthday")
 	public String birthday;
-	
+
 	@Column(name = "education")
 	public String education;
-	
+
 	@Column(name = "email")
 	public String email;
-	
+
 	@Column(name = "hometown")
 	public String hometown;
-	
+
 	@Column(name = "interestedIn")
 	public String interestedIn;
-	
+
 	@Column(name = "location")
 	public String location;
-	
+
 	@Column(name = "political")
 	public String political;
-	
+
 	@Column(name = "quotes")
 	public String quotes;
-	
+
 	@Column(name = "religion")
 	public String religion;
-	
+
 	@Column(name = "significantOther")
 	public String significantOther;
-	
+
 	@Column(name = "website")
 	public String website;
-	
+
 	@Column(name = "work")
 	public String work;
 
@@ -111,7 +111,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 		ArrayList<Friend> stalkingFriends = Friend.query(context, Friend.class, null, "stalking==1", "name ASC");
 		return stalkingFriends;
 	}
-	
+
 	public static ArrayList<Friend> allFriends(Context context) {
 		ArrayList<Friend> allFriends = Friend.query(context, Friend.class);
 		return allFriends;
@@ -138,19 +138,123 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 	public Friend(Context context, JSONObject object) {
 		super(context);
+		
+		this.stalking = false;
+		this.frienemyStatus = 0;
+		this.isCurrentUser = false;
+		
+		try {
+			this.uid = object.getString("id");
+		} catch (JSONException e) {
+
+		}
 		try {
 			this.name = object.getString("name");
-			this.uid = object.getString("id");
-			this.stalking = false;
-			this.frienemyStatus = 0;
-			this.isCurrentUser = false;
-			try {
-				String relationshipStatus = object.getString("relationship_status");
-				this.relationshipStatusChanged = false;
-				this.relationshipStatus = relationshipStatus;
-			} catch (JSONException e) {
+		} catch (JSONException e) {
 
+		}
+		try {
+			this.firstName = object.getString("first_name");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.middleName = object.getString("middle_name");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.lastName = object.getString("last_name");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.gender = object.getString("gender");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.link = object.getString("link");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.username = object.getString("username");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.bio = object.getString("bio");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.birthday = object.getString("birthday");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.education = object.getJSONArray("education").toString();
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.email = object.getString("email");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.hometown = object.getString("hometown");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.interestedIn = object.getString("interested_in");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.location = object.getString("location");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.political = object.getString("political");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.quotes = object.getString("quotes");
+		} catch (JSONException e) {
+
+		}
+		try {
+			String relationshipStatus = object.getString("relationship_status");
+			if (relationshipStatus.equals(this.relationshipStatus) == false) {
+				this.relationshipStatusChanged = true;
+				RelationshipChangedListString+=this.name + "-";
 			}
+			this.relationshipStatus = relationshipStatus;
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.religion = object.getString("religion");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.significantOther = object.getString("significant_other");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.website = object.getString("website");
+		} catch (JSONException e) {
+
+		}
+		try {
+			this.work = object.getJSONArray("work").toString();
 		} catch (JSONException e) {
 
 		}
@@ -164,16 +268,94 @@ public class Friend extends ActiveRecordBase<Friend> {
 		Friend friend = null;
 		RelationshipChangedListString="";
 		try {
-			String n = object.getString("name");
 			String uid = object.getString("id");
 			friend = friendInContextForKeyWithStringValue(context, "uid", uid);
 			if (friend == null) {
 				friend = new Friend(context);
 				friend.uid = uid;
-				friend.name = n;
 				friend.frienemyStatus = 0;
 				friend.isCurrentUser = false;
 				friend.stalking = false;
+			}
+			try {
+				friend.name = object.getString("name");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.firstName = object.getString("first_name");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.middleName = object.getString("middle_name");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.lastName = object.getString("last_name");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.gender = object.getString("gender");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.link = object.getString("link");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.username = object.getString("username");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.bio = object.getString("bio");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.birthday = object.getString("birthday");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.education = object.getJSONArray("education").toString();
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.email = object.getString("email");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.hometown = object.getString("hometown");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.interestedIn = object.getString("interested_in");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.location = object.getString("location");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.political = object.getString("political");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.quotes = object.getString("quotes");
+			} catch (JSONException e) {
+
 			}
 			try {
 				String relationshipStatus = object.getString("relationship_status");
@@ -182,6 +364,26 @@ public class Friend extends ActiveRecordBase<Friend> {
 					RelationshipChangedListString+=friend.name + "-";
 				}
 				friend.relationshipStatus = relationshipStatus;
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.religion = object.getString("religion");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.significantOther = object.getString("significant_other");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.website = object.getString("website");
+			} catch (JSONException e) {
+
+			}
+			try {
+				friend.work = object.getJSONArray("work").toString();
 			} catch (JSONException e) {
 
 			}
@@ -217,7 +419,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 	}
 
 	public String getObjectURLString() {
-		return String.format("https://graph.facebook.com/%s/?fields=id,name,relationship_status", uid);
+		return String.format("https://graph.facebook.com/%s/?fields=id,name,first_name,middle_name,last_name,gender,link,username,bio,birthday,education,email,hometown,interested_in,location,political,quotes,relationship_status,religion,significant_other,website,work", uid);
 	}
 
 	public static String[] getList()
