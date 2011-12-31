@@ -424,7 +424,10 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			startActivity(k);
 			break;
 		case 1:
-			
+			Friend friend = Friend.load(getApplicationContext(), Friend.class, friendId);
+			friend.stalking = !friend.stalking;
+			friend.save();
+			updateView();
 			break;
 		case 2:
 			k = new Intent(FriendsActivity.this, StalkerActivity.class);

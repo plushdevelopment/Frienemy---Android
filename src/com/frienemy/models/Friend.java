@@ -49,7 +49,15 @@ public class Friend extends ActiveRecordBase<Friend> {
 
 	@Column(name = "isCurrentUsersFriend")
 	public boolean isCurrentUsersFriend;
+	
+	@Column(name = "stalking")
+	public boolean stalking;
 
+	public static ArrayList<Friend> stalkingFriends(Context context) {
+		ArrayList<Friend> stalkingFriends = Friend.query(context, Friend.class, null, "stalking==1", "name ASC");
+		return stalkingFriends;
+	}
+	
 	public static ArrayList<Friend> allFriends(Context context) {
 		ArrayList<Friend> allFriends = Friend.query(context, Friend.class);
 		return allFriends;
@@ -79,7 +87,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 		try {
 			this.name = object.getString("name");
 			this.uid = object.getString("id");
-
+			this.stalking = false;
 			this.frienemyStatus = 0;
 			this.isCurrentUser = false;
 			try {
@@ -111,6 +119,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 				friend.name = n;
 				friend.frienemyStatus = 0;
 				friend.isCurrentUser = false;
+				friend.stalking = false;
 			}
 			try {
 				String relationshipStatus = object.getString("relationship_status");

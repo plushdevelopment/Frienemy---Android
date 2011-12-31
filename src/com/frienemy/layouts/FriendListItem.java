@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -22,7 +23,7 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 	private TextView      nameTextView;
 	private TextView      relationshipStatusTextView;
 	private TextView      frienemyStatusTextView;
-	private TextView      stalkFriend;
+	private TextView      stalkFriendTextView;
 
 	private AsyncTask<URL, Void, Drawable> latestLoadTask;
 
@@ -35,20 +36,24 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 		nameTextView.setText(friend.name);
 		relationshipStatusTextView.setText(friend.relationshipStatus);
 		switch (friend.frienemyStatus) {
-			case 0:
-				frienemyStatusTextView.setText("Friend");
-				break;
-			case 1:
-				frienemyStatusTextView.setText("Frienemy");
-				break;
-			case 2:
-				frienemyStatusTextView.setText("New Friend");
-				break;
+		case 0:
+			frienemyStatusTextView.setText("Friend");
+			break;
+		case 1:
+			frienemyStatusTextView.setText("Frienemy");
+			break;
+		case 2:
+			frienemyStatusTextView.setText("New Friend");
+			break;
 		}
-		RotateAnimation ranim = (RotateAnimation)AnimationUtils.loadAnimation(getContext(), R.drawable.anim);
-		ranim.setFillAfter(true);
-		stalkFriend.setAnimation(ranim);
-
+		if (true == friend.stalking) {
+			stalkFriendTextView.setVisibility(View.VISIBLE);
+			RotateAnimation ranim = (RotateAnimation)AnimationUtils.loadAnimation(getContext(), R.drawable.anim);
+			ranim.setFillAfter(true);
+			stalkFriendTextView.setAnimation(ranim);
+		} else {
+			stalkFriendTextView.setVisibility(View.GONE);
+		}
 		// cancel old task
 		if (null != latestLoadTask) {
 			latestLoadTask.cancel(true);
@@ -73,7 +78,7 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 		nameTextView = (TextView) findViewById(R.id.fullname);
 		relationshipStatusTextView = (TextView) findViewById(R.id.relationshipStatus);
 		frienemyStatusTextView = (TextView) findViewById(R.id.frienemyStatus);
-		stalkFriend= (TextView) findViewById(R.id.textstalk);
+		stalkFriendTextView= (TextView) findViewById(R.id.textstalk);
 	}
 
 }
