@@ -98,7 +98,7 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 			{
 				View v = (View) findViewById(R.id.tabs);
 				v.setVisibility(View.VISIBLE);
-				addActionBarItem(Type.Export);
+				//addActionBarItem(Type.Export);
 			}
 		}
 		else 
