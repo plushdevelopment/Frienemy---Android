@@ -153,28 +153,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/About"
                 android:layout_marginLeft="5dp"
-                android:text="Employer: "
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/Phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/Hometown"
-                android:layout_marginLeft="5dp"
-                android:phoneNumber="true"
-                android:text="Phone: "
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/ScreenName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/Phone"
-                android:layout_marginLeft="5dp"
-                android:text="Screen Name: "
+                android:text="Hometown: "
                 android:textColor="#000000" />
 
             <TextView
@@ -182,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/ScreenName"
+                android:layout_below="@+id/Hometown"
                 android:layout_marginLeft="5dp"
                 android:text="Email:"
                 android:textColor="#000000" />

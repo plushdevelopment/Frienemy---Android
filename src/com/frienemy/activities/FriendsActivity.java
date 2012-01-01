@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.bool;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -58,7 +59,8 @@ import com.frienemy.services.FrienemyServiceListener;
 public class FriendsActivity extends GDActivity implements OnClickListener, UserRequestListenerResponder, FriendRequestListenerResponder, OnCreateContextMenuListener, OnQuickActionClickListener {
 
 	private static final String TAG = FriendsActivity.class.getSimpleName();
-	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream" };
+	private static final String[] PERMS = new String[] { "read_stream", "offline_access", "friends_relationships", "friends_relationship_details", "user_relationships", "user_relationship_details", "friends_likes", "user_likes", "publish_stream",
+		"friends_about_me", "friends_status", "friends_website", "friends_education_history", "friends_work_history", "friends_birthday", "friends_hometown", "friends_location", "friends_religion_politics" };
 	private static final int EXIT = 0;
 	Facebook facebook = new Facebook("124132700987915");
 	private AsyncFacebookRunner asyncRunner;
@@ -72,9 +74,16 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 	FriendAdapter adapter;
 	ListView list;
 	private long friendId;
+	
 	String name ="";
 	String relationshipStatus="";
 	String frienemyStatus="";
+	String about ="";
+	String employer="";
+	String phone="";
+	String screenName= "";
+	String email="";
+	
 	public static URL image= null;
 
 	private QuickActionWidget mBar;
@@ -141,6 +150,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		 * Get existing access_token if any
 		 */
 		mPrefs = getSharedPreferences(FILENAME, MODE_PRIVATE);
+		boolean hasUpdated = mPrefs.getBoolean("has_updated", false);
 		String access_token = mPrefs.getString("access_token", null);
 		long expires = mPrefs.getLong("access_expires", 0);
 		if(access_token != null) {
@@ -152,7 +162,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		/*
 		 * Only call authorize if the access_token has expired.
 		 */
-		if(!facebook.isSessionValid()) {
+		if(!facebook.isSessionValid() || !hasUpdated) {
 			facebook.authorize(this, PERMS, new LoginDialogListener());
 		} else {
 			loadFriendsIfNotLoaded();
@@ -216,24 +226,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 			public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 				
-				friendId = friends.get(position).getId();
-				
-				name =friends.get(position).name;
-
-				relationshipStatus = friends.get(position).relationshipStatus;
-
-				image = friends.get(position).getLargeProfileImageURL();
-
-				if(friends.get(position).frienemyStatus==1)
-				{
-					frienemyStatus = "Frienemy";
-				}
-				else
-				{
-					frienemyStatus = "Friend";
-				}
-				// AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)v;
-
+				friendInfo(position);
 				mBar.show(v);
 			}
 		});
@@ -341,6 +334,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			SharedPreferences.Editor editor = mPrefs.edit();
 			editor.putString("access_token", facebook.getAccessToken());
 			editor.putLong("access_expires", facebook.getAccessExpires());
+			editor.putBoolean("has_updated", true);
 			editor.commit();
 
 			// Bind to service
@@ -417,10 +411,9 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		{
 		case 0:
 			k = new Intent(FriendsActivity.this, InfoActivity.class);
-			k.putExtra("name".trim(), name);
-			k.putExtra("relationship".trim(), relationshipStatus);
+			k.putExtra("friendId".trim(), friendId);
 			k.putExtra("frienemy".trim(), frienemyStatus);
-			k.putExtra("image".trim(), image.toString());
+
 			startActivity(k);
 			break;
 		case 1:
@@ -436,6 +429,21 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			break;
 
 		default:
+		}
+
+	}
+	
+	public void friendInfo(int position)
+	{
+		friendId = friends.get(position).getId();
+
+		if(friends.get(position).frienemyStatus==1)
+		{
+			frienemyStatus = "Frienemy";
+		}
+		else
+		{
+			frienemyStatus = "Friend";
 		}
 
 	}
