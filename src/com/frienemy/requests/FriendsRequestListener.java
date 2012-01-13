@@ -63,6 +63,7 @@ public class FriendsRequestListener implements RequestListener {
 					if (friend.uid.matches(o.getString("id"))) {
 						exists = true;
 						friend.frienemyStatus = 0;
+						friend.save();
 						break;
 					}
 				}

@@ -190,6 +190,7 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 					"Loading your friends list from Facebook");
 			// Get the user's friend list
 			Bundle parameters = new Bundle();
+			parameters.putString("limit", "5000");
 			parameters.putString("fields", "id,name,first_name,middle_name,last_name,gender,link,username,bio,birthday,education,email,hometown,interested_in,location,political,quotes,relationship_status,religion,significant_other,website,work");
 			asyncRunner.request("me/friends", parameters, friendsRequestListener);
 
