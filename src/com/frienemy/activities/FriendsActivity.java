@@ -123,6 +123,8 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		mBar = new QuickActionBar(this);
+		this.getActionBar().removeViewAt(0);
+
 
 
 		setUpListeners();
@@ -246,7 +248,6 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 			mBar.addQuickAction(new QuickAction(this, R.drawable.stalkers, "Stalk"));
 		}
 		mBar.addQuickAction(new QuickAction(this, R.drawable.stalking, "Stalkers"));
-		this.getActionBar().removeViewAt(0);
 	}
 	protected void updateView() {
 		try{
