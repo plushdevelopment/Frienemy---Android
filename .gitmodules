@@ -1,0 +1,3 @@
+[submodule "GreenDroid"]
+	path = GreenDroid
+	url = git@github.com:plushdevelopment/GreenDroid.git

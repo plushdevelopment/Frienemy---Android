@@ -14,6 +14,7 @@ import com.android.vending.licensing.AESObfuscator;
 import com.android.vending.licensing.LicenseChecker;
 import com.android.vending.licensing.LicenseCheckerCallback;
 import com.android.vending.licensing.ServerManagedPolicy;
+import com.flurry.android.FlurryAgent;
 
 public class LicenseCheckActivity extends Activity {
    private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
@@ -53,6 +54,7 @@ public class LicenseCheckActivity extends Activity {
          // restricted set of features.
          // In this example, we show a dialog that takes the user to Market.
          showDialog(0);
+         //startMainActivity();
       }
    }
    private static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2suz1G622Qu1z5XINL8QB/AeZmBOOByV6GxWQJ53M5aeUHFEvwKQMGNNZ7CQLSkSRIKkvjtWRFQ7bkOvauDAwhw/TBKyK0y+j/diIMc+7W0uAshIay0XIR0+rWCqcje1cxGk6d77uNYUDF7OiPoL9Xm/AZ0/mtyLz4Z3hNRA0D43M9T6z7qxcBPkD35napafRZXtadrQ5siH+FDlyCHyu9I65Dmqtar+9VLE9/nEHZfU65sqblrZaWs4A3WrePSRU/6SkTg0OfIBeIv7YF0qt/SHgmdeWgvcUKNOitFyqlSVrw3BTFD/fjGJWj8x14dxlFS76YrHmIOWazy6sakbEQIDAQAB";
@@ -89,6 +91,18 @@ public class LicenseCheckActivity extends Activity {
       doCheck();
 
    }
+   
+   @Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, "EB7H7EBXI7Z7CM21DJSM");
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
+	}
 
    @Override
    protected Dialog onCreateDialog(int id) {
@@ -126,7 +140,7 @@ public class LicenseCheckActivity extends Activity {
    }
 
    private void startMainActivity() {
-      startActivity(new Intent(this, FrienemyActivity.class));
+      startActivity(new Intent(this, FriendsActivity.class));
       finish();
    }
 

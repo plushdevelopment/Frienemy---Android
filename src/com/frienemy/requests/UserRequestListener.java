@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.facebook.android.FacebookError;
@@ -34,7 +35,12 @@ public class UserRequestListener implements RequestListener {
 			final JSONObject json = new JSONObject(response);
 			Friend friend = Friend.friendInContextForJSONObject(context, json);
 			friend.isCurrentUser = true;
-			friend.save();
+			try {
+					friend.save();
+			}
+			catch (SQLiteException e) {
+				responder.userRequestDidFail();
+			}
 			responder.userRequestDidFinish();
 		} catch (JSONException e) {
 			Log.w(TAG, "JSON Error in response");

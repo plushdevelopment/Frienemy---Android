@@ -49,7 +49,7 @@ public class FriendsRequestListener implements RequestListener {
 			final JSONObject json = new JSONObject(response);
 			JSONArray d = json.getJSONArray("data");
 			int l = (d != null ? d.length() : 0);
-			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null);
+			ArrayList<Friend> fetchedFriends = Friend.query(context, Friend.class, null, "isCurrentUsersFriend==1");
 			if (fetchedFriends.size() < 1) {
 				saveFirstFriendsList(d);
 				return;
@@ -63,10 +63,11 @@ public class FriendsRequestListener implements RequestListener {
 					if (friend.uid.matches(o.getString("id"))) {
 						exists = true;
 						friend.frienemyStatus = 0;
+						friend.save();
 						break;
 					}
 				}
-				if (!exists) {
+				if (!exists && friend.frienemyStatus != 1) {
 					friend.frienemyStatus = 1;
 					FrienemiesListString += friend.name + "-";
 					friend.frienemyStatusChanged = true;
@@ -75,17 +76,23 @@ public class FriendsRequestListener implements RequestListener {
 			}
 			for (int i=0; i<l; i++) {
 				JSONObject o = d.getJSONObject(i);
+				Log.d(TAG, o.toString());
 				Friend friend = Friend.friendInContextForJSONObject(context, o);
 				if (friend.frienemyStatus == 2) {
 					friend.frienemyStatus = 0;
+					friend.isCurrentUsersFriend = true;
 					friend.save();
 					fetchedFriends.add(friend);
 				}
 			}
 			setFriends(fetchedFriends);
-			responder.friendRequestDidFinish(l);
+			if (responder != null) {
+				responder.friendRequestDidFinish(l);
+			}
 		} catch (JSONException e) {
-			responder.friendRequestDidFail();
+			if (responder != null) {
+				responder.friendRequestDidFail();
+			}
 		}
 	}
 
@@ -96,28 +103,39 @@ public class FriendsRequestListener implements RequestListener {
 			try {
 				JSONObject o = array.getJSONObject(i);
 				Friend friend = new Friend(context, o);
+				friend.isCurrentUsersFriend = true;
 				friend.save();
 			} catch (JSONException e) {
 
 			}
 		}
-		responder.friendRequestDidFinish(l);
+		if (responder != null) {
+			responder.friendRequestDidFinish(l);
+		}
 	}
 
 	public void onIOException(IOException e, Object state) {
-		responder.friendRequestDidFail();
+		if (responder != null) {
+			responder.friendRequestDidFail();
+		}
 	}
 
 	public void onFileNotFoundException(FileNotFoundException e, Object state) {
-		responder.friendRequestDidFail();
+		if (responder != null) {
+			responder.friendRequestDidFail();
+		}
 	}
 
 	public void onMalformedURLException(MalformedURLException e, Object state) {
-		responder.friendRequestDidFail();
+		if (responder != null) {
+			responder.friendRequestDidFail();
+		}
 	}
 
 	public void onFacebookError(FacebookError e, Object state) {
-		responder.friendRequestDidFail();
+		if (responder != null) {
+			responder.friendRequestDidFail();
+		}
 	}
 
 	public static String[] getList()
