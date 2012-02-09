@@ -17,6 +17,7 @@ public class StalkerAdapter extends ArrayAdapter<StalkerRelationship> {
 	private Context context;
 	private ArrayList<StalkerRelationship> data;
 	private static LayoutInflater inflater=null;
+	public static String[] stalkers = new String[10];
 
 	public StalkerAdapter(Context context, ArrayList<StalkerRelationship> stalkers) {
 		super(context, android.R.layout.simple_list_item_1, stalkers);
@@ -37,8 +38,14 @@ public class StalkerAdapter extends ArrayAdapter<StalkerRelationship> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		StalkerListItem vi=(StalkerListItem)convertView;
 		if(vi==null)
+		{
 			vi = (StalkerListItem)inflater.inflate(R.layout.stalker_row, null);
-		vi.setFriend(data.get(position).fromFriend);
+			if(position<10)
+			{
+				stalkers[position]=data.get(position).fromFriend.firstName + " " + data.get(position).fromFriend.lastName;
+			}
+			vi.setFriend(data.get(position).fromFriend);
+		}
 		return vi;
 	}
 	

@@ -98,7 +98,7 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 			{
 				View v = (View) findViewById(R.id.tabs);
 				v.setVisibility(View.VISIBLE);
-				//addActionBarItem(Type.Export);
+				addActionBarItem(Type.Share);
 			}
 		}
 		else 
@@ -220,7 +220,18 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 				})
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
+						String stalkerList="My Top Stalkers on Frienemy: \n";
+						for( int i =0; i<StalkerAdapter.stalkers.length ; i++)
+						{
+							if(StalkerAdapter.stalkers[i]!=null)
+							{
+								stalkerList+= i+1 + "-" +StalkerAdapter.stalkers[i] + "\n";
+							}
+							
+						}
+						stalkerList+="\nDownload App: \n " + "https://market.android.com/details?id=com.frienemy.activities";
 
+						postOnWall(stalkerList);
 						dialog.cancel();
 					}
 				});
@@ -233,6 +244,26 @@ public class StalkerActivity extends GDActivity implements OnClickListener, Wall
 		return true;
 
 	}
+	
+	public void postOnWall(String msg) {
+        Log.d("Tests", "Testing graph API wall post");
+         try {
+                String response = facebook.request("me");
+                Bundle parameters = new Bundle();
+                parameters.putString("message", msg);
+                parameters.putString("description", "test test test");
+                response = facebook.request("me/feed", parameters, 
+                        "POST");
+                Log.d("Tests", "got response: " + response);
+                if (response == null || response.equals("") || 
+                        response.equals("false")) {
+                   Log.v("Error", "Blank response");
+                }
+         } catch(Exception e) {
+             e.printStackTrace();
+         }
+    }
+
 
 	public void onClick(View v) {
 		Intent i;
