@@ -123,10 +123,8 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		mBar = new QuickActionBar(this);
-		mBar.addQuickAction(new QuickAction(this, R.drawable.info, "Info"));
-		mBar.addQuickAction(new QuickAction(this, R.drawable.stalkers, "Stalk"));
-		mBar.addQuickAction(new QuickAction(this, R.drawable.stalking, "Stalkers"));
 		this.getActionBar().removeViewAt(0);
+
 
 
 		setUpListeners();
@@ -222,17 +220,35 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 		//v.setOnClickListener(this);
 		mBar.setOnQuickActionClickListener(this);
 
+		
+		
 		ListView k =(ListView) findViewById(android.R.id.list);
 		k.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 				
 				friendInfo(position);
+				addActionBar(position);
 				mBar.show(v);
 			}
 		});
 	}
+	private void addActionBar(int postion)
+	{
+		Friend friend = Friend.load(getApplicationContext(), Friend.class, friendId);
+		mBar.clearAllQuickActions();
 
+		mBar.addQuickAction(new QuickAction(this, R.drawable.info, "Info"));
+		if(friend.stalking)
+		{
+			mBar.addQuickAction(new QuickAction(this, R.drawable.stalkers, "Unstalk"));
+		}
+		else
+		{
+			mBar.addQuickAction(new QuickAction(this, R.drawable.stalkers, "Stalk"));
+		}
+		mBar.addQuickAction(new QuickAction(this, R.drawable.stalking, "Stalkers"));
+	}
 	protected void updateView() {
 		try{
 			friends = Friend.query(getApplicationContext(), Friend.class, null, "isCurrentUser==0 AND frienemyStatus==0 AND isCurrentUsersFriend==1", "name ASC");
