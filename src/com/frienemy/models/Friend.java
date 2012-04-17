@@ -289,7 +289,7 @@ public class Friend extends ActiveRecordBase<Friend> {
 			if (friend == null) {
 				friend = new Friend(context);
 				friend.uid = uid;
-				friend.frienemyStatus = 0;
+				friend.frienemyStatus = 2;
 				friend.isCurrentUser = false;
 				friend.stalking = false;
 			}
