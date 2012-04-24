@@ -2,9 +2,11 @@ package com.frienemy.activities;
 
 import greendroid.app.GDActivity;
 import greendroid.app.GDListActivity;
+import greendroid.widget.ActionBarItem;
 import greendroid.widget.QuickAction;
 import greendroid.widget.QuickActionBar;
 import greendroid.widget.QuickActionWidget;
+import greendroid.widget.ActionBarItem.Type;
 import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
 
 import java.io.FileNotFoundException;
@@ -30,13 +32,16 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -45,6 +50,7 @@ import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook.*;
 import com.flurry.android.FlurryAgent;
 import com.frienemy.adapters.FriendAdapter;
+import com.frienemy.adapters.StalkerAdapter;
 import com.frienemy.models.Friend;
 import com.frienemy.requests.FriendsRequestListener;
 import com.frienemy.requests.UserRequestListener;
@@ -124,6 +130,8 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 		mBar = new QuickActionBar(this);
 		this.getActionBar().removeViewAt(0);
+		addActionBarItem(Type.Share);
+
 
 
 
@@ -465,22 +473,68 @@ public class FriendsActivity extends GDActivity implements OnClickListener, User
 
 	}
 
-	/*@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-	    ContextMenuInfo menuInfo) {
-	  if (v.getId()==android.R.id.list) {
+	@Override
+	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) 
+	{
+		
+		switch (position) 
+		{
+		case 0:
 
-		 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-	  	mBar.show(v);
-	  	/*
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-	    menu.setHeaderTitle(friends.get(info.position).name);
-	    String[] menuItems = {"Stalk","User's Stalkers"};
-	    for (int i = 0; i<menuItems.length; i++) {
-	      menu.add(Menu.NONE, i, i, menuItems[i]);
-	    }
-	  }
-	}*/
+
+				final EditText input = new EditText(this);
+				input.setSingleLine(false);
+				input.setPadding(20, 5, 20, 5);
+				input.setMinimumHeight(100);
+				input.setHint("Comment");
+
+				String post = "Post comment to Wall?";
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage(post)
+				.setView(input)
+				.setTitle("Post")
+				.setCancelable(true)
+				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				})
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						String value = input.getText().toString().trim();
+
+						postOnWall(value);
+						dialog.cancel();
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+
+				break;
+			}		
+		return true;
+	}
+	
+	public void postOnWall(String msg) {
+        Log.d("Tests", "Testing graph API wall post");
+         try {
+                String response = facebook.request("me");
+                Bundle parameters = new Bundle();
+                parameters.putString("message", msg);
+                parameters.putString("description", "test test test");
+                response = facebook.request("me/feed", parameters, 
+                        "POST");
+                Log.d("Tests", "got response: " + response);
+                if (response == null || response.equals("") || 
+                        response.equals("false")) {
+                   Log.v("Error", "Blank response");
+                }
+         } catch(Exception e) {
+             e.printStackTrace();
+         }
+    }
+	
+	
 
 
 }
