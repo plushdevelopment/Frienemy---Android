@@ -10,10 +10,7 @@ import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.widget.Toast;
 
-import com.android.vending.licensing.AESObfuscator;
-import com.android.vending.licensing.LicenseChecker;
 import com.android.vending.licensing.LicenseCheckerCallback;
-import com.android.vending.licensing.ServerManagedPolicy;
 import com.flurry.android.FlurryAgent;
 
 public class LicenseCheckActivity extends Activity {

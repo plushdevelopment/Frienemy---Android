@@ -7,5 +7,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="lib/activeandroid.jar"/>
 	<classpathentry kind="lib" path="lib/FlurryAgent.jar"/>
+	<classpathentry kind="src" path="/Google-LVL"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
