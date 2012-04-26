@@ -3,6 +3,8 @@ package com.frienemy.tasks;
 import java.io.IOException;
 import java.net.URL;
 
+import com.frienemy.FrienemyApplication;
+
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -34,7 +36,15 @@ public class LoadImageAsyncTask extends AsyncTask<URL, Void, Drawable> {
   @Override
   protected void onPreExecute() {
     super.onPreExecute();
-    responder.imageLoading();
+    if(FrienemyApplication.asyncTaskQueue<20)
+    {
+        FrienemyApplication.asyncTaskQueue+=1;
+    	responder.imageLoading();
+    }
+    else
+    {
+    	responder.imageLoadCancelled();
+    }
   }
 
   @Override
@@ -46,6 +56,8 @@ public class LoadImageAsyncTask extends AsyncTask<URL, Void, Drawable> {
   @Override
   protected void onPostExecute(Drawable result) {
     super.onPostExecute(result);
+    FrienemyApplication.asyncTaskQueue-=1;
+
     responder.imageLoaded(result);
   }
 

@@ -3,16 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="85dp"
-    android:background="@drawable/row_gradient" >
-
+    android:background="@drawable/row" >
+ <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="7dp"
+        android:src="@drawable/image" android:layout_centerVertical="true"/>
+    
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:src="@drawable/icon" />
+        android:src="@drawable/icon" android:layout_centerVertical="true"/>
 
     <TextView
         android:id="@+id/fullname"
@@ -24,7 +29,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="Jane Doe"
-        android:textColor="#000000"
+        android:textColor="#ffffff"
         android:textSize="18dp"
         android:textStyle="bold" />
 <TextView
@@ -35,7 +40,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:text="Single"
-        android:textColor="#515151"
+        android:textColor="#D1D1D5"
         android:textSize="12dp" 
         android:layout_below="@id/fullname" 
         android:layout_alignLeft="@id/fullname"/>
@@ -44,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Frienemy"
-        android:textColor="#515151"
+        android:textColor="#D1D1D5"
         android:textSize="12dp"
         android:layout_below="@id/relationshipStatus"
         android:layout_alignLeft="@id/fullname"/>

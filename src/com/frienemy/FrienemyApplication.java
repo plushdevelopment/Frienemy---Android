@@ -39,6 +39,7 @@ public class FrienemyApplication extends GDApplication implements UserRequestLis
 	public ArrayList<Friend> frienemies;
 	public ArrayList<Friend> stalkers;
 	public Friend user;
+	public static int asyncTaskQueue=0;
 	
 	private List<FriendListener> friendListeners = new ArrayList<FriendListener>();
 	private List<StalkerListener> stalkerListeners = new ArrayList<StalkerListener>();

@@ -5,7 +5,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent" 
 	android:fitsSystemWindows="true"
-	android:background="#2679B4">
+	android:background="@drawable/header">
 
     <TextView
         android:id="@+id/title"
@@ -14,13 +14,13 @@
         android:text="TextView"
         android:textColor="#ffffff"
         android:textSize="16dp"
-        android:background="#2679B4" android:gravity="center_vertical" android:textStyle="bold" android:layout_marginLeft="10dp"/>
+        android:gravity="center_vertical" android:textStyle="bold" android:layout_marginLeft="10dp"/>
 	
 	<ListView android:id="@android:id/list" 
 			  android:layout_height="0dp"
     		  android:layout_weight="1"   
-		      android:background="#FFFFFF" 
-		      android:cacheColorHint="#FFFFFF"
+		      android:background="#000000" 
+		      android:cacheColorHint="#151518"
 		      android:layout_width="fill_parent"
 		      android:fastScrollEnabled="true"
 		       />
@@ -28,7 +28,7 @@
 		android:orientation="horizontal"
 		android:layout_width="fill_parent" 
 		android:layout_height="50dp"
-		android:background="@drawable/gradientstatus"
+		android:background="@drawable/header"
 		android:weightSum="3"
 		>
 		<RelativeLayout 	

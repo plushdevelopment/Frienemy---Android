@@ -60,26 +60,32 @@ public class InfoActivity extends GDActivity implements LoadImageAsyncTaskRespon
 		
 		v = (TextView) findViewById(R.id.About);
 		String about =friend.bio;
+		if(about==null)about="";
 		v.setText("About: " +about);
 		
 		v = (TextView) findViewById(R.id.Email);
 		String email =friend.email;
+		if(email==null)email="";
 		v.setText("Email: " +email);
 		
 		v = (TextView) findViewById(R.id.quotes);
 		String quotes =friend.quotes;
+		if(quotes==null)quotes="";
 		v.setText("Quotes: " +quotes);
 		
 		v = (TextView) findViewById(R.id.Birthdate);
 		String birthdate =friend.birthday;
+		if(birthdate==null)birthdate="";
 		v.setText("Birthdate: " +birthdate);
 		
 		v = (TextView) findViewById(R.id.Religion);
 		String religion =friend.religion;
+		if(religion==null)religion="";
 		v.setText("Religion: " +religion);
 		
 		v = (TextView) findViewById(R.id.Hometown);
 		String hometown =friend.hometown;
+		if(hometown==null)hometown="";
 		v.setText("Hometown: " +hometown);
 
 		 profileImageView = (ImageView) findViewById(R.id.image);
