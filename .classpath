@@ -5,8 +5,6 @@
 	<classpathentry kind="src" path="aidl"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="/Users/rosschapman/Code/Android Projects/Frienemy/libs/activeandroid.jar"/>
-	<classpathentry kind="lib" path="/Users/rosschapman/Code/Android Projects/Frienemy/libs/FlurryAgent.jar"/>
 	<classpathentry kind="src" path="/Google-LVL"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GreenDroid"/>
 	<classpathentry kind="output" path="bin/classes"/>

@@ -1,6 +1,9 @@
 package com.frienemy.layouts;
 
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.RejectedExecutionException;
 
 import com.frienemy.activities.R;
 import com.frienemy.models.Friend;
@@ -9,7 +12,10 @@ import com.frienemy.tasks.LoadImageAsyncTask.LoadImageAsyncTaskResponder;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
@@ -25,7 +31,8 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 	private TextView      frienemyStatusTextView;
 	private TextView      stalkFriendTextView;
 
-	private AsyncTask<URL, Void, Drawable> latestLoadTask;
+	private Queue<AsyncTask<URL, Void, Drawable>> latestLoadTask= new LinkedList<AsyncTask<URL, Void, Drawable>>();
+;
 
 	public FriendListItem(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -54,13 +61,14 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 		} else {
 			stalkFriendTextView.setVisibility(View.GONE);
 		}
-		// cancel old task
-		if (null != latestLoadTask) {
-			latestLoadTask.cancel(true);
-		}
-		latestLoadTask = new LoadImageAsyncTask(this).execute(friend.getProfileImageURL());
+	
 	}
 
+	public void setImage(Friend friend) {
+		findViews();
+			
+		addTask(new LoadImageAsyncTask(this), friend.getProfileImageURL());
+	}
 	public void imageLoading() {
 		imageView.setImageDrawable(null);
 	}
@@ -80,5 +88,21 @@ public class FriendListItem extends RelativeLayout implements LoadImageAsyncTask
 		frienemyStatusTextView = (TextView) findViewById(R.id.frienemyStatus);
 		stalkFriendTextView= (TextView) findViewById(R.id.textstalk);
 	}
+	
+
+public void addTask(AsyncTask<URL, Void, Drawable> task, URL url) {
+        try{
+                task.execute(url);
+                while(!latestLoadTask.isEmpty()){
+                    task = latestLoadTask.remove();
+                    task.execute(url);
+                }
+            
+        } catch (RejectedExecutionException r){
+                latestLoadTask.add(task);
+        }
+}
+
+
 
 }
