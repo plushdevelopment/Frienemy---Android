@@ -121,10 +121,4 @@ public class InfoActivity extends GDActivity implements LoadImageAsyncTaskRespon
 		return true;
 	}
 
-
-	public void addTask(AsyncTask<URL, Void, Drawable> task, URL url) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
