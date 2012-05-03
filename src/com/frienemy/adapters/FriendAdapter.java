@@ -39,8 +39,6 @@ public class FriendAdapter extends ArrayAdapter<Friend> {
 		if(vi==null)
 			vi = (FriendListItem)inflater.inflate(R.layout.friend_row, null);
 		vi.setFriend(data.get(position));
-		vi.setImage(data.get(position));
-
 		return vi;
 	}
 

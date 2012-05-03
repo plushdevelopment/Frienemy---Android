@@ -116,9 +116,4 @@ public class StalkerListItem extends RelativeLayout implements LoadImageAsyncTas
 		}
 	}
 
-	public void addTask(AsyncTask<URL, Void, Drawable> task, URL url) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
